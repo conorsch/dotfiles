@@ -50,9 +50,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\][\!]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}[\!]\u@\h:\w\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -64,7 +64,7 @@ xterm*|rxvt*)
 *)
     ;;
 esac
-PS1="\u@\h{ \w }\a: "
+PS1="[ \! ] \u@\h{ \w }\a: "
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -105,9 +105,17 @@ fi
 
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export PATH=$PATH:/home/conor/Documents/Coding
+#export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
+export PATH=${PATH}:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
 function journal(){
     lowriter ~/Documents/Journal.odt
+}
+function slg(){
+    tail -f -n 25 /var/log/syslog
+}
+function newestfiles(){
+     find "$@" -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6
 }
 #set -o vi #Set vi input mode (instead of default emacs style)
 
