@@ -10,6 +10,7 @@
 hi clear
 
 let colors_name = "acidcupcake"
+set t_Co=256
 set background=dark
 let Colour = {}
 let Colour['BLACK'] = {"GUI" : "#000000", "256term" : "0", "16term" : "8" }
@@ -24,7 +25,7 @@ let Colour['YELLOW'] = {"GUI" : "#f6c83d","256term" : "220", "16term" : "14" }
 
 let Assignment = {}
 
-let Assignment['Normal'] = {"FG" : Colour['WHITE'], "BG" : Colour['BLACK'] }
+let Assignment['Normal'] = {"FG" : Colour['WHITE'], }
 let Assignment['Cursor'] = {"FG" : Colour['BLACK'], "BG" : Colour['WHITE'] }
 let Assignment['lCursor'] = {"BG" : Colour['PINK'] }
 let Assignment['DiffAdd'] = {"BG" : Colour['BLUE'] }
@@ -95,7 +96,7 @@ for key in keys(Assignment)
 		let bg_16 = s:colours['BG']['16term']
 	else
 		let bg_gui = 'NONE'
-		let bg_256 = 'NONE'
+		let bg_256 = 'none'
 		let bg_16 = 'NONE'
 	endif
 	execute "hi ".key." cterm=".style." gui=".style." ctermfg=".fg_256." ctermbg=".bg_256." guifg=".fg_gui." guibg=".bg_gui
