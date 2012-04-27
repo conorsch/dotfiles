@@ -117,5 +117,14 @@ function slg(){
 function newestfiles(){
      find "$@" -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6
 }
+function explodeavi(){
+    ffmpeg -i "$@" -f image2 image-%03d.jpg
+}
+function resetconnection() {
+    sudo nmcli nm wifi off
+    sleep 5
+    sudo nmcli nm wifi on
+}
+
 #set -o vi #Set vi input mode (instead of default emacs style)
 
