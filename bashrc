@@ -107,7 +107,16 @@ export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export PATH=$PATH:/home/conor/Documents/Coding
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
 export PATH=${PATH}:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
-
+function canhaz(){
+    sudo aptitude -y install $@
+}
+function getem(){
+    sudo aptitude update
+    sudo aptitude -y safe-upgrade
+}
+function refresh(){
+    . ~/.bashrc
+}
 function journal(){
     lowriter ~/Documents/Journal.odt
 }
