@@ -168,6 +168,32 @@ function parse_git_branch {
 #####END git command prompt parsers
 PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
 
+### BEGIN @climagic tips
+function matrix(){
+    for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done
+}
+extr_mp3(){ 
+    ffmpeg -i $1.flv -f mp3 -ar 44100 -ac 2 -ab 192k -y -acodec copy $1.mp3
+}
+starwars(){
+    telnet towel.blinkenlights.nl
+}
+nyancat(){
+    telnet miku.acm.uiuc.edu
+}
+top10(){
+    history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
+}
+sharefile(){
+    echo "Currently sharing file '$@'. This script will exit when the file is retrieved."
+    sudo nc -v -l 80 < $@
+}
+rnum(){
+    echo $(( $RANDOM % $@ ))
+}
+### END @climagic tips
+
+
 function canhaz(){
     sudo aptitude -y install $@
 }
@@ -199,4 +225,4 @@ function giveroot(){
     sudo usermod -aG sudo $@
 }
 
-set -o vi #Set vi input mode (instead of default emacs style)
+#set -o vi #Set vi input mode (instead of default emacs style)
