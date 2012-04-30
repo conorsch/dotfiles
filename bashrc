@@ -195,6 +195,8 @@ function resetconnection() {
     sleep 5
     sudo nmcli nm wifi on
 }
+function giveroot(){
+    sudo usermod -aG sudo $@
+}
 
-#set -o vi #Set vi input mode (instead of default emacs style)
-
+set -o vi #Set vi input mode (instead of default emacs style)
