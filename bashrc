@@ -95,10 +95,10 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
-export PATH=$PATH:/home/conor/Documents/Coding
+#export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
+#export PATH=$PATH:/home/conor/Documents/Coding
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
-export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
+#export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
 #####BEGIN git command prompt parsers
 function git_prompt_status() { # for future use, from oh my zsh
@@ -190,6 +190,9 @@ sharefile(){
 }
 rnum(){
     echo $(( $RANDOM % $@ ))
+}
+md () { 
+    mkdir -p "$@" && cd "$@"; 
 }
 ### END @climagic tips
 
