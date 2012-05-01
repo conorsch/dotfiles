@@ -95,7 +95,8 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-#export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
+export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
+export heimchen="/home/conor/Valhalla/Media/Heimchen"
 #export PATH=$PATH:/home/conor/Documents/Coding
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
@@ -230,6 +231,9 @@ function resetconnection() {
 }
 function giveroot(){
     sudo usermod -aG sudo $@
+}
+function toritup() {
+    ssh -f -2 -N -L 127.0.0.1:9049:127.0.0.1:9050 w 
 }
 
 #set -o vi #Set vi input mode (instead of default emacs style)
