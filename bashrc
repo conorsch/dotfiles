@@ -101,74 +101,75 @@ fi
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
 #####BEGIN git command prompt parsers
-function git_prompt_status() { # for future use, from oh my zsh
-  local index=$(git status --porcelain 2> /dev/null)
-  local gitstatus=""
+#function git_prompt_status() { # for future use, from oh my zsh
+#  local index=$(git status --porcelain 2> /dev/null)
+#  local gitstatus=""
+#
+#  if $(echo "$index" | grep '^?? ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  fi
+#
+#if $(echo "$index" | grep '^A ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  elif $(echo "$index" | grep '^M ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  fi
+#
+#if $(echo "$index" | grep '^ M ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  elif $(echo "$index" | grep '^AM ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  elif $(echo "$index" | grep '^ T ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  fi
+#
+#if $(echo "$index" | grep '^R ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  fi
+#
+#if $(echo "$index" | grep '^ D ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  elif $(echo "$index" | grep '^AD ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  fi
+#
+#if $(echo "$index" | grep '^UU ' &> /dev/null); then
+#gitstatus="$gitstatus"
+#  fi
+#
+#echo "$gitstatus"
+#}
+#
+#function get_git_branch {
+#  echo $(__git_ps1 "%s")
+#}
+#
+#function parse_git_unpushed {
+#  local unpushed=`/usr/bin/git cherry -v origin/$(get_git_branch)`
+#  if [[ "$unpushed" != "" ]]; then
+#    echo -e "\033[1;31m\xE2\x9A\xA1"
+#  else
+#    echo -e "\033[1;32m\xE2\x9D\x80\033[0m"
+#  fi
+#}
+#
+#parse_git_dirty() {
+#  if [[ -n $(git status -s 2> /dev/null) ]]; then
+#    echo -e "\033[1;31m\xE2\x9C\x97\033[0m"
+#  else
+#    local thing=1
+#  fi
+#}
+#
+#function parse_git_branch {
+#  local branch=$(__git_ps1 "%s")
+#  [[ $branch ]] && echo -e "[\033[1;33m$branch$(parse_git_dirty)$(parse_git_unpushed)\033[0m] "
+#}
+######END git command prompt parsers
+#PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
+PS1="[ \! ] \u@\h{ \w }\a: " #[ history ] user@hostname{ cwd } sigil:
 
-  if $(echo "$index" | grep '^?? ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^A ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^M ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^ M ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^AM ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^ T ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^R ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^ D ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^AD ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^UU ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-echo "$gitstatus"
-}
-
-function get_git_branch {
-  echo $(__git_ps1 "%s")
-}
-
-function parse_git_unpushed {
-  local unpushed=`/usr/bin/git cherry -v origin/$(get_git_branch)`
-  if [[ "$unpushed" != "" ]]; then
-    echo -e "\033[1;31m\xE2\x9A\xA1"
-  else
-    echo -e "\033[1;32m\xE2\x9D\x80\033[0m"
-  fi
-}
-
-parse_git_dirty() {
-  if [[ -n $(git status -s 2> /dev/null) ]]; then
-    echo -e "\033[1;31m\xE2\x9C\x97\033[0m"
-  else
-    local thing=1
-  fi
-}
-
-function parse_git_branch {
-  local branch=$(__git_ps1 "%s")
-  [[ $branch ]] && echo -e "[\033[1;33m$branch$(parse_git_dirty)$(parse_git_unpushed)\033[0m] "
-}
-#####END git command prompt parsers
-PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
-
-### BEGIN @climagic tips
+## BEGIN @climagic tips
 function matrix(){
     for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done
 }
