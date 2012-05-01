@@ -195,6 +195,7 @@ rnum(){
 md () { 
     mkdir -p "$@" && cd "$@"; 
 }
+
 ### END @climagic tips
 
 
@@ -215,7 +216,9 @@ function slg(){
     tail -f -n 25 /var/log/syslog
 }
 function newestfiles(){
-     find "$@" -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6
+    #Ignores all git and subversion files/directories, because who wants to sort those?
+    #Date statement could be cleaner, though; gets ugly on long filenames
+    find "$@" -not -iwholename '*.svn*' -not -iwholename '*.git*' -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6 
 }
 function explodeavi(){
     ffmpeg -i "$@" -f image2 image-%03d.jpg
