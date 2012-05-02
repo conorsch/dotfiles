@@ -236,5 +236,8 @@ function giveroot(){
 function toritup() {
     ssh -f -2 -N -L 127.0.0.1:9049:127.0.0.1:9050 w 
 }
+function rsyncssh() {
+    rsync -e "ssh" -avPh $@
+}
 
 #set -o vi #Set vi input mode (instead of default emacs style)
