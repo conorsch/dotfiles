@@ -75,6 +75,7 @@ fi
 alias l='ls -lsh'
 alias ll='ls -lsh'
 alias la='ls -lash'
+alias rsync='rsync -avPh'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -176,7 +177,7 @@ function matrix(){
     for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done
 }
 extr_mp3(){ 
-    ffmpeg -i $1.flv -f mp3 -ar 44100 -ac 2 -ab 192k -y -acodec copy $1.mp3
+    ffmpeg -i "$1" -f mp4 -ar 44100 -ac 2 -ab 192k -vn -y -acodec copy "$1.mp3"
 }
 starwars(){
     telnet towel.blinkenlights.nl
