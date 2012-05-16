@@ -245,7 +245,7 @@ function cds() {
     ls -lsh
 }
 function gh() { #Open git repository in cwd on GitHub in Firefox
-    git remote -v | grep fetch | awk {'print '} | xargs firefox -new-tab
+    git remote -v | grep fetch | awk {'print $2'} | xargs firefox -new-tab
 }
 
 #set -o vi #Set vi input mode (instead of default emacs style)
