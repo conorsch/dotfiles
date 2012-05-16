@@ -240,5 +240,12 @@ function toritup() {
 function rsyncssh() {
     rsync -e "ssh" -avPh $@
 }
+function cds() {
+    cd $@
+    ls -lsh
+}
+function gh() { #Open git repository in cwd on GitHub in Firefox
+    git remote -v | grep fetch | awk {'print '} | xargs firefox -new-tab
+}
 
 #set -o vi #Set vi input mode (instead of default emacs style)
