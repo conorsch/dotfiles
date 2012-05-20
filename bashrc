@@ -241,8 +241,7 @@ function rsyncssh() {
     rsync -e "ssh" -avPh $@
 }
 function cds() {
-    cd $@
-    ls -lsh
+    cd $@ && ls -lsh
 }
 function gh() { #Open git repository in cwd on GitHub in Firefox
     git remote -v | grep fetch | awk {'print $2'} | xargs firefox -new-tab
@@ -256,7 +255,9 @@ function muzik() {
        mocp
     fi
 }
-
-        
+function cdls() { 
+    cd $1 
+    ll
+}
 
 #set -o vi #Set vi input mode (instead of default emacs style)
