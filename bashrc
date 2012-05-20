@@ -136,7 +136,10 @@ function getem(){
     sudo aptitude -y safe-upgrade
 }
 function refresh(){
+    cd ~/gits/dotfiles
+    git pull
     . ~/.bashrc
+    cd -
 }
 function journal(){
     lowriter ~/Documents/Journal.odt
