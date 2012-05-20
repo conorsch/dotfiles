@@ -1,4 +1,4 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
+1
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
@@ -97,7 +97,7 @@ export heimchen="/home/conor/Valhalla/Media/Heimchen"
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
 #PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
-PS1="[ \[\! ] \[\u@\[\h{ \[\w }\a: " #[ history ] user@hostname{ cwd } sigil:
+PS1="( \! ) \u@\h{ \w }\a: " #[ history ] user@hostname{ cwd } sigil:
 
 ## BEGIN @climagic tips
 function matrix(){
