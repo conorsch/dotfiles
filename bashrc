@@ -79,6 +79,7 @@ alias l='ls -lsh'
 alias ll='ls -lsh'
 alias la='ls -lash'
 alias rsync='rsync -avPh'
+alias bi='beet import'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
