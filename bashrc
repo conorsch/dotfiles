@@ -80,7 +80,6 @@ alias ll='ls -lsh'
 alias la='ls -lash'
 alias rsync='rsync -avPh'
 alias bi='beet import'
-
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -269,5 +268,8 @@ function splittracks() {
     cuebreakpoints $1 | shnsplit -o flac $2
     cuetag $1 split-track*
     echo "All done!"
+}
+function f() {
+    find . -iname "*$@*"
 }
 #set -o vi #Set vi input mode (instead of default emacs style)
