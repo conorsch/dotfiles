@@ -173,7 +173,7 @@ export heimchen="/home/conor/Valhalla/Media/Heimchen"
 #}
 ######END git command prompt parsers
 #PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
-PS1="[ \! ] \u@\h{ \w }\a: " #[ history ] user@hostname{ cwd } sigil:
+PS1="[ \[\! ] \[\u@\[\h{ \[\w }\a: " #[ history ] user@hostname{ cwd } sigil:
 
 ## BEGIN @climagic tips
 function matrix(){
