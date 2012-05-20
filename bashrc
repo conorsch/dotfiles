@@ -262,4 +262,11 @@ function cdls() {
     cd $1 
     ll
 }
+function splittracks() {
+    echo "Attempting to split audio tracks now... "
+    rename -v 's/ /_/g' *
+    cuebreakpoints $1 | shnsplit -o flac $2
+    cuetag $1 split-track*
+    echo "All done!"
+}
 #set -o vi #Set vi input mode (instead of default emacs style)
