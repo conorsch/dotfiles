@@ -74,6 +74,7 @@ alias gc='git commit'
 alias gd='git diff'
 alias ga='git add'
 alias ack='ack-grep'
+alias gh='github_browse.pl'
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -177,9 +178,6 @@ function rsyncssh() {
 }
 function cds() {
     cd $@ && ls -lsh
-}
-function gh() { #Open git repository in cwd on GitHub in Firefox
-    git remote -v | grep fetch | awk {'print $2'} | xargs firefox -new-tab
 }
 function muzik() {
     if [ -e /home/conor/Valhalla/Media/Heimchen ] 
