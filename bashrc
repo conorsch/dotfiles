@@ -8,8 +8,8 @@
 # ... or force ignoredups and ignorespace
 HISTCONTROL=ignoredups:ignorespace
 
-# append to the history file, don't overwrite it
-shopt -s histappend
+shopt -s histappend # append to the history file, don't overwrite it
+shopt -s cmdhist #Multi-line commands are still entered into history
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
@@ -91,6 +91,7 @@ fi
 
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export heimchen="/home/conor/Valhalla/Media/Heimchen"
+export PATH=$PATH:/home/conor/.bin
 #export PATH=$PATH:/home/conor/Documents/Coding
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
@@ -198,4 +199,9 @@ function splittracks() {
 function f() {
     find . -iname "*$@*"
 }
+function tssh() { #Connect to many machines via SSH by invoking tmux;
+    declare -a HOSTS=$@ #Necessary to rename array due to quoting quirks
+    tmux new "ssh-everywhere.sh $HOSTS" #Open new tmux session by calling script;
+}
+
 #set -o vi #Set vi input mode (instead of default emacs style)
