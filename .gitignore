@@ -1,4 +1,5 @@
 moc/playlist.m3u
-vim.netrwhist
+vim/.netrwhist
 moc/cache
 moc/last_directory
+moc/pid
