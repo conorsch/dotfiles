@@ -199,8 +199,8 @@ function splittracks() {
     cuetag $1 split-track*
     echo "All done!"
 }
-function f() {
-    find . -iname "*$@*"
+function f() { #Abbreviated find command. Assumes cwd as target, and ignores version control files.
+    find . -not -iwholename '*.svn*' -not -iwholename '*.git*' -iname "*$@*"
 }
 function tssh() { #Connect to many machines via SSH by invoking tmux;
     declare -a HOSTS=$@ #Necessary to rename array due to quoting quirks
