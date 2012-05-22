@@ -20,6 +20,8 @@ set wildmenu
 
 set pastetoggle=<F2>
 
+set smartindent "better indentation, e.g. comments to go to first column
+
 map <F4> :NERDTreeToggle <CR>
 
 map <F5> :set nowrap! <CR>
@@ -39,3 +41,5 @@ set splitright "Ensure that horizontal splits add the new frame on the right
 
 "comment out lines with #
 map <Leader># :s:^:#:<CR>:nohl<CR> 
+"remove comments from lines beginning with #
+map <Leader>-# :s:#:^:<CR>:nohl<CR> 
