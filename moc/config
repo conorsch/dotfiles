@@ -107,7 +107,7 @@ InputBuffer		= 512
 # This can't be more than InputBuffer value.
 # Remember that for network streams beside the positive effect this also causes
 # delay between what you can hear and what is broadcasted.
-Prebuffering		= 64
+Prebuffering		= 512
 
 # Use this HTTP proxy server for internet streams. If not set, the
 # environment variables http_proxy and ALL_PROXY will be used if present.
@@ -117,7 +117,7 @@ Prebuffering		= 64
 # debugging).
 # You can enter more than one driver as a colon-separated list.  The first
 # working driver will be used.
-SoundDriver		= JACK:ALSA:OSS
+SoundDriver		= ALSA:OSS:JACK
 
 # Jack output settings.
 JackOutLeft		= "alsa_pcm:playback_1"
@@ -390,7 +390,7 @@ Fastdir3 = /mnt/Valhalla/Media/Heimchen/In Flames
 TagsCacheSize		= 256
 
 # Number items in the playlist.
-#PlaylistNumbering	= yes
+PlaylistNumbering	= yes
 
 # Main window layouts can be configured.  You can change the position and
 # size of the menus (directory and playlist).  You have three layouts and
