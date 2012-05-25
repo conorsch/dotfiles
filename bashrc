@@ -22,6 +22,8 @@ shopt -s checkwinsize
 #this corrects typos when spelling out paths.
 shopt -s cdspell
 
+shopt -s autocd #change directories with just a pathname
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
@@ -209,3 +211,9 @@ function tssh() { #Connect to many machines via SSH by invoking tmux;
 }
 
 #set -o vi #Set vi input mode (instead of default emacs style)
+function xxx() { 
+    svn export "$@" ~/Pubz/svn_export/ 
+}
+function g() { 
+    lynx -dump "http://google.com/search?q=$*" | more
+}
