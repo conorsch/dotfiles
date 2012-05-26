@@ -3,10 +3,10 @@
 #Original author unknown; this script taken from https://github.com/jsantell/home
 cutstring="DO NOT EDIT BELOW THIS LINE"
 
-for name in *; do
-  target="$HOME/.$name"
-  if [ -e "$target" ]; then
-    if [ ! -L "$target" ]; then
+for name in *; do #Look at all files in current directory (*)
+  target="$HOME/.$name" #name 'target' as file from current directory, with ~/ preprended
+  if [ -e "$target" ]; then #if target file alrady exists
+    if [ ! -L "$target" ]; then #and if target file is not a symlink
       cutline=`grep -n -m1 "$cutstring" "$target" | sed "s/:.*//"`
       if [ -n "$cutline" ]; then
 	cutline=$((cutline-1))
