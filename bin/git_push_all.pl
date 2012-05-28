@@ -31,6 +31,6 @@ for my $key (keys %cluster) { #Look at all the aliases in our cluster;
     next if $cluster{$key} eq $hostname; #We don't want to connect to the local machine;
 
     `ssh -q $key "$command"` or warn "Unable to contact host $host, please synchronize manually";
-    #say "Successfully performed designated actions on $host." #silent by default;
+    say "Successfully performed designated actions on $host." #silent by default;
 }
 
