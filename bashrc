@@ -116,7 +116,7 @@ PS1="( \! ) \u@\h{ \w }\a: " #( history ) user@hostname{ cwd } sigil:
 
 ## BEGIN @climagic tips
 function matrix(){
-    for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done
+    for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done;reset
 }
 extr_mp3(){ 
     ffmpeg -i "$1" -f mp4 -ar 44100 -ac 2 -ab 192k -vn -y -acodec copy "$1.mp3"
