@@ -19,7 +19,9 @@ my %cluster = ( #keys are aliases in ~/.ssh/config, values are actual hostnames;
         w => "Wolke",
         );
 
-my $command = "cd $repo; git pull"; #This is the command we want to run on remote machines;
+my $base_command = "cd $repo; git pull"; #This is the command we want to run on remote machines;
+my $suppress_stderr = "&> /dev/null"; #build string to silence any error output from command;
+my $command = "$base_command $suppress_stderr"; #concatenate command with error suppression;
 
 `git push`; #Perform the push from the local machine, first of all;
 
@@ -30,7 +32,10 @@ for my $key (keys %cluster) { #Look at all the aliases in our cluster;
     chomp $hostname; #Remove that trailing newline;
     next if $cluster{$key} eq $hostname; #We don't want to connect to the local machine;
 
-    `ssh -q $key "$command"` or warn "Unable to contact host $host, please synchronize manually";
-    say "Successfully performed designated actions on $host." #silent by default;
+    `ssh -q $key "$command"`; #perform the command on remote machine;
+    my $exit_code = $?; #grab exit status of ssh, which returns exit status of remote command;
+    given ($exit_code) { #take a look at this exit status;
+        when (/0/) { say "Successfully performed designated actions on $host." }; #zero means success!;
+        default    { say "Unable to contact host $host, please synchronize manually" }; #if not zero, report it;
+    }
 }
-
