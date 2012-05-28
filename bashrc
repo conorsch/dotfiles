@@ -78,6 +78,12 @@ alias ga='git add'
 alias ack='ack-grep'
 alias gh='github_browse.pl'
 alias pushall='git_push_all.pl'
+alias externalip='curl ifconfig.me'
+alias internalip='hostname -I'
+alias whereami='externalip | iploc'
+alias whoshere='sudo watch arp-scan --interface=wlan0 --localnet' #arp-scan not very portable; should use nmap instead, e.g.:
+#nmap -sP 192.168.1.0/24; arp -n  | grep "192.168.1.[0-9]* *ether"
+
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -134,7 +140,9 @@ rnum(){
 md () { 
     mkdir -p "$@" && cd "$@"; 
 }
-
+function iploc() { #Find geographic location of an IP address
+    lynx -dump http://www.ip-adress.com/ip_tracer/?QRY=$1|grep address|egrep 'city|state|country'|awk '{print $3,$4,$5,$6,$7,$8}'|sed 's\ip address flag \\'|sed 's\My\\'
+}
 ### END @climagic tips
 
 
