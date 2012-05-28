@@ -131,7 +131,12 @@ top10(){
     history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
 }
 sharefile(){
-    echo "Currently sharing file '$@'. This script will exit when the file is retrieved."
+    echo "Currently sharing file '$@'. This file will only be available for one transfer."
+    ADDRESS="http://$(hostname).local/$@"
+    ADDRESS_IP="http://$(hostname -I)/$@"
+    echo "File is available at: 
+    $ADDRESS or 
+    $ADDRESS_IP"
     sudo nc -v -l 80 < $@
 }
 rnum(){
