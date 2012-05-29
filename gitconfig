@@ -1,0 +1,9 @@
+[user]
+	name = Conor Schaefer
+	email = conor.schaefer@gmail.com
+[core]
+	editor = vim
+	excludesfile = /home/conor/.gitignore
+[color]
+	diff = auto
+	status = auto
