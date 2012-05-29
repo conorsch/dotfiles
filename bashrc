@@ -149,6 +149,10 @@ md () {
 function iploc() { #Find geographic location of an IP address
     lynx -dump http://www.ip-adress.com/ip_tracer/?QRY=$1|grep address|egrep 'city|state|country'|awk '{print $3,$4,$5,$6,$7,$8}'|sed 's\ip address flag \\'|sed 's\My\\'
 }
+function weather() { #grab weather via Yahoo! weather APIs; lynx would be more portable than elinks
+    zipcode="$@"
+    elinks -dump "http://weather.yahooapis.com/forecastrss?p=${zipcode}" | grep -A 4 "Current "
+}
 ### END @climagic tips
 
 
@@ -225,9 +229,12 @@ function tssh() { #Connect to many machines via SSH by invoking tmux;
 }
 
 #set -o vi #Set vi input mode (instead of default emacs style)
-function xxx() { 
-    svn export "$@" ~/Pubz/svn_export/ 
-}
 function g() { 
     lynx -dump "http://google.com/search?q=$*" | more
+}
+function afterdownload() { #complete action after a download or transfer completes
+    while [ -e $1 ] #$1 should be (hidden) partial file for download
+        do sleep 1 #wait, check again
+    done
+    "$2" #perform designated action, supplied as second argument
 }
