@@ -130,14 +130,15 @@ nyancat(){
 top10(){
     history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
 }
-sharefile(){
+sharefile(){ #spin up a temporary webserver to serve target file for one HTTP GET
     echo "Currently sharing file '$@'. This file will only be available for one transfer."
-    ADDRESS="http://$(hostname).local/$@"
-    ADDRESS_IP="http://$(hostname -I)/$@"
-    echo "File is available at: 
-    $ADDRESS or 
-    $ADDRESS_IP"
-    sudo nc -v -l 80 < $@
+    SYMLINK_NAME=$(echo "$@" | sed 's/ //g') #remove whitespace (full escape char support would be better)
+    ln -s "$@" "$SYMLINK_NAME" #create symlink with whitespace removed to point to target file
+    ADDRESS_IP="http://$(hostname -I | sed 's/ //g')/$SYMLINK_NAME" #grab local IP and build URL for it (also remove trailing space)
+    echo "File will be available on the local network at: 
+    $ADDRESS_IP" #provide URL where target file is accessible
+    sudo nc -v -l 80 < "$@" #call netcat to host file on port 80
+    rm $SYMLINK_NAME #remove the symlink, as it's no longer necessary
 }
 rnum(){
     echo $(( $RANDOM % $@ ))
