@@ -84,7 +84,7 @@ alias whereami='externalip | iploc'
 alias whoshere='sudo watch arp-scan --interface=wlan0 --localnet' #arp-scan not very portable; should use nmap instead, e.g.:
 #nmap -sP 192.168.1.0/24; arp -n  | grep "192.168.1.[0-9]* *ether"
 alias wp='mwiki' #easier to remember for Wikipedia lookups
-
+alias etym='etymology_lookup.pl' #etymonline.com lookups via Perl script in ~/.bin
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
