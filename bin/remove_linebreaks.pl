@@ -3,10 +3,11 @@
 #ensuring single spaces between sentences, 
 #and replacing double hypens with true em dashes (—).
 #Recommended usage is with filehandle redirects, e.g.:
+#`remove_whitespace.pl <infile >outfile` or simply with pipes
 
 use strict;
 use warnings;
-use feature qw/say switch/;
+use feature 'say'; 
 
 while (<STDIN>) { #read from standard input (pipe-friendly tool)
     s/\n/ /; #remove all hard line breaks;
