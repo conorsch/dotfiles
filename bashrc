@@ -83,6 +83,7 @@ alias internalip='hostname -I'
 alias whereami='externalip | iploc'
 alias whoshere='sudo watch arp-scan --interface=wlan0 --localnet' #arp-scan not very portable; should use nmap instead, e.g.:
 #nmap -sP 192.168.1.0/24; arp -n  | grep "192.168.1.[0-9]* *ether"
+alias wp='mwiki' #easier to remember for Wikipedia lookups
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -153,6 +154,9 @@ function weather() { #grab weather via Yahoo! weather APIs; lynx would be more p
     zipcode="$@"
     elinks -dump "http://weather.yahooapis.com/forecastrss?p=${zipcode}" | grep -A 4 "Current "
 }
+function mwiki() {
+    dig +short txt "$*".wp.dg.cx
+    }
 ### END @climagic tips
 
 
