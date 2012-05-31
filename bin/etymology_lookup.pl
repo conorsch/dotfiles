@@ -12,7 +12,10 @@ my $word = $ARGV[0]; #get search term for use in URL request;
 #Then get 20 lines of context after each occurrence of the search term;
 #Chop off the first 23 lines;
 #Chop off everything but the first 7 lines; 
-my $page_dump = `lynx -nolist -dump "http://www.etymonline.com/index.php?search=$word" | grep -A 20 $word | tail -n +23 | head -n 7`; 
+my $page_dump = `lynx -nolist -dump "http://www.etymonline.com/index.php?search=$word" | \
+                grep -A 20 $word | \
+                tail -n +23 | \
+                head -n 7`; 
 my $results = $page_dump; #Create new variable for final reporting actoins;
 $results =~ s/Look up \w+ at Dictionary\.com//g; #Remove alt-text for "Look up at Dictionary.com" links;
 chomp $results; #Remove any trailing whitespace at the end;
