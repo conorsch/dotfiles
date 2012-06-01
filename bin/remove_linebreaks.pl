@@ -10,25 +10,33 @@ use warnings;
 use feature 'say'; 
 use Term::ANSIColor; #Allows for bolding of title output;
 
-my $title = $ARGV[0]; #get title if exists from caller, allowing separate formatting;
-my @paragraphs; #initialize array to store whole paragraphs (with no line breaks);
-
 local $/ = ''; #This allows for reading into a string as a paragraph;
+my @paragraphs = <STDIN>; #get input data to modify, as paragraph strings;
 
-my $raw_text = <STDIN>; #get input data to modify;
-
-#####BEGIN text-processing;
-$raw_text =~ s/$title//; #first match of title should be removed;
-$raw_text =~ s/\n+/ /gs; #remove all hard line breaks;
-$raw_text =~ s/[^\S\n]+/ /gs; #remove multiple instances of whitespace, such as double-spacing between sentences;
-$raw_text =~ s/-{2}/—/g; #replace ugly double hyphens with a real em dash;
-$raw_text =~ s/\\"/'/g; #remove escaped quotes, because sadly sometimes that happens;
-my $processed_text = $raw_text;
-chomp $processed_text; #remove excessive newlines (doesn't appear to remove final \n);
-#####END text-processing;
+sub cleanup_paragraph {
+    #####BEGIN text-processing;
+    my $raw_text = shift; #grab text to process from function caller;
+    $raw_text =~ s/\n+/ /gs; #remove all hard line breaks;
+    $raw_text =~ s/[^\S\n]+/ /gs; #remove multiple instances of whitespace, such as double-spacing between sentences;
+    $raw_text =~ s/-{2}/—/g; #replace ugly double hyphens with a real em dash;
+    $raw_text =~ s/\\"/'/g; #remove escaped quotes, because sadly sometimes that happens;
+    chomp $raw_text; #remove excessive newlines;
+    return $raw_text; #pass back prettier text to function caller;
+    #####END text-processing;
+}
 
 ####Print results
-print color 'bold'; #Make next text be printed bold;
-say $title; #say title, which will appear bold;
-print color 'reset'; #make next text be printed normally, not bold;
-say "$processed_text"; #say rest of text, which will appear normal, not bold;
+sub print_titled {
+    foreach my $paragraph (@paragraphs) { #
+        $paragraph =~ m/(\s+)(.*)(\n)/; #search for first non-whitespace word-characters;
+        my $title = $2; #name matched group above;
+        chomp $title; #remove any trailing newlines, can't be too careful;
+        print color 'bold'; #Make next text be printed bold;
+        say $title; #say title, which will appear bold;
+        print color 'reset'; #make next text be printed normally, not bold;
+        my $entry = cleanup_paragraph($paragraph); #call paragraph cleaner, store result;
+        $entry =~ s/^\s+$title//; #remove first occurrence of title;
+        say $entry; #say entry, which is now cleanly formatted;
+    }
+}
+print_titled;
