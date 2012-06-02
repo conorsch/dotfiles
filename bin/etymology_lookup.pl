@@ -16,8 +16,8 @@ my $word = $ARGV[0]; #get search term for use in URL request;
 my $page_dump = `lynx -nolist -dump "http://www.etymonline.com/index.php?search=$word" | \
                 grep -A 20 $word | \
                 tail -n +23 | \
-                head -n 15 | \
-                remove_linebreaks.pl`;
+                head -n 25 | \
+                remove_linebreaks.pl` or die "Unable to access EtymOnline.com; check internet connection.";
 my $results = $page_dump; #Create new variable for final reporting actoins;
 $results =~ s/Look up \w+ at Dictionary\.com//g; #Remove alt-text for "Look up at Dictionary.com" links;
 chomp $results; #Remove any trailing whitespace at the end;
