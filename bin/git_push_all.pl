@@ -17,6 +17,7 @@ my %cluster = ( #keys are aliases in ~/.ssh/config, values are actual hostnames;
         s => "Stirling",
         p => "Petrichor",
         w => "Wolke",
+        ss => "softserv",
         );
 
 my $base_command = "cd $repo; git pull"; #This is the command we want to run on remote machines;
