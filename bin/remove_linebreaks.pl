@@ -9,11 +9,16 @@ use strict;
 use warnings;
 use feature 'say'; 
 use Term::ANSIColor; #Allows for bolding of title output;
+use Getopt::Std; #Allow parsing of command-line options;
+
+my %Options=(); #Create scalar for command-line options;
+getopts('t', \%Options); #This style of grabbing doesn't support flag arguments, just flags
+my $titled = $Options{t} || 0;
 
 local $/ = ''; #This allows for reading into a string as a paragraph;
 my @paragraphs = <STDIN>; #get input data to modify, as paragraph strings;
 
-sub cleanup_paragraph {
+sub cleanup_paragraph { #make ugly text readable;
     #####BEGIN text-processing;
     my $raw_text = shift; #grab text to process from function caller;
     $raw_text =~ s/\n+/ /gs; #remove all hard line breaks;
@@ -25,9 +30,14 @@ sub cleanup_paragraph {
     #####END text-processing;
 }
 
-####Print results
-sub print_titled {
-    foreach my $paragraph (@paragraphs) { #
+sub print_standard { #print processed paragraph as normal text;
+    foreach my $paragraph (@paragraphs) { #look at each paragraph in list;
+        my $entry = cleanup_paragraph($paragraph); #call paragraph cleaner, store result;
+        say $entry; #say entry, which is now cleanly formatted;
+    }
+}
+sub print_titled { #print processed paragraphs with first-line titles in bold;
+    foreach my $paragraph (@paragraphs) { #look at each paragraph in list;
         $paragraph =~ m/(\s+)(.*)(\n)/; #search for first non-whitespace word-characters;
         my $title = $2; #name matched group above;
         chomp $title; #remove any trailing newlines, can't be too careful;
@@ -39,4 +49,6 @@ sub print_titled {
         say $entry; #say entry, which is now cleanly formatted;
     }
 }
-print_titled;
+$titled >= 1 #check whether title option is declared;
+    ? print_titled #if so, print with title highlighting;
+    : print_standard; #if not, print normally;
