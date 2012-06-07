@@ -33,7 +33,7 @@ for my $key (keys %cluster) { #Look at all the aliases in our cluster;
     chomp $hostname; #Remove that trailing newline;
     next if $cluster{$key} eq $hostname; #We don't want to connect to the local machine;
 
-    `ssh -q $key "$command"`; #perform the command on remote machine;
+    `ssh -q -o ConnectTimeout=15 $key "$command"`; #perform the command on remote machine;
     my $exit_code = $?; #grab exit status of ssh, which returns exit status of remote command;
     given ($exit_code) { #take a look at this exit status;
         when (/0/) { say "Successfully performed designated actions on $host." }; #zero means success!;
