@@ -132,11 +132,13 @@ top10(){
     history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
 }
 sharefile(){ #spin up a temporary webserver to serve target file for one HTTP GET
-    echo "Currently sharing file '$@'. This file will only be available for one transfer."
-    ADDRESS_IP="http://$(hostname -I | sed 's/ //g')/$@" #grab local IP and build URL for it (also remove trailing space)
+    FILE=$1
+    PORT=$2 || 80
+    echo "Currently sharing file '$1'. This file will only be available for one transfer."
+    ADDRESS_IP="http://$(hostname -I | sed 's/ //g')/$FILE" #grab local IP and build URL for it (also remove trailing space)
     echo "File will be available on the local network at: 
     $ADDRESS_IP" #provide URL where target file is accessible
-    sudo nc -v -l 80 < "$@" #call netcat to host file on port 80
+    sudo nc -v -l $PORT < "$FILE" #call netcat to host file on port 80
 }
 rnum(){
     echo $(( $RANDOM % $@ ))
@@ -145,7 +147,12 @@ md () {
     mkdir -p "$@" && cd "$@"; 
 }
 function iploc() { #Find geographic location of an IP address
-    lynx -dump http://www.ip-adress.com/ip_tracer/?QRY=$1|grep address|egrep 'city|state|country'|awk '{print $3,$4,$5,$6,$7,$8}'|sed 's\ip address flag \\'|sed 's\My\\'
+    lynx -dump http://www.ip-adress.com/ip_tracer/?QRY=$1 | \
+        grep address | \
+        egrep 'city|state|country' | \
+        awk '{print $3,$4,$5,$6,$7,$8}' | \
+        sed 's\ip address flag \\' | \
+        sed 's\My\\'
 }
 function weather() { #grab weather via Yahoo! weather APIs; lynx would be more portable than elinks
     zipcode="$@"
@@ -239,3 +246,6 @@ function afterdownload() { #complete action after a download or transfer complet
     done
     "$2" #perform designated action, supplied as second argument
 }
+function pbar() { #run pianobar (Pandora.com client) on home desktop, connected to stereo
+    ssh -t s "cd ~/gits/pianobar && ./pianobar"
+} 
