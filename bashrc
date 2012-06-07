@@ -4,25 +4,18 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# don't put duplicate lines in the history. See bash(1) for more options
-# ... or force ignoredups and ignorespace
-HISTCONTROL=ignoredups:ignorespace
-
-shopt -s histappend # append to the history file, don't overwrite it
-shopt -s cmdhist #Multi-line commands are still entered into history
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
+#history options
+HISTCONTROL=ignoredups:ignorespace #don't put duplicate lines in the history. See bash(1) for more options
+HISTSIZE=1000 #for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTFILESIZE=2000
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-#this corrects typos when spelling out paths.
-shopt -s cdspell
-
+####BEGIN SHELL OPTIONS
+shopt -s histappend # append to the history file, don't overwrite it
+shopt -s checkwinsize #check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
+shopt -s cdspell #this corrects typos when spelling out paths.
 shopt -s autocd #change directories with just a pathname
+shopt -s cmdhist #Multi-line commands are still entered into history
+####END SHELL OPTIONS
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -32,8 +25,7 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
+case "$TERM" in #set a fancy prompt (non-color, unless we know we "want" color)
     xterm-color) color_prompt=yes;;
 esac
 
@@ -65,7 +57,12 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
+#####BEGIN ALIASES #####
+
+# Alias definitions.
+# You may want to put all your additions into a separate file like
+# ~/.bash_aliases, instead of adding them here directly.
+# See /usr/share/doc/bash-doc/examples in the bash-doc package.
 alias l='ls -lsh'
 alias ll='ls -lsh'
 alias la='ls -lash'
@@ -82,19 +79,13 @@ alias externalip='curl ifconfig.me'
 alias internalip='hostname -I'
 alias whereami='externalip | iploc'
 alias whoshere='sudo watch arp-scan --interface=wlan0 --localnet' #arp-scan not very portable; should use nmap instead, e.g.:
-#nmap -sP 192.168.1.0/24; arp -n  | grep "192.168.1.[0-9]* *ether"
 alias wp='mwiki' #easier to remember for Wikipedia lookups
 alias etym='etymology_lookup.pl' #etymonline.com lookups via Perl script in ~/.bin
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
+if [ -f ~/.bash_aliases ]; then #source bash_aliases file if it exists
     . ~/.bash_aliases
 fi
 
@@ -115,7 +106,7 @@ export PATH=$PATH:/home/conor/.bin
 #PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
 PS1="( \! ) \u@\h{ \w }\a: " #( history ) user@hostname{ cwd } sigil:
 
-## BEGIN borrowed tips
+#####BEGIN borrowed tips
 function matrix(){
     for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done;reset
 }
@@ -164,7 +155,7 @@ function mwiki() { #short wikipedia entries from DNS query
 function genpw() { #generate random 30-character password
     strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
 }
-### END borrowed tips
+#####END borrowed tips
 
 
 function canhaz(){
