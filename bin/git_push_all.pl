@@ -36,7 +36,7 @@ for my $key (keys %cluster) { #Look at all the aliases in our cluster;
     `ssh -q -o ConnectTimeout=15 $key "$command"`; #perform the command on remote machine;
     my $exit_code = $?; #grab exit status of ssh, which returns exit status of remote command;
     given ($exit_code) { #take a look at this exit status;
-        when (/0/) { say "Successfully performed designated actions on $host." }; #zero means success!;
+        when (/0/) { say "Successfully synchronized $reponame repo on $host." }; #zero means success!;
         default    { say "Unable to contact host $host, please synchronize manually" }; #if not zero, report it;
     }
 }
