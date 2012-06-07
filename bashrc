@@ -115,7 +115,7 @@ export PATH=$PATH:/home/conor/.bin
 #PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
 PS1="( \! ) \u@\h{ \w }\a: " #( history ) user@hostname{ cwd } sigil:
 
-## BEGIN @climagic tips
+## BEGIN borrowed tips
 function matrix(){
     for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock";do pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m';sleep 5;done;reset
 }
@@ -158,10 +158,13 @@ function weather() { #grab weather via Yahoo! weather APIs; lynx would be more p
     zipcode="$@"
     elinks -dump "http://weather.yahooapis.com/forecastrss?p=${zipcode}" | grep -A 4 "Current "
 }
-function mwiki() {
+function mwiki() { #short wikipedia entries from DNS query
     dig +short txt "$*".wp.dg.cx
     }
-### END @climagic tips
+function genpw() { #generate random 30-character password
+    strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
+}
+### END borrowed tips
 
 
 function canhaz(){
