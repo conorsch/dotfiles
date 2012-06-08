@@ -17,7 +17,7 @@ my $page_dump = `lynx -nolist -dump "http://www.etymonline.com/index.php?search=
                 grep -A 20 $word | \
                 tail -n +23 | \
                 head -n 25 | \
-                remove_linebreaks.pl -t` or die "Unable to access EtymOnline.com; check internet connection.";
+                remove_linebreaks.pl -f t -n 1` or die "Unable to access EtymOnline.com; check internet connection.";
 my $results = $page_dump; #Create new variable for final reporting actoins;
 $results =~ s/Look up \w+ at Dictionary\.com//g; #Remove alt-text for "Look up at Dictionary.com" links;
 chomp $results; #Remove any trailing whitespace at the end;
