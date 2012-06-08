@@ -81,6 +81,7 @@ alias whereami='externalip | iploc'
 alias whoshere='sudo watch arp-scan --interface=wlan0 --localnet' #arp-scan not very portable; should use nmap instead, e.g.:
 alias wp='mwiki' #easier to remember for Wikipedia lookups
 alias etym='etymology_lookup.pl' #etymonline.com lookups via Perl script in ~/.bin
+alias refresh='source ~/.bashrc' #re-source bashrc easily
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -164,12 +165,6 @@ function canhaz(){
 function getem(){
     sudo aptitude update
     sudo aptitude -y safe-upgrade
-}
-function refresh(){
-    cd ~/gits/dotfiles
-    git pull
-    . ~/.bashrc
-    cd -
 }
 function journal(){
     lowriter ~/Documents/Journal.odt
