@@ -7,13 +7,14 @@
 
 use strict;
 use warnings;
-use feature 'say'; 
+use feature qw/switch say/; 
 use Term::ANSIColor; #Allows for bolding of title output;
 use Getopt::Std; #Allow parsing of command-line options;
 
 my %Options=(); #Create scalar for command-line options;
-getopts('t', \%Options); #This style of grabbing doesn't support flag arguments, just flags
-my $titled = $Options{t} || 0;
+getopts('f:n:', \%Options); #This style of grabbing doesn't support flag arguments, just flags
+my $format = $Options{f} || 0; #get value for 'format' flag; 
+my $paragraph_count = $Options{n}; #get value for total number of paragraphs to print: 
 
 local $/ = ''; #This allows for reading into a string as a paragraph;
 my @paragraphs = <STDIN>; #get input data to modify, as paragraph strings;
@@ -49,6 +50,22 @@ sub print_titled { #print processed paragraphs with first-line titles in bold;
         say $entry; #say entry, which is now cleanly formatted;
     }
 }
-$titled >= 1 #check whether title option is declared;
-    ? print_titled #if so, print with title highlighting;
-    : print_standard; #if not, print normally;
+sub print_coarse { 
+    foreach my $paragraph (@paragraphs) { #look at each paragraph in list;
+        chomp $paragraph;
+        say $paragraph;
+    }
+}
+
+given ($format) {
+    when (/t/)      { print_titled }
+    when (/c/)      { print_coarse }
+    when (/s/)      { print_standard }
+    default         { print_standard }
+}
+#$titled >= 1 #check whether title option is declared;
+#    ? print_titled #if so, print with title highlighting;
+#    : print_standard; #if not, print normally;
+#$coarse >= 1 #check whether title option is declared;
+#    ? print_coarse #if so, print with title highlighting;
+#    : print_standard; #if not, print normally;
