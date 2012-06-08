@@ -7,6 +7,7 @@
 
 use strict;
 use warnings;
+use diagnostics;
 use feature qw/switch say/; 
 use Term::ANSIColor; #Allows for bolding of title output;
 use Getopt::Std; #Allow parsing of command-line options;
@@ -32,12 +33,24 @@ sub cleanup_paragraph { #make ugly text readable;
 }
 
 sub print_standard { #print processed paragraph as normal text;
+    my $paragraph_count = shift; #unpack number of paragraphs to print, if given;
+    my $counter = 0; #initialize counter, to support control of number of paragraphs printed;
+
     foreach my $paragraph (@paragraphs) { #look at each paragraph in list;
         my $entry = cleanup_paragraph($paragraph); #call paragraph cleaner, store result;
         say $entry; #say entry, which is now cleanly formatted;
+
+        if (defined($paragraph_count)) { #only do this if a value exists for $paragraph_count;
+            $counter++; #increment our counter, because a paragrpah has been printed;
+            last if $counter == $paragraph_count; #stop if desired number of paragraphs have been printed;
+        }
     }
 }
+
 sub print_titled { #print processed paragraphs with first-line titles in bold;
+    my $paragraph_count = shift; #unpack number of paragraphs to print, if given;
+    my $counter = 0; #initialize counter, to support control of number of paragraphs printed;
+
     foreach my $paragraph (@paragraphs) { #look at each paragraph in list;
         $paragraph =~ m/(\s+)(.*)(\n)/; #search for first non-whitespace word-characters;
         my $title = $2; #name matched group above;
@@ -48,20 +61,33 @@ sub print_titled { #print processed paragraphs with first-line titles in bold;
         my $entry = cleanup_paragraph($paragraph); #call paragraph cleaner, store result;
         $entry =~ s/^\s+$title//; #remove first occurrence of title;
         say $entry; #say entry, which is now cleanly formatted;
+
+        if (defined($paragraph_count)) { #only do this if a value exists for $paragraph_count;
+            $counter++; #increment our counter, because a paragrpah has been printed;
+            last if $counter == $paragraph_count; #stop if desired number of paragraphs have been printed;
+        }
     }
 }
 sub print_coarse { 
+    my $paragraph_count = shift; #unpack number of paragraphs to print, if given;
+    my $counter = 0; #initialize counter, to support control of number of paragraphs printed;
+
     foreach my $paragraph (@paragraphs) { #look at each paragraph in list;
         chomp $paragraph;
         say $paragraph;
+
+        if (defined($paragraph_count)) { #only do this if a value exists for $paragraph_count;
+            $counter++; #increment our counter, because a paragrpah has been printed;
+            last if $counter == $paragraph_count; #stop if desired number of paragraphs have been printed;
+        }
     }
 }
 
 given ($format) {
-    when (/t/)      { print_titled }
-    when (/c/)      { print_coarse }
-    when (/s/)      { print_standard }
-    default         { print_standard }
+    when (/t/)      { print_titled($paragraph_count) }
+    when (/c/)      { print_coarse($paragraph_count) }
+    when (/s/)      { print_standard($paragraph_count) }
+    default         { print_standard($paragraph_count) }
 }
 #$titled >= 1 #check whether title option is declared;
 #    ? print_titled #if so, print with title highlighting;
