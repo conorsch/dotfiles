@@ -4,6 +4,8 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+export EDITOR="vim" #use vim as default editor
+
 #history options
 HISTCONTROL=ignoredups:ignorespace #don't put duplicate lines in the history. See bash(1) for more options
 HISTSIZE=1000 #for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
