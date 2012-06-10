@@ -33,8 +33,10 @@ sub me { #return a 'me' identity in the form of user@hostname;
 }
 $me = me;
 
-sub power_state {
+sub battery_info {
     my $power_state; #initialize variable for construction;
+
+    #example outputs from various status of acpi output:
     my $charging_output =       "Battery 0: Charging, 62%, 00:49:05 until charged";
     my $discharging_output =    "Battery 0: Discharging, 70%, 04:44:00 remaining";
 
@@ -58,7 +60,7 @@ sub power_state {
 
     return ($power_state, $percent_charged, $time_left);  #pass power_state variable back to function caller;
 }
-($power_state, $percent_charged, $time_left) = power_state;
+($power_state, $percent_charged, $time_left) = battery_info;
             
 
 sub temp { #return temperature from acpi shell call in format 00C;
@@ -84,7 +86,12 @@ $date_and_time = date_and_time;
 
 sub print_status { #output status information to STDOUT;
     print "$me ";
-    print "$power_state ";
+    given ($power_state) {
+        when (/chrgng/)         { print_colored ('⌁', 'green') }
+        when (/drng/)           { print_colored ('⌁', 'red') }
+        when (/full/)           { print_colored ('full', 'green') }
+        default { print "UNKNOWN_BATTERY"}
+    };
     print "$percent_charged";
     print "/"; #pretty separator for percent_charged and time_left;
     print "$time_left ";
