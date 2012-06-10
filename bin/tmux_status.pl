@@ -13,11 +13,16 @@ use feature qw/switch say/;
 use Term::ANSIColor;
 
 
-
+sub print_colored {
+    my ($string, $color) = @_; #unpack variables from function caller;
+    print color $color; #set terminal output to desired color;
+    print $string; #print provided string in desired color;
+    print color 'reset'; #remove color designations;
+}
 
 
 #####LAPTOP#####
-my ($me, $power_state, $percent_charged, $time_left, $temp, $date, $time); #initialize variables to be constructed;
+my ($me, $power_state, $percent_charged, $time_left, $temp, $date_and_time); #initialize variables to be constructed;
 
 sub me { #return a 'me' identity in the form of user@hostname;
     my $username = `whoami`; #grab username from shell;
@@ -40,7 +45,7 @@ sub power_state {
         when (/Discharging/) { #when AC adapter is unplugged;
             $power_state = "drng"; } #set power_state to more succinct mention that battery is draining;
         when (/Charging/) { #when AC adapter is plugged in;
-            $power_state = "chrg"; } #set power_state to more succinct mention that battery is charging;
+            $power_state = "chrgng"; } #set power_state to more succinct mention that battery is charging;
         when (/Charged/) { #when battery is fully charged;
             $power_state = "full"; }  #set power-state to more succinct mention that battery if full;
         default { say "power_state is currently unknown; please check script"; } #for unforeseen corner cases;
@@ -56,39 +61,48 @@ sub power_state {
 ($power_state, $percent_charged, $time_left) = power_state;
             
 
-sub temp {
+sub temp { #return temperature from acpi shell call in format 00C;
     my $acpi_temp = `acpi -t`; #grab temperature output from acpi command (in Celsius);
     chomp $acpi_temp; #remove pesky trailining newline;
     $acpi_temp =~ s/^Thermal \d: \w+, //; #Strip out everything before temperature;
     $acpi_temp =~ s/(\d+)(\.)(.*$)/$1/; #Strip off everything but integer value of temp;
-    $acpi_temp = $acpi_temp . "C"; #concatenate temperature digits with units (here, C);
+    #$acpi_temp = $acpi_temp . "C"; #concatenate temperature digits with units (here, C);
     return $acpi_temp; #pass back concatenated value to function caller;
 }
 $temp = temp;
 
-
-my $acpi_output = `acpi`; #grab acpi output to process;
-chomp $acpi_output;
-given ($acpi_output) {
-    when (/Discharging/) { #if laptop is currently running from battery;
-        $acpi_output =~ s/^Battery \d: //; #remove any mention of which battery we're on;
-        $acpi_output =~ s/Discharging,/drng/; #more succinct mention that battery is draining;
-        $acpi_output =~ s/remaining$/left/; #more succinct mention of time till empty;
-        $acpi_output =~ s/,//g; #remove any and all commas;
-    }
-    default { say "Must be charging... not set up yet!" }
+sub date_and_time { #return date and time information, using Perl's localtime built-in function;
+    my @time_dump = localtime(time); #grab time output from Perl as array;
+    my $time = join(':', @time_dump[2,1]); #grab hours and minutes, separate with ':';
+    my $month = $time_dump[4] + 1; #necessary to increase by one because month is zero-counting;
+    my $day = $time_dump[3]; #grab day of the month;
+    my $date = "$month/$day"; #smash 'em together, so they're readable as a date;
+    my $date_and_time = "$date $time"; #concatenate both date and time;
+    return $date_and_time; #pass back concatenated date and time to function caller;
 }
+$date_and_time = date_and_time;
 
-sub build_status {
+sub print_status { #output status information to STDOUT;
     print "$me ";
     print "$power_state ";
-    print "$percent_charged ";
+    print "$percent_charged";
+    print "/"; #pretty separator for percent_charged and time_left;
     print "$time_left ";
-    print color 'red';
 
-    print $temp; 
-    print color 'reset';
-    print "\n";
+    given ($temp) {
+        when ( $_ < 40 )            { print_colored($temp, 'cyan') }
+        when ( $_ >= 40 && $_ < 60 )    { print $temp }
+        when ( $_ >= 60 )            { print_colored($temp, 'red') }
+        default                 { say "UNKNOWN_TEMP" }
+    };
+#    $temp > 35 
+#        ? print_colored($temp,'red') 
+#        : print $temp;
+    print "C "; #unit suffix for temperature;
+    print "$date_and_time ";
+
+
+    print "\n"; #probably should be taken off after testing;
 
 }
-build_status;
+print_status;
