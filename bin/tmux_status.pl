@@ -75,11 +75,16 @@ $temp = temp;
 
 sub date_and_time { #return date and time information, using Perl's localtime built-in function;
     my @time_dump = localtime(time); #grab time output from Perl as array;
-    my $time = join(':', @time_dump[2,1]); #grab hours and minutes, separate with ':';
-    my $month = $time_dump[4] + 1; #necessary to increase by one because month is zero-counting;
-    my $day = $time_dump[3]; #grab day of the month;
-    my $date = "$month/$day"; #smash 'em together, so they're readable as a date;
-    my $date_and_time = "$date $time"; #concatenate both date and time;
+    foreach my $unit (@time_dump) { #ensure all values are two digits!;
+        next if $unit =~ m/\d\d/; #skip if already two or more digits;
+        $unit = "0" . "$unit"; #pad with leading zero
+    }
+    my ($minutes, $hours, $month, $day) = @time_dump[1,2,4,3]; #grab necessary 
+    $month++; #necessary to increase by one because month is zero-counting;
+    my $time = join(':', $hours,$minutes); #join hours and minutes, separate with ':';
+    my $date = join('/', $month,$day); #smash 'em together, so they're readable as a date;
+    $date_and_time = join(' ', $date,$time); #concatenate both date and time;
+
     return $date_and_time; #pass back concatenated date and time to function caller;
 }
 $date_and_time = date_and_time;
@@ -108,8 +113,6 @@ sub print_status { #output status information to STDOUT;
     print "C "; #unit suffix for temperature;
     print "$date_and_time ";
 
-
-    print "\n"; #probably should be taken off after testing;
 
 }
 print_status;
