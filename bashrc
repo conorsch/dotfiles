@@ -158,6 +158,9 @@ function mwiki() { #short wikipedia entries from DNS query
 function genpw() { #generate random 30-character password
     strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
 }
+function ugrep() { #look up Unicode characters by name
+    egrep -i "^[0-9a-f]{4,} .*$*" $(locate CharName.pm) | while read h d; do /usr/bin/printf "\U$(printf "%08x" 0x$h)\tU+%s\t%s\n" $h "$d"; done
+}
 #####END borrowed tips
 
 
