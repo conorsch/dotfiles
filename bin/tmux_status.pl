@@ -12,14 +12,21 @@ use diagnostics;
 use feature qw/switch say/;
 use Term::ANSIColor;
 
-
 sub print_colored {
+
     my ($string, $color) = @_; #unpack variables from function caller;
     print color $color; #set terminal output to desired color;
     print $string; #print provided string in desired color;
     print color 'reset'; #remove color designations;
 }
 
+#sub print_colored {
+#    my ($string, $color) = @_; #unpack variables from function caller;
+#    print color $color; #set terminal output to desired color;
+#    print $string; #print provided string in desired color;
+#    print color 'reset'; #remove color designations;
+#}
+#
 
 #####LAPTOP#####
 my ($me, $power_state, $percent_charged, $time_left, $temp, $date_and_time); #initialize variables to be constructed;
@@ -36,9 +43,10 @@ $me = me;
 sub battery_info {
     my $power_state; #initialize variable for construction;
 
-    #example outputs from various status of acpi output:
+    #example outputs of different states from acpi (v1.6):
     my $charging_output =       "Battery 0: Charging, 62%, 00:49:05 until charged";
     my $discharging_output =    "Battery 0: Discharging, 70%, 04:44:00 remaining";
+    my $full_output =           "Battery 0: Full, 100%";
 
     my $acpi_battery = `acpi -b`; #grab battery output of acpi command for processing;
     chomp $acpi_battery; #remove pesky trailing newline;
