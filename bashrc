@@ -100,8 +100,8 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
-export heimchen="/home/conor/Valhalla/Media/Heimchen"
-export PATH=$PATH:/home/conor/.bin
+export heimchen="$HOME/Valhalla/Media/Heimchen"
+export PATH=$PATH:$HOME/.bin
 #export PATH=$PATH:/home/conor/Documents/Coding
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
@@ -138,9 +138,9 @@ sharefile(){ #spin up a temporary webserver to serve target file for one HTTP GE
 rnum(){
     echo $(( $RANDOM % $@ ))
 }
-md () { 
-    mkdir -p "$@" && cd "$@"; 
-}
+#md(){
+#    mkdir -p "$@" && cd "$@"
+#}
 function iploc() { #Find geographic location of an IP address
     lynx -dump http://www.ip-adress.com/ip_tracer/?QRY=$1 | \
         grep address | \
