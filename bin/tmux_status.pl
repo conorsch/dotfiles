@@ -12,10 +12,10 @@ use diagnostics;
 use feature qw/switch say/;
 use Term::ANSIColor;
 
-sub print_colored { 
+sub print_colored { #outputs given string encased in tmux-compatible color codes;
     my ($string, $color) = @_; #unpack variables from function caller;
 
-    my %colors = ( #build hash for easy access to common colors;
+    my %colors = ( #build hash for easy access to common tmux-compatible colors;
             black => '#[fg=black]', 
             red => '#[fg=red]',
             green => '#[fg=green]',
@@ -103,9 +103,23 @@ sub date_and_time { #return date and time information, using Perl's localtime bu
 
     return $date_and_time; #pass back concatenated date and time to function caller;
 }
-$date_and_time = date_and_time;
+$date_and_time = date_and_time; #capture function output in variable;
+
+sub network_status { #check whether connected to network and report it;
+    `nm-online -t 1`; #run check (returns 0 for success, 1 for failure);
+    $? == 0
+        ? return "inet" 
+        : return "no_net";
+} 
+my $network = check_network_connection;
+    
 
 sub print_status { #output status information to STDOUT;
+    given ($network) {
+        when (/inet/)           { print_colored ('inet ', 'green') }
+        when (/no_net/)         { print_colored ('no_net ', 'red') }
+        default                 { print "UNKNOWN_NETSTATE " }
+    };
     print "$me ";
     given ($power_state) {
         when (/chrgng/)         { print_colored ('⌁', 'green') }
@@ -128,12 +142,7 @@ sub print_status { #output status information to STDOUT;
         when ( $_ >= 60 )               { print_colored($temp, 'red') }
         default                         { say "UNKNOWN_TEMP" }
     };
-#    $temp > 35 
-#        ? print_colored($temp,'red') 
-#        : print $temp;
     print "C "; #unit suffix for temperature;
     print "$date_and_time ";
-
-
 }
-print_status;
+print_status; #create and output line according to above subroutine;
