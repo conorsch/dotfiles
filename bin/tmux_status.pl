@@ -73,16 +73,17 @@ sub battery_info {
     $acpi_battery =~ m/^(.*)(\d{2}:\d{2}:\d{2})(.*)$/; #look for 00:00:00 format time;
     my $time_left = $2; #name second group (00:00:00 format, above) for returning;
 
-    given ($power_state) { #check status of charging;
+    given ($power_state) { #format display of charging icon;
         when (/chrgng/)         { print_colored ('⌁', 'green') }
         when (/drng/)           { print_colored ('⌁', 'red') }
         when (/full/)           { print_colored ('full', 'green') }
         default                 { print "UNKNOWN_BATTERY"}
     };
 
-    given ($percent_charged) {
+    given ($percent_charged) { #format display of battery charge percentage;
         when ($_ > 90)                  { print_colored ("$percent_charged%", 'green') }
-        when ($_ > 20 && $_ <= 90)      { print "$percent_charged%" }
+        when ($_ > 50 && $_ <= 90)      { print "$percent_charged%" }
+        when ($_ > 20 && $_ <= 50)      { print_colored ("$percent_charged%", 'yellow') }
         when ($_ <= 20)                 { print_colored ("$percent_charged%", 'red') } 
         default                         { print "UNKNOWN_BATTERY"; }
     };
@@ -91,7 +92,6 @@ sub battery_info {
     print "$time_left "; #print hour many hours, minutes, and seconds of battery time remain;
 
 }
-            
 
 sub temp { #return temperature from acpi shell call in format 00C;
     my $acpi_temp = `acpi -t`; #grab temperature output from acpi command (in Celsius);
@@ -126,8 +126,14 @@ sub date_and_time { #return date and time information, using Perl's localtime bu
 sub network_status { #check whether connected to network and report it;
     `nm-online -t 1`; #run check (returns 0 for success, 1 for failure);
     $? == 0 #check whether connection check reported success;
-        ? print_colored ('inet ', 'green') #if success, green means good;
+        ? do { 
+            print_colored ('inet', 'green'); #if success, green means good;
+            my $ssid = `iwgetid --raw`;
+            chomp $ssid; 
+            print ":$ssid";
+        }
         : print_colored ('no_net ', 'red'); #if failed, red means bad;
+        print " "; #add space after output for nicer formatting;
 } 
 
 sub print_status { #output status information to STDOUT;
