@@ -44,9 +44,8 @@ sub me { #return a 'me' identity in the form of user@hostname;
     my $hostname = `hostname`; #grab hostname from shell;
     chomp ($username, $hostname); #remove trailing newlines;
     $me = "$username" . "@" . "$hostname"; #concatenate username and hostname with @ symbol;
-    return $me; #pass concatenated 'me' back to function caller;
+    print "$me "; #pass concatenated 'me' back to function caller;
 }
-$me = me;
 
 sub battery_info {
     my $power_state; #initialize variable for construction;
@@ -74,9 +73,24 @@ sub battery_info {
     $acpi_battery =~ m/^(.*)(\d{2}:\d{2}:\d{2})(.*)$/; #look for 00:00:00 format time;
     my $time_left = $2; #name second group (00:00:00 format, above) for returning;
 
-    return ($power_state, $percent_charged, $time_left);  #pass power_state variable back to function caller;
+    given ($power_state) { #check status of charging;
+        when (/chrgng/)         { print_colored ('⌁', 'green') }
+        when (/drng/)           { print_colored ('⌁', 'red') }
+        when (/full/)           { print_colored ('full', 'green') }
+        default                 { print "UNKNOWN_BATTERY"}
+    };
+
+    given ($percent_charged) {
+        when ($_ > 90)                  { print_colored ("$percent_charged%", 'green') }
+        when ($_ > 20 && $_ <= 90)      { print "$percent_charged%" }
+        when ($_ <= 20)                 { print_colored ("$percent_charged%", 'red') } 
+        default                         { print "UNKNOWN_BATTERY"; }
+    };
+
+    print '/'; #pretty separator for percent_charged and time_left;
+    print "$time_left "; #print hour many hours, minutes, and seconds of battery time remain;
+
 }
-($power_state, $percent_charged, $time_left) = battery_info;
             
 
 sub temp { #return temperature from acpi shell call in format 00C;
@@ -85,9 +99,14 @@ sub temp { #return temperature from acpi shell call in format 00C;
     $acpi_temp =~ s/^Thermal \d: \w+, //; #Strip out everything before temperature;
     $acpi_temp =~ s/(\d+)(\.)(.*$)/$1/; #Strip off everything but integer value of temp;
     #$acpi_temp = $acpi_temp . "C"; #concatenate temperature digits with units (here, C);
-    return $acpi_temp; #pass back concatenated value to function caller;
+    given ($acpi_temp) {
+        when ( $_ < 45 )                { print_colored($acpi_temp, 'cyan') }
+        when ( $_ >= 45 && $_ < 60 )    { print $acpi_temp }
+        when ( $_ >= 60 )               { print_colored($acpi_temp, 'red') }
+        default                         { say "UNKNOWN_TEMP" }
+    };
+    print "C "; #unit suffix for temperature;
 }
-$temp = temp;
 
 sub date_and_time { #return date and time information, using Perl's localtime built-in function;
     my @time_dump = localtime(time); #grab time output from Perl as array;
@@ -101,48 +120,21 @@ sub date_and_time { #return date and time information, using Perl's localtime bu
     my $date = join('/', $month,$day); #smash 'em together, so they're readable as a date;
     $date_and_time = join(' ', $date,$time); #concatenate both date and time;
 
-    return $date_and_time; #pass back concatenated date and time to function caller;
+    print $date_and_time; #print out concatenated date and time;
 }
-$date_and_time = date_and_time; #capture function output in variable;
 
 sub network_status { #check whether connected to network and report it;
     `nm-online -t 1`; #run check (returns 0 for success, 1 for failure);
-    $? == 0
-        ? return "inet" 
-        : return "no_net";
+    $? == 0 #check whether connection check reported success;
+        ? print_colored ('inet ', 'green') #if success, green means good;
+        : print_colored ('no_net ', 'red'); #if failed, red means bad;
 } 
-my $network = check_network_connection;
-    
 
 sub print_status { #output status information to STDOUT;
-    given ($network) {
-        when (/inet/)           { print_colored ('inet ', 'green') }
-        when (/no_net/)         { print_colored ('no_net ', 'red') }
-        default                 { print "UNKNOWN_NETSTATE " }
-    };
-    print "$me ";
-    given ($power_state) {
-        when (/chrgng/)         { print_colored ('⌁', 'green') }
-        when (/drng/)           { print_colored ('⌁', 'red') }
-        when (/full/)           { print_colored ('full', 'green') }
-        default                 { print "UNKNOWN_BATTERY"}
-    };
-    given ($percent_charged) {
-        when ($_ > 90)                  { print_colored ("$percent_charged%", 'green') }
-        when ($_ > 20 && $_ <= 90)      { print "$percent_charged%" }
-        when ($_ <= 20)                 { print_colored ("$percent_charged%", 'red') } 
-        default                         { print "UNKNOWN_BATTERY"; }
-    };
-    print '/'; #pretty separator for percent_charged and time_left;
-    print "$time_left ";
-
-    given ($temp) {
-        when ( $_ < 40 )                { print_colored($temp, 'cyan') }
-        when ( $_ >= 40 && $_ < 60 )    { print $temp }
-        when ( $_ >= 60 )               { print_colored($temp, 'red') }
-        default                         { say "UNKNOWN_TEMP" }
-    };
-    print "C "; #unit suffix for temperature;
-    print "$date_and_time ";
+    network_status; #report network connection status;
+    me; #report 'user@hostname' string;
+    battery_info; #print statistics on battery charge status and time remaining;
+    temp; #report CPU temperature in Celsius;
+    date_and_time; #give date and time information;
 }
 print_status; #create and output line according to above subroutine;
