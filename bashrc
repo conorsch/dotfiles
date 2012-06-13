@@ -107,7 +107,8 @@ export PATH=$PATH:/home/conor/.bin
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
 #PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
-PS1="( \! ) \u@\h{ \w }\a: " #( history ) user@hostname{ cwd } sigil:
+#PS1="( \! ) \u@\h{ \w }\a: " #( history ) user@hostname{ cwd } sigil:
+PS1="( \! ) \u@\h\a: " #( history ) user@hostname{ cwd } sigil:
 
 #####BEGIN borrowed tips
 function matrix(){
@@ -160,6 +161,14 @@ function genpw() { #generate random 30-character password
 }
 function ugrep() { #look up Unicode characters by name
     egrep -i "^[0-9a-f]{4,} .*$*" $(locate CharName.pm) | while read h d; do /usr/bin/printf "\U$(printf "%08x" 0x$h)\tU+%s\t%s\n" $h "$d"; done
+}
+cd() { #Print working directory after a cd.
+    if [[ $@ == '-' ]]; then
+        builtin cd "$@" > /dev/null  # We'll handle pwd.
+    else
+        builtin cd "$@"
+    fi
+    echo -e "   \033[1;30m"`pwd`"\033[0m"
 }
 #####END borrowed tips
 
