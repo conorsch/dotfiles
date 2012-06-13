@@ -252,3 +252,12 @@ function afterdownload() { #complete action after a download or transfer complet
 function pbar() { #run pianobar (Pandora.com client) on home desktop, connected to stereo
     ssh -t s "cd ~/gits/pianobar && ./pianobar"
 } 
+
+
+#exports for path in office;
+export PERL_LOCAL_LIB_ROOT="/home1/c/conorsch/perl5";
+export PERL_MB_OPT="--install_base /home1/c/conorsch/perl5";
+export PERL_MM_OPT="INSTALL_BASE=/home1/c/conorsch/perl5";
+export PERL5LIB="/home1/c/conorsch/perl5/lib/perl5/x86_64-linux-thread-multi:/home1/c/conorsch/perl5/lib/perl5";
+export PATH="/home1/c/conorsch/perl5/bin:$PATH";
+
