@@ -12,21 +12,29 @@ use diagnostics;
 use feature qw/switch say/;
 use Term::ANSIColor;
 
-sub print_colored {
-
+sub print_colored { 
     my ($string, $color) = @_; #unpack variables from function caller;
-    print color $color; #set terminal output to desired color;
-    print $string; #print provided string in desired color;
-    print color 'reset'; #remove color designations;
-}
 
-#sub print_colored {
-#    my ($string, $color) = @_; #unpack variables from function caller;
-#    print color $color; #set terminal output to desired color;
-#    print $string; #print provided string in desired color;
-#    print color 'reset'; #remove color designations;
-#}
-#
+    my %colors = ( #build hash for easy access to common colors;
+            black => '#[fg=black]', 
+            red => '#[fg=red]',
+            green => '#[fg=green]',
+            brown => '#[fg=brown}',
+            blue => '#[fg=blue]',
+            magenta => '#[fg=magenta]',
+            cyan => '#[fg=cyan]',
+            white => '#[fg=white]',
+            yellow => '#[fg=yellow]',
+            orange => '#[fg=orange]',
+            reset => '#[default]',
+            );
+
+    my $code = $colors{$color}; #retrieve necessary color code from hash;
+    my $reset_code= "$colors{reset}"; #retrieve reset code from hash;
+    my $new_string = "$code" . "$string"; #build new string, concatenating with color code;
+    print "$new_string"; #print out string formatted with specified color;
+    print "$reset_code"; #set terminal color back to normal;
+}
 
 #####LAPTOP#####
 my ($me, $power_state, $percent_charged, $time_left, $temp, $date_and_time); #initialize variables to be constructed;
@@ -61,7 +69,7 @@ sub battery_info {
         default { say "power_state is currently unknown; please check script"; } #for unforeseen corner cases;
     }
 
-    $acpi_battery =~ m/^(.*)(\d{2}%)(.*)$/; #look for 00% format percentage;
+    $acpi_battery =~ m/^(.*)(\d{2,3})(%)(.*)$/; #look for 00% or 000% format percentage;
     my $percent_charged = $2; #name second group (00% format, above) for returning;
     $acpi_battery =~ m/^(.*)(\d{2}:\d{2}:\d{2})(.*)$/; #look for 00:00:00 format time;
     my $time_left = $2; #name second group (00:00:00 format, above) for returning;
@@ -103,17 +111,22 @@ sub print_status { #output status information to STDOUT;
         when (/chrgng/)         { print_colored ('⌁', 'green') }
         when (/drng/)           { print_colored ('⌁', 'red') }
         when (/full/)           { print_colored ('full', 'green') }
-        default { print "UNKNOWN_BATTERY"}
+        default                 { print "UNKNOWN_BATTERY"}
     };
-    print "$percent_charged";
-    print "/"; #pretty separator for percent_charged and time_left;
+    given ($percent_charged) {
+        when ($_ > 90)                  { print_colored ("$percent_charged%", 'green') }
+        when ($_ > 20 && $_ <= 90)      { print "$percent_charged%" }
+        when ($_ <= 20)                 { print_colored ("$percent_charged%", 'red') } 
+        default                         { print "UNKNOWN_BATTERY"; }
+    };
+    print '/'; #pretty separator for percent_charged and time_left;
     print "$time_left ";
 
     given ($temp) {
-        when ( $_ < 40 )            { print_colored($temp, 'cyan') }
+        when ( $_ < 40 )                { print_colored($temp, 'cyan') }
         when ( $_ >= 40 && $_ < 60 )    { print $temp }
-        when ( $_ >= 60 )            { print_colored($temp, 'red') }
-        default                 { say "UNKNOWN_TEMP" }
+        when ( $_ >= 60 )               { print_colored($temp, 'red') }
+        default                         { say "UNKNOWN_TEMP" }
     };
 #    $temp > 35 
 #        ? print_colored($temp,'red') 
