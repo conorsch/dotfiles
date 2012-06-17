@@ -80,7 +80,7 @@ alias pushall='git_push_all.pl'
 alias externalip='curl ifconfig.me'
 alias internalip='hostname -I'
 alias whereami='externalip | iploc'
-alias whoshere='sudo watch arp-scan --interface=wlan0 --localnet' #arp-scan not very portable; should use nmap instead, e.g.:
+alias whoshere='scan_local_ips.pl' #alias to a Perl script in path, uses nmap;
 alias wp='mwiki' #easier to remember for Wikipedia lookups
 alias etym='etymology_lookup.pl' #etymonline.com lookups via Perl script in ~/.bin
 alias refresh='source ~/.bashrc' #re-source bashrc easily
@@ -108,7 +108,7 @@ export PATH=$PATH:/home/conor/.bin
 
 #PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
 #PS1="( \! ) \u@\h{ \w }\a: " #( history ) user@hostname{ cwd } sigil:
-PS1="( \! ) \u@\h\a: " #( history ) user@hostname{ cwd } sigil:
+PS1="( \! ) \u@\h\a: " #( history ) user@hostname sigil:
 
 #####BEGIN borrowed tips
 function matrix(){
@@ -169,6 +169,9 @@ cd() { #Print working directory after a cd.
         builtin cd "$@"
     fi
     echo -e "   \033[1;30m"`pwd`"\033[0m"
+}
+function scan_host() { #use nmap to find open ports on a given IP address;
+    sudo nmap -sS -P0 -sV -O $@
 }
 #####END borrowed tips
 
