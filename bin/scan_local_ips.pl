@@ -10,7 +10,6 @@ use List::Util qw/max/; #for nifty one-line hash walkthrough;
 
 my $network = `hostname -I`; #grab local IP address;
 chomp $network; #remove pesky trailing newline;
-#$network =~ s@(\d+\.\d+\.\d+\.)\d+@$1@g; #grab first three numbers, drop last;
 $network =~ s@(\d+\.\d+\.\d+)(\.\d+)@$1.1@g; #grab first three numbers, replace last with '1';
 chomp $network; #remove pesky trailing newline;
 $network =~ s/\s*//g; #remove any and all whitespace from network string;
@@ -23,7 +22,7 @@ foreach my $entry (@nmap_output) { #look at each captured line;
     $entry =~ s/Nmap scan report for //; #toss away cruft in output;
     next unless $entry =~ m/[\(|\)]/; #skip if report entry is malformed;
     $entry =~ s/[\(|\)]//g; #remove parentheses around IP address;
-    my ($host, $ip) = split(' ', $entry);
+    my ($host, $ip) = split(' ', $entry); #break up line into hostname and IP address;
     $host = "unknown (probably router or gateway)" if $host =~ m/unknown/;
     $host_list{$ip} = $host; #store pair in hash, with ip as key;
 }
