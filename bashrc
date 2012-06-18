@@ -254,4 +254,7 @@ function afterdownload() { #complete action after a download or transfer complet
 }
 function pbar() { #run pianobar (Pandora.com client) on home desktop, connected to stereo
     ssh -t s "cd ~/gits/pianobar && ./pianobar"
-} 
+}
+function stereo() { #plays audio file on computer connected to stereo;
+    cat "$@" | ssh s "mplayer -cache 10000 -cache-min 1 - "
+}
