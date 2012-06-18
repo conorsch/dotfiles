@@ -138,9 +138,9 @@ sharefile(){ #spin up a temporary webserver to serve target file for one HTTP GE
 rnum(){
     echo $(( $RANDOM % $@ ))
 }
-md () { 
-    mkdir -p "$@" && cd "$@"; 
-}
+#md () { #causing problems on some machines, disabling for now;
+#    mkdir -p "$@" && cd "$@"; 
+#}
 function iploc() { #Find geographic location of an IP address
     lynx -dump http://www.ip-adress.com/ip_tracer/?QRY=$1 | \
         grep address | \
