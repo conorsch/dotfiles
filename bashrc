@@ -80,7 +80,7 @@ alias pushall='git_push_all.pl'
 alias externalip='curl ifconfig.me'
 alias internalip='hostname -I'
 alias whereami='externalip | iploc'
-alias whoshere='sudo watch arp-scan --interface=wlan0 --localnet' #arp-scan not very portable; should use nmap instead, e.g.:
+alias whoshere='scan_local_ips.pl' #alias to a Perl script in path, uses nmap;
 alias wp='mwiki' #easier to remember for Wikipedia lookups
 alias etym='etymology_lookup.pl' #etymonline.com lookups via Perl script in ~/.bin
 alias refresh='source ~/.bashrc' #re-source bashrc easily
@@ -100,15 +100,15 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
-export heimchen="$HOME/Valhalla/Media/Heimchen"
-export PATH=$PATH:$HOME/.bin
+export heimchen="/home/conor/Valhalla/Media/Heimchen"
+export PATH=$PATH:/home/conor/.bin
 #export PATH=$PATH:/home/conor/Documents/Coding
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
 #PS1="[ \! ] \u@\h{ \w }\a $(parse_git_branch): " #[ history ] user@hostname{ cwd } sigil:
 #PS1="( \! ) \u@\h{ \w }\a: " #( history ) user@hostname{ cwd } sigil:
-PS1="( \! ) \u@\h\a: " #( history ) user@hostname{ cwd } sigil:
+PS1="( \! ) \u@\h\a: " #( history ) user@hostname sigil:
 
 #####BEGIN borrowed tips
 function matrix(){
@@ -138,8 +138,8 @@ sharefile(){ #spin up a temporary webserver to serve target file for one HTTP GE
 rnum(){
     echo $(( $RANDOM % $@ ))
 }
-#md(){
-#    mkdir -p "$@" && cd "$@"
+#md () { #causing problems on some machines, disabling for now;
+#    mkdir -p "$@" && cd "$@"; 
 #}
 function iploc() { #Find geographic location of an IP address
     lynx -dump http://www.ip-adress.com/ip_tracer/?QRY=$1 | \
@@ -169,6 +169,9 @@ cd() { #Print working directory after a cd.
         builtin cd "$@"
     fi
     echo -e "   \033[1;30m"`pwd`"\033[0m"
+}
+function scan_host() { #use nmap to find open ports on a given IP address;
+    sudo nmap -sS -P0 -sV -O $@
 }
 #####END borrowed tips
 
@@ -251,13 +254,7 @@ function afterdownload() { #complete action after a download or transfer complet
 }
 function pbar() { #run pianobar (Pandora.com client) on home desktop, connected to stereo
     ssh -t s "cd ~/gits/pianobar && ./pianobar"
-} 
-
-
-#exports for path in office;
-export PERL_LOCAL_LIB_ROOT="/home1/c/conorsch/perl5";
-export PERL_MB_OPT="--install_base /home1/c/conorsch/perl5";
-export PERL_MM_OPT="INSTALL_BASE=/home1/c/conorsch/perl5";
-export PERL5LIB="/home1/c/conorsch/perl5/lib/perl5/x86_64-linux-thread-multi:/home1/c/conorsch/perl5/lib/perl5";
-export PATH="/home1/c/conorsch/perl5/bin:$PATH";
-
+}
+function stereo() { #plays audio file on computer connected to stereo;
+    cat "$@" | ssh s "mplayer -cache 10000 -cache-min 1 - "
+}
