@@ -1,0 +1,18 @@
+#!/usr/bin/perl 
+use strict;
+use warnings;
+use diagnostics;
+use feature qw/say/; #because 'print' isn't hip enough;
+use Getopt::Std; #for grabbing 'server' option;
+
+my %Options=(); #Create hash for command-line options
+getopts('s', \%Options); #See do_help for explanation of these flags;
+my $server = $Options{s} || 's'; #Allow user to set number of notes to analyze; default is 2;
+
+my $audio_file = shift #grab audio file to play as first argument;
+    or die "Please specify an audio file to play remotely. Usage:
+    play_on_speakers [-s <server_alias>] file"; #don't send remote command if no file;
+say "Now playing audio file '$audio_file' on server '$server'..."; #user feedback;
+
+#exec() instead of system() because this process should never return;
+exec("cat \"$audio_file\" | ssh $server 'mplayer -cache 10000 -cache-min 1 - '");
