@@ -253,6 +253,13 @@ function pbar() { #run pianobar (Pandora.com client) on home desktop, connected 
 function stereo() { #plays audio file on computer connected to stereo;
     cat "$@" | ssh s "mplayer -cache 10000 -cache-min 1 - "
 }
+function speaks() { #open mocp on home computer
+    ssh -t s mocp
+}
+
+
+
+#### GIT #####
 function git_prompt_status() { # for future use, from oh my zsh
   local index=$(git status --porcelain 2> /dev/null)
   local gitstatus=""
