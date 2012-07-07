@@ -2,10 +2,22 @@
 #Script to generate output for status bar for tmux. 
 #Output will be formatted different for desktops and laptops, 
 #such as displaying wifi connection or battery charging status.
+
+#This script should not be called directly by tmux! Instead,
+#make a cronjob that redirects this script's output to a file, e.g.:
+
+#*   *   *   *   *   /path/to/this/script/tmux_status > ~/.tmux_status
+#Then add these optionsto your ~/.tmux.conf: 
+
+#set -g default-terminal "xterm-256color"
+#set -g status-right '#(cat ~/.tmux_status)'
+#set-option -g status-right-length 80
+
 #On a laptop, it should look like:
 #SSID-CONNECTED user@hostname 77%/time_left in battery tempC date time
 #On a desktop, it should look like: 
 #inet[green/red] user@hostname temp C date time
+
 use strict;
 use warnings;
 use diagnostics;
@@ -101,34 +113,25 @@ sub temp { #return temperature from acpi shell call in format 00C;
     #$acpi_temp = $acpi_temp . "C"; #concatenate temperature digits with units (here, C);
     given ($acpi_temp) {
         when ( $_ < 45 )                { print_colored($acpi_temp . 'C ', 'cyan') }
-        when ( $_ >= 45 && $_ < 60 )    { print $acpi_temp }
+        when ( $_ >= 45 && $_ < 60 )    { print $acpi_temp . 'C ' }
         when ( $_ >= 60 )               { print_colored($acpi_temp . 'C ', 'red') }
         default                         { say "UNKNOWN_TEMP" }
     };
 }
 
 sub date_and_time { #return date and time information, using Perl's localtime built-in function;
-    my @time_dump = localtime(time); #grab time output from Perl as array;
-    foreach my $unit (@time_dump) { #ensure all values are two digits!;
-        next if $unit =~ m/\d\d/; #skip if already two or more digits;
-        $unit = "0" . "$unit"; #pad with leading zero
-    }
-    my ($minutes, $hours, $month, $day) = @time_dump[1,2,4,3]; #grab necessary 
-    $month++; #necessary to increase by one because month is zero-counting;
-    my $time = join(':', $hours,$minutes); #join hours and minutes, separate with ':';
-    my $date = join('/', $month,$day); #smash 'em together, so they're readable as a date;
-    $date_and_time = join(' ', $date,$time); #concatenate both date and time;
-
-    print $date_and_time; #print out concatenated date and time;
+    my $date_and_time = `date +'%m/%d %H:%M'`; #grab time and date as mm/dd HH:MM;
+    chomp $date_and_time; #remove pesky trailing newline;
+    print $date_and_time; #print out data and time
 }
 
 sub network_status { #check whether connected to network and report it;
     `nm-online -t 1`; #run check (returns 0 for success, 1 for failure);
-    if ( $? == 0 ) #check whether connection check reported success;
+    if ( $? == 0 ) { #check whether connection check reported success;
         print_colored ('inet', 'green'); #if success, green means good;
         my $ssid = `iwgetid --raw`; #grab SSID of current network connection;
         chomp $ssid; #remove pesky trailing newline;
-        print ":$ssid"; #print it;
+        print ":$ssid "; #print it;
     }
     else { #if capturing network status returned failure;
         print_colored ('no_net ', 'red'); #if failed, red means bad;
@@ -142,5 +145,7 @@ sub print_status { #output status information to STDOUT;
     battery_info; #print statistics on battery charge status and time remaining;
     temp; #report CPU temperature in Celsius;
     date_and_time; #give date and time information;
+    print ' '; #padding on the right-edge;
 }
-print_status; #create and output line according to above subroutine;
+
+print_status; #create and output line according to above subroutine; 
