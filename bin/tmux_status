@@ -24,6 +24,9 @@ use diagnostics;
 use feature qw/switch say/;
 use Term::ANSIColor;
 
+`laptop-detect`; #returns 0 if laptop, any other exit code is failure;
+my $laptop_check = $?; #capture exit code of laptop-detect;
+
 sub print_colored { #outputs given string encased in tmux-compatible color codes;
     my ($string, $color) = @_; #unpack variables from function caller;
 
@@ -106,17 +109,19 @@ sub battery_info {
 }
 
 sub temp { #return temperature from acpi shell call in format 00C;
-    my $acpi_temp = `acpi -t`; #grab temperature output from acpi command (in Celsius);
-    chomp $acpi_temp; #remove pesky trailining newline;
-    $acpi_temp =~ s/^Thermal \d: \w+, //; #Strip out everything before temperature;
-    $acpi_temp =~ s/(\d+)(\.)(.*$)/$1/; #Strip off everything but integer value of temp;
-    #$acpi_temp = $acpi_temp . "C"; #concatenate temperature digits with units (here, C);
-    given ($acpi_temp) {
-        when ( $_ < 45 )                { print_colored($acpi_temp . 'C ', 'cyan') }
-        when ( $_ >= 45 && $_ < 60 )    { print $acpi_temp . 'C ' }
-        when ( $_ >= 60 )               { print_colored($acpi_temp . 'C ', 'red') }
-        default                         { say "UNKNOWN_TEMP" }
-    };
+    if ( $laptop_check eq 0 ) { #if probably on laptop;
+        my $acpi_temp = `acpi -t`; #grab temperature output from acpi command (in Celsius);
+        chomp $acpi_temp; #remove pesky trailining newline;
+        $acpi_temp =~ s/^Thermal \d: \w+, //; #Strip out everything before temperature;
+        $acpi_temp =~ s/(\d+)(\.)(.*$)/$1/; #Strip off everything but integer value of temp;
+        #$acpi_temp = $acpi_temp . "C"; #concatenate temperature digits with units (here, C);
+        given ($acpi_temp) {
+            when ( $_ < 45 )                { print_colored($acpi_temp . 'C ', 'cyan') }
+            when ( $_ >= 45 && $_ < 60 )    { print $acpi_temp . 'C ' }
+            when ( $_ >= 60 )               { print_colored($acpi_temp . 'C ', 'red') }
+            default                         { say "UNKNOWN_TEMP" }
+        };
+    }
 }
 
 sub date_and_time { #return date and time information, using Perl's localtime built-in function;
@@ -128,7 +133,17 @@ sub date_and_time { #return date and time information, using Perl's localtime bu
 sub network_status { #check whether connected to network and report it;
     `nm-online -t 1`; #run check (returns 0 for success, 1 for failure);
     if ( $? == 0 ) { #check whether connection check reported success;
-        print_colored ('inet', 'green'); #if success, green means good;
+        my $device; #initialize variable in proper scope for printing;
+        my @device_check = `nmcli dev`; #grab list of devices managed by NetworkManager;
+        foreach my $device_candidate (@device_check) { #
+            chomp $device_candidate; #remove pesky trailing newline;
+            next unless $device_candidate =~ m/connected/; #skip unless line contains "connected";
+            my @line = split('\s', $device_candidate);
+            $device = shift @line; #grab first column of this line;
+            last; #take first connected device;
+        }
+
+        print_colored ($device, 'green'); #if success, green means good;
         my $ssid = `iwgetid --raw`; #grab SSID of current network connection;
         chomp $ssid; #remove pesky trailing newline;
         print ":$ssid "; #print it;
@@ -142,7 +157,8 @@ sub network_status { #check whether connected to network and report it;
 sub print_status { #output status information to STDOUT;
     network_status; #report network connection status;
     me; #report 'user@hostname' string;
-    battery_info; #print statistics on battery charge status and time remaining;
+    battery_info #print statistics on battery charge status and time remaining;
+        if $laptop_check eq 0; #only do this if running on a laptop;
     temp; #report CPU temperature in Celsius;
     date_and_time; #give date and time information;
     print ' '; #padding on the right-edge;
