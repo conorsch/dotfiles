@@ -257,7 +257,9 @@ function speaks() { #open mocp on home computer
     ssh -t s mocp
 }
 
-
+function strlength() { #print length of given string
+    echo "$@" | awk '{ print length }'
+}
 
 #### GIT #####
 function git_prompt_status() { # for future use, from oh my zsh
