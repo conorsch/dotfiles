@@ -52,14 +52,12 @@ sub print_colored { #outputs given string encased in tmux-compatible color codes
 }
 
 #####LAPTOP#####
-my ($me, $power_state, $percent_charged, $time_left, $temp, $date_and_time); #initialize variables to be constructed;
-
 sub me { #return a 'me' identity in the form of user@hostname;
     my $username = `whoami`; #grab username from shell;
     my $hostname = `hostname`; #grab hostname from shell;
     chomp ($username, $hostname); #remove trailing newlines;
-    $me = "$username" . "@" . "$hostname"; #concatenate username and hostname with @ symbol;
-    print "$me "; #pass concatenated 'me' back to function caller;
+    my $me = $username . '@' . $hostname; #concatenate username and hostname with @ symbol;
+    print "$me "; #print it;
 }
 
 sub battery_info {
@@ -142,12 +140,14 @@ sub network_status { #check whether connected to network and report it;
             $device = shift @line; #grab first column of this line;
             last; #take first connected device;
         }
-
         print_colored ($device, 'green'); #if success, green means good;
-        my $ssid = `iwgetid --raw`; #grab SSID of current network connection;
-        chomp $ssid; #remove pesky trailing newline;
-        print ":$ssid "; #print it;
+        if ( $laptop_check eq 0 ) { #if probably on laptop;
+            my $ssid = `iwgetid --raw`; #grab SSID of current network connection;
+            chomp $ssid; #remove pesky trailing newline;
+            print ":$ssid "; #print it;
+        }
     }
+
     else { #if capturing network status returned failure;
         print_colored ('no_net ', 'red'); #if failed, red means bad;
         print " "; #add space after output for nicer formatting;
