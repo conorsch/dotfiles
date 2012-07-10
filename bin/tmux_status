@@ -81,7 +81,7 @@ sub battery_info {
         default { say "power_state is currently unknown; please check script"; } #for unforeseen corner cases;
     }
 
-    $acpi_battery =~ m/^(.*)(\d{2,3})(%)(.*)$/; #look for 00% or 000% format percentage;
+    $acpi_battery =~ m/^(.*)(\d{2,3})(%)(.*)$/g; #look for 00% or 000% format percentage;
     my $percent_charged = $2; #name second group (00% format, above) for returning;
     $acpi_battery =~ m/^(.*)(\d{2}:\d{2}:\d{2})(.*)$/; #look for 00:00:00 format time;
     my $time_left = $2; #name second group (00:00:00 format, above) for returning;
@@ -131,6 +131,8 @@ sub date_and_time { #return date and time information, using Perl's localtime bu
 sub network_status { #check whether connected to network and report it;
     `nm-online -t 1`; #run check (returns 0 for success, 1 for failure);
     if ( $? == 0 ) { #check whether connection check reported success;
+
+        #get device name for active connection;
         my $device; #initialize variable in proper scope for printing;
         my @device_check = `nmcli dev`; #grab list of devices managed by NetworkManager;
         foreach my $device_candidate (@device_check) { #
@@ -140,8 +142,9 @@ sub network_status { #check whether connected to network and report it;
             $device = shift @line; #grab first column of this line;
             last; #take first connected device;
         }
+        
         print_colored ($device, 'green'); #if success, green means good;
-        if ( $laptop_check eq 0 ) { #if probably on laptop;
+        if ( $device =~ m/(wlan|ath)\d+/ ) { #if device appears to be a wireless connection;
             my $ssid = `iwgetid --raw`; #grab SSID of current network connection;
             chomp $ssid; #remove pesky trailing newline;
             print ":$ssid "; #print it;
