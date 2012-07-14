@@ -81,10 +81,10 @@ sub battery_info {
         default { say "power_state is currently unknown; please check script"; } #for unforeseen corner cases;
     }
 
-    $acpi_battery =~ m/^(.*)(\d{1,3})(%)(.*)$/g; #look for 0%, 00%, or 000% format percentage;
-    my $percent_charged = $2; #name second group (00% format, above) for returning;
-    $acpi_battery =~ m/^(.*)(\d{2}:\d{2}:\d{2})(.*)$/; #look for 00:00:00 format time;
-    my $time_left = $2; #name second group (00:00:00 format, above) for returning;
+    $acpi_battery =~ m/(\d*)%/; #look for 0%, 00%, or 000% format percentage;
+    my $percent_charged = $1; #name the matched group (00% format, above) for returning;
+    $acpi_battery =~ m/(\d{2}:\d{2}:\d{2})/; #look for 00:00:00 format time;
+    my $time_left = $2; #name matched group (00:00:00 format, above) for returning;
 
     given ($power_state) { #format display of charging icon;
         when (/chrgng/)         { print_colored ('⌁', 'green') }
@@ -102,7 +102,8 @@ sub battery_info {
     };
 
     print '/'; #pretty separator for percent_charged and time_left;
-    print "$time_left "; #print hour many hours, minutes, and seconds of battery time remain;
+    print "$time_left " #print hour many hours, minutes, and seconds of battery time remain;
+        if defined($time_left); #only print if there's a value (undef if battery full);
 
 }
 
