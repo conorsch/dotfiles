@@ -1,0 +1,49 @@
+#!/usr/bin/perl
+#quick script to compute average filesize of all files below cwd
+
+use strict;
+use warnings;
+use feature qw/switch say/;
+#use Numbers::Bytes::Human; #for easy converting of KB/MB/GB values;
+use Math::Round; #for rounding numbers;
+use List::Util qw/max/; #for nifty one-line hash walkthrough;
+
+my $dir = $ARGV[0] || `pwd`; #get directory or, assume current working directory;
+chomp $dir; #remove pesky trailing newline;
+say "Computing average filesize for directory '$dir'..."; #feedback;
+my ($sum, $file_count); #initialize variables for counting in loop;
+my @file_list = `find "$dir" -type f`; #build array from all files found;
+foreach my $file (@file_list) { #look at every file in the array;
+    chomp $file; #remove pesky trailing newline;
+    $sum += -s $file; #increment sum total by size of this file;
+    $file_count++; #keep track of total number of files;
+}
+
+sub pretty_filesize { #feed in bytes, got human-readable output;
+    my $file_size = shift; #grab first arg as filesize (use -s $filename to get it);
+    my $decimal_places = shift or 0; #grab second arg for number of decimal places, or round to integer;
+    my @units = qw/bytes kB MB GB TB PB EB ZB YB/;#build array of units;
+    my $unit = 0; #initialize index counter for determining which unit to use;
+    while($file_size > 1024) { #for as long as file size is above 1024;
+        $file_size /= 1024; #divide file size by 1024, which bumps it up a unit range;
+        $unit++; #record change to unit range;
+    }
+    return Math::Round::round($file_size)." ".$units[$unit]; #pass back rounded number, plus units;
+}
+
+sub print_columns { #accept hash, print pretty columns from it;
+    my $hashref = shift;
+    my $str_length = max( map {length} keys %{$hashref}); #find longest string in hash keys;
+    foreach my $key (sort keys %{$hashref}) { #sort by key; 
+        printf "%-${str_length}s\t%-${str_length}s\n", $key, ${$hashref}{$key}; #display results;
+    }
+}
+
+my $average_filesize = $sum/$file_count; #compute average filesize for all files found;
+my %results = ( #create hash for fancy formatting during printing;
+    "Total size: " => pretty_filesize($sum),
+    "Avg size: " =>  pretty_filesize($average_filesize),
+    "Total files: " => $file_count,
+);
+
+print_columns(\%results); #print output;
