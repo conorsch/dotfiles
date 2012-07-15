@@ -3,7 +3,7 @@
 #ensuring single spaces between sentences, 
 #and replacing double hypens with true em dashes (—).
 #Recommended usage is with filehandle redirects, e.g.:
-#`remove_whitespace.pl <infile >outfile` or simply with pipes
+#`remove_whitespace <infile >outfile` or simply with pipes
 
 use strict;
 use warnings;
