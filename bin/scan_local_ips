@@ -40,10 +40,10 @@ foreach my $entry (@nmap_output) { #look at each line of nmap output;
 print_columns(\%host_list); #print hostnames and IP address in columns;
 
 #### subroutines ####
-sub print_columns { #accept hash, print pretty columns from it;
-    my $hashref = shift;
+sub print_columns { #accept hashref, print keys and values as pretty columns;
+    my $hashref = shift; #grab hashref from function caller;
     my $str_length = max( map {length} keys %{$hashref}); #find longest string in hash keys;
-    foreach my $key (sort keys %{$hashref}) { #sort by key; 
+    foreach my $key (sort keys %{$hashref}) { #sort hashref by keys; 
         printf "%-${str_length}s\t%-${str_length}s\n", $key, ${$hashref}{$key}; #display results;
     }
 }
