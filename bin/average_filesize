@@ -4,6 +4,12 @@
 #
 #    average_filesize [dir]
 #
+#Example output:
+#
+#   Average file size:      4.2 MB                
+#   Total directory size:   1.36 TB               
+#   Total files:            345313 files  
+
 use strict;
 use warnings; 
 use feature qw/switch say/; #switch for case statements, say because it's convenient;
@@ -16,8 +22,8 @@ my $dir = $ARGV[0] || `pwd`; #get directory or, assume current working directory
 chomp $dir; #remove pesky trailing newline;
 
 if ( ! -d $dir) { #exit if $dir is not a dir;
-    say "average_filesize: '$dir' is not a directory."; #state error;
-    exit 1; #close;
+    say "average_filesize: '$dir' is not a directory."; #inform user of error;
+    exit 1; #unable to continue without a dir, so exit;
 }
 
 if ( -l $dir) { #check whether dir is a symlink
@@ -61,10 +67,10 @@ sub pretty_filesize { #feed in bytes, got human-readable output;
         $unit++; #record change to unit range;
     }
     given ($unit) { #case statement based on unit of filesize;
-        when ($unit == 2)   { $decimal_places = '1' } #
-        when ($unit == 3)   { $decimal_places = '1' } #set decimal places to 1;
-        when ($unit > 3)    { $decimal_places = '01' } #set decimal places to 2;
-        default             { $decimal_places = 0 } #set decimal places to 0 (integer);
+        when ($unit == 2)   { $decimal_places = '1' } #for MB, set decimal places to 1;
+        when ($unit == 3)   { $decimal_places = '1' } #for GB, set decimal places to 1;
+        when ($unit > 3)    { $decimal_places = '01' } #for TB and up, set decimal places to 2;
+        default             { $decimal_places = 0 } #for all other values, set decimal places to 0 (integer);
     }
 
     $decimal_places == 0 ? #check whether custom decimal place was specified;
@@ -72,10 +78,10 @@ sub pretty_filesize { #feed in bytes, got human-readable output;
         return Math::Round::nhimult(".$decimal_places", $file_size)." ".$units[$unit]; #pass back rounded number, plus units;
 }
 
-sub print_columns { #accept hash, print pretty columns from it;
-    my $hashref = shift;
+sub print_columns { #accept hashref, print keys and values in pretty columns;
+    my $hashref = shift; #grab hashref from function caller;
     my $str_length = max( map {length} keys %{$hashref}); #find longest string in hash keys;
-    foreach my $key (sort keys %{$hashref}) { #sort by key; 
+    foreach my $key (sort keys %{$hashref}) { #sort hashref by keys; 
         printf "%-${str_length}s\t%-${str_length}s\n", $key, ${$hashref}{$key}; #display results;
     }
 }
