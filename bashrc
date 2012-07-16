@@ -75,14 +75,14 @@ alias gc='git commit'
 alias gd='git diff'
 alias ga='git add'
 alias ack='ack-grep'
-alias gh='github_browse.pl'
-alias pushall='git_push_all.pl'
+alias gh='github_browse'
+alias pushall='git_push_all'
 alias externalip='curl ifconfig.me'
 alias internalip='hostname -I'
 alias whereami='externalip | iploc'
-alias whoshere='scan_local_ips.pl' #alias to a Perl script in path, uses nmap;
+alias whoshere='scan_local_ips' #alias to a Perl script in path, uses nmap;
 alias wp='mwiki' #easier to remember for Wikipedia lookups
-alias etym='etymology_lookup.pl' #etymonline.com lookups via Perl script in ~/.bin
+alias etym='etymology_lookup' #etymonline.com lookups via Perl script in ~/.bin
 alias refresh='source ~/.bashrc' #re-source bashrc easily
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
