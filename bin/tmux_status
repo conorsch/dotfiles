@@ -75,7 +75,7 @@ sub battery_info {
             $power_state = "chrgng"; } #set power_state to more succinct mention that battery is charging;
         when (/Charged/) { #when battery is fully charged;
             $power_state = "full"; }  #set power-state to more succinct mention that battery if full;
-        default { say "power_state is currently unknown; please check script"; } #for unforeseen corner cases;
+        default { } #do nothing, for unforeseen corner cases;
     }
 
     $acpi_battery =~ m/(\d*)%/; #look for 0%, 00%, or 000% format percentage;
@@ -87,7 +87,7 @@ sub battery_info {
         when (/chrgng/)         { print_colored ('⌁', 'green') }
         when (/drng/)           { print_colored ('⌁', 'red') }
         when (/full/)           { print_colored ('full', 'green') }
-        default                 { print "UNKNOWN_BATTERY"}
+        default                 { } #do nothing, for unforeseen corner cases;
     };
 
     given ($percent_charged) { #format display of battery charge percentage;
@@ -95,7 +95,7 @@ sub battery_info {
         when ($_ > 50 && $_ <= 90)      { print "$percent_charged%" }
         when ($_ > 20 && $_ <= 50)      { print_colored ("$percent_charged%", 'yellow') }
         when ($_ <= 20)                 { print_colored ("$percent_charged%", 'red') } 
-        default                         { print "UNKNOWN_BATTERY"; }
+        default                         { } #do nothing, for unforeseen corner cases; 
     };
 
     print '/'; #pretty separator for percent_charged and time_left;
@@ -115,7 +115,7 @@ sub temp { #return temperature from acpi shell call in format 00C;
             when ( $_ < 45 )                { print_colored($acpi_temp . 'C ', 'cyan') }
             when ( $_ >= 45 && $_ < 60 )    { print $acpi_temp . 'C ' }
             when ( $_ >= 60 )               { print_colored($acpi_temp . 'C ', 'red') }
-            default                         { say "UNKNOWN_TEMP" }
+            default                         { } #do nothing, for unforeseen corner cases;
         };
     }
 }
