@@ -1,0 +1,88 @@
+#!/usr/bin/perl
+#This script computes the average filesize of all files in a given directory.
+#If no directory is given, then the cwd is assumed. Example usage:
+#
+#    average_filesize [dir]
+#
+#Example output:
+#
+#   Average file size:      4.2 MB                
+#   Total directory size:   1.36 TB               
+#   Total files:            345313 files  
+
+use strict;
+use warnings; 
+use feature qw/switch say/; #switch for case statements, say because it's convenient;
+#use Numbers::Bytes::Human; #for easy converting of KB/MB/GB values (can't find on CPAN);
+use Math::Round; #for rounding numbers;
+use List::Util qw/max/; #for nifty one-line hash walkthrough;
+
+#### variable checking ####
+my $dir = $ARGV[0] || `pwd`; #get directory or, assume current working directory;
+chomp $dir; #remove pesky trailing newline;
+
+if ( ! -d $dir) { #exit if $dir is not a dir;
+    say "average_filesize: '$dir' is not a directory."; #inform user of error;
+    exit 1; #unable to continue without a dir, so exit;
+}
+
+if ( -l $dir) { #check whether dir is a symlink
+    $dir .= '/' unless $dir =~ m/\/$/; #append trailing slash unless already present;
+}
+
+my (@file_list, $sum, $file_count); #initialize variables for counting below;
+#### variable checking ####
+
+#### building file list ####
+#say "Computing average filesizes for directory '$dir'..."; #feedback;
+@file_list = `find "$dir" -type f`; #build array from all files found;
+
+foreach my $file (@file_list) { #look at every file in the array;
+    chomp $file; #remove pesky trailing newline;
+    $sum += -s $file; #increment sum total by size of this file;
+    $file_count++; #keep track of total number of files;
+}
+#### building file list ####
+
+#### reporting results ####
+my $average_filesize = $sum/$file_count; #compute average filesize for all files found;
+my %results = ( #create hash for fancy formatting during printing;
+    "Total directory size: " => pretty_filesize($sum), #total size of directory, in appropriate unit;
+    "Average file size: " =>  pretty_filesize($average_filesize), #average file size, in appropriate unit;
+    "Total files: " => "$file_count files", #total number of files counted;
+);
+
+#say "Results for directory '$dir':"; #feedback;
+print_columns(\%results); #print results, in column format;;
+#### reporting results ####
+
+#### subroutines ####
+sub pretty_filesize { #feed in bytes, got human-readable output;
+    my $file_size = shift; #grab first arg as filesize (use -s $filename to get it);
+    my $decimal_places = shift; #grab second arg for number of decimal places, or round to integer;
+    my @units = qw/bytes kB MB GB TB PB EB ZB YB/;#build array of units;
+    my $unit = 0; #initialize index counter for determining which unit to use;
+    while($file_size > 1024) { #for as long as file size is above 1024;
+        $file_size /= 1024; #divide file size by 1024, which bumps it up a unit range;
+        $unit++; #record change to unit range;
+    }
+    given ($unit) { #case statement based on unit of filesize;
+        when ($unit == 2)   { $decimal_places = '1' } #for MB, set decimal places to 1;
+        when ($unit == 3)   { $decimal_places = '1' } #for GB, set decimal places to 1;
+        when ($unit > 3)    { $decimal_places = '01' } #for TB and up, set decimal places to 2;
+        default             { $decimal_places = 0 } #for all other values, set decimal places to 0 (integer);
+    }
+
+    $decimal_places == 0 ? #check whether custom decimal place was specified;
+        return Math::Round::round($file_size)." ".$units[$unit]: #return, rounded to integer;
+        return Math::Round::nhimult(".$decimal_places", $file_size)." ".$units[$unit]; #pass back rounded number, plus units;
+}
+
+sub print_columns { #accept hashref, print keys and values in pretty columns;
+    my $hashref = shift; #grab hashref from function caller;
+    my $str_length = max( map {length} keys %{$hashref}); #find longest string in hash keys;
+    foreach my $key (sort keys %{$hashref}) { #sort hashref by keys; 
+        printf "%-${str_length}s\t%-${str_length}s\n", $key, ${$hashref}{$key}; #display results;
+    }
+}
+#### subroutines ####

@@ -387,7 +387,7 @@ Fastdir3 = /mnt/Valhalla/Media/Heimchen/In Flames
 
 # The number of audio files for which MOC will cache tags.  When this limit
 # is reached, file tags are discarded on a least recently used basis.
-TagsCacheSize		= 256
+TagsCacheSize		= 2048
 
 # Number items in the playlist.
 PlaylistNumbering	= yes
@@ -480,7 +480,7 @@ CanStartInPlaylist	= yes
 #SetXtermTitle		= yes
 
 # Set the terminal title when running under screen.
-#SetScreenTitle		= yes
+SetScreenTitle		= yes
 
 # Display full paths instead of just file names in the playlist.
 #PlaylistFullPaths	= yes

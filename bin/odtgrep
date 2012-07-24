@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+#This is a Perl script to search for strings within ODT files.
+#Usage is: odtgrep -t "SEARCH TERM" PATH (script will assume cwd if no path specified);
+use warnings;
+use strict;
+use feature qw/say/;
+use File::Spec; #For translating relative pathnames to absolute ones;
+use Getopt::Std; #Allow parsing of command-line options;
+
+my %Options=(); #Create scalar for command-line options;
+getopts('vo:t:', \%Options); #This style of grabbing doesn't support flag arguments, just flags
+my $verbose = $Options{v} || 0;
+my $target = $Options{o} || "$ARGV[0]";  #Set up dir variable for grabbing from CLI (probably CWD)
+my $search_term = $Options{t} || "$ARGV[1]"; #Grab search term as second item on command line
+
+$target = File::Spec->rel2abs($target); #Expand user-specified target directory to absolute path (for passing along to shnsplit)
+say "Searching in the directory $target for search term $search_term..."; #A little feedback never hurt anyone;
+my @odt_list = `find "$target" -iname "*.odt" | sort -n`; #Build up a list of all ODTs;
+my @results_list = (); #Create empty array for storing of relevant search results;
+
+foreach my $file (@odt_list) { #look at list of results for ODT files;
+    chomp $file; #Remove trailing newline from `find` output;
+    `unzip -p "$file" content.xml | tidy -q -xml 2> /dev/null | grep "$search_term"`; #Peek inside ODT file (using backticks to grab exit code);
+    my $exit_code = $? >> 8; #Necessary to modify exit exit code code from shell command by bitifying it: 0 is found, 1 is not found, 2 is error;
+    push @results_list,$file unless ($exit_code != 0); #Insert positive match into array for later regurgitation;
+}
+
+my $results_count = scalar @results_list; #We want to count the number of array/list items and report that! 
+if ( $results_count >= 1 ) { #Check whether number of results is equal to or greater than one;
+    say "The following $results_count files contain the search term '$search_term':"; #If so, report that number...;
+    foreach my $item (@results_list) { 
+        say $item; #say all names of matching files;
+    }
+}
+else { #if results count is not 1 or greater;
+    say "No files were found that contain the search term '$search_term'. Exiting."; #Otherwise, say nothing matched the search;
+}
