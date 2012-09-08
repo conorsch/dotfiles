@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use diagnostics;
 use LWP::Simple; #for easy HTTP GETs;
-use Tie::File; #for easy modification of files in place;
+use Tie::File; #for easy in-place modification of mocp config file;
 use feature 'say'; #beats print;
 
 my $lastfm_username = $ARGV[0] #declare user to find top 10 for;
