@@ -1,0 +1,68 @@
+#!/usr/bin/perl
+#quick script to throw up a testing framework by running a set command after time a file is saved;
+use strict; 
+use warnings;
+use feature 'say';
+use Getopt::Long; #for parsing command-line options;
+use File::Spec; #for translating relative filepaths to fullpaths;
+
+$|++; #enable realtime readline output, no line buffering; 
+
+### BEGIN variable declaration ###
+my $usage = <<'END_USAGE';
+make_inotify_test
+
+Creates a quick-and-dirty testing framework using inotifywait. This script 
+calls inotifywait (in the inotify-tools package) to handle the watcher events.  
+Currently watches for MODIFY and MOVE_SELF events, so works with saving vim files.
+Note that only ONE shell command can be run. If an executable script is provided as 
+the shell command, that script will be executed. Watching multiple files for changes
+is supported.
+
+If no shell command is specified, script assumes the file being watched should be run.
+
+Usage: 
+
+    make_inotify_test -c 'echo hello' file1        #executes `echo hello world` every time 'file1' is edited
+    make_inotify_test -c 'test_script' file1       #runs 'test_script' every time 'file1' is edited
+    make_inotify_test -c test_script file1 file2   #runs 'test_script' every time file1 OR file2 is edited
+
+Options:
+
+    -s, --script        specify script to execute if FILE is modified
+    -c, --command       specify shell command to execute if FILE is modified
+    -v, --verbose       enable talkative output for easy identification of state
+    -h, --help          display this usage information
+
+END_USAGE
+
+GetOptions( #process command-line option flags;
+    'command|c=s'         => \my $shell_command, #specify shell command to run if file is changed;
+    'event|e'             => \my $event, #assume vim saving if no event specified;
+    'verbose|v'           => \my $verbose, #provide debugging output;
+    'help|h|usage|?'      => \my $help, #give usage info, explain command-line options;
+    ) or die("$usage\n"); #if option processing failed, don't continue to run;
+
+### END variable declaration ###
+ 
+### BEGIN variable checking ###
+unless (@ARGV) { #if no file to watch was given;
+    say $usage; #print usage/help information;
+    die "Please specify a file to watch."; #tell user that file is mandatory argument;kj}
+}
+
+my @files_to_watch = @ARGV; #all non-option arguments should be files to watch;
+File::Spec->rel2abs($_) for @files_to_watch; #expand all file locations to fullpaths;
+
+#in case user did not specify a command to run as a test, assume the watched file should be run;
+$shell_command = $files_to_watch[0] unless defined($shell_command);
+### END variable checking ###
+
+### BEGIN main logic ###
+say "Testing environment set up. Watching these files: @files_to_watch"; #user feedback
+# This is a hideous way to use inotify in a Perl script, by dropping to a subshell. But it works.
+system("while inotifywait -e modify -e move_self @files_to_watch 2>/dev/null;  
+        do echo 'File modified, running test script...';
+        $shell_command;
+        done;");
+### END main logic ###
