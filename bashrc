@@ -47,6 +47,9 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+#export tmuxinator projects for tab-completion of session names
+[[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -84,6 +87,10 @@ alias whoshere='scan_local_ips' #alias to a Perl script in path, uses nmap;
 alias wp='mwiki' #easier to remember for Wikipedia lookups
 alias etym='etymology_lookup' #etymonline.com lookups via Perl script in ~/.bin
 alias refresh='source ~/.bashrc' #re-source bashrc easily
+alias s='ssh s "tmux attach"'
+alias stir='ssh s "tmux attach"'
+alias t='ssh t "tmux attach"'
+alias tepes='ssh t "tmux attach"'
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -102,6 +109,7 @@ fi
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export heimchen="/home/conor/Valhalla/Media/Heimchen"
 export PATH=$PATH:/home/conor/.bin
+export makesilent="2>/dev/null"
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
@@ -187,7 +195,7 @@ function slg(){
 function newestfiles(){
     #Ignores all git and subversion files/directories, because who wants to sort those?
     #Date statement could be cleaner, though; gets ugly on long filenames
-    find "$@" -not -iwholename '*.svn*' -not -iwholename '*.git*' -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6 
+    find "$@" -not -iwholename '*.svn*' -not -iwholename '*.git*' -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6 | tail -n 10
 }
 function explodeavi(){
     ffmpeg -i "$@" -f image2 image-%03d.jpg
@@ -206,11 +214,11 @@ function toritup() {
 function rsyncssh() {
     rsync -e "ssh" -avPh $@
 }
-function cds() {
-    cd $@ && ls -lsh
+function cd() {
+    builtin cd $@ && ls -lsh
 }
 function muzik() {
-    if [ -e /home/conor/Valhalla/Media/Heimchen ] 
+    if [ -d /home/conor/Valhalla/Media/Heimchen ] 
         then
             mocp
     else 
@@ -239,7 +247,7 @@ function tssh() { #Connect to many machines via SSH by invoking tmux;
 
 #set -o vi #Set vi input mode (instead of default emacs style)
 function g() { 
-    lynx -dump "http://google.com/search?q=$*" | more
+    lynx -dump "http://google.com/search?q=$*" | less
 }
 function afterdownload() { #complete action after a download or transfer completes
     while [ -e $1 ] #$1 should be (hidden) partial file for download
