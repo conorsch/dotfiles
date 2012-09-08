@@ -87,10 +87,10 @@ alias whoshere='scan_local_ips' #alias to a Perl script in path, uses nmap;
 alias wp='mwiki' #easier to remember for Wikipedia lookups
 alias etym='etymology_lookup' #etymonline.com lookups via Perl script in ~/.bin
 alias refresh='source ~/.bashrc' #re-source bashrc easily
-alias s='ssh s "tmux attach"'
-alias stir='ssh s "tmux attach"'
-alias t='ssh t "tmux attach"'
-alias tepes='ssh t "tmux attach"'
+alias s='ssh -t s "tmux attach -d"'
+alias stir='ssh -t s "tmux attach -d"'
+alias t='ssh -t t "tmux attach -d"'
+alias tepes='ssh -t t "tmux attach -d"'
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
