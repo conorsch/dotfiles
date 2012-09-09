@@ -5,6 +5,7 @@
 [ -z "$PS1" ] && return
 
 export EDITOR="vim" #use vim as default editor
+umask 027 #default file permissions should be -rw-r-----
 
 #history options
 HISTCONTROL=ignoredups:ignorespace #don't put duplicate lines in the history. See bash(1) for more options
