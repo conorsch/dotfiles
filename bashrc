@@ -87,6 +87,7 @@ alias whereami='externalip | iploc'
 alias whoshere='scan_local_ips' #alias to a Perl script in path, uses nmap;
 alias wp='mwiki' #easier to remember for Wikipedia lookups
 alias etym='etymology_lookup' #etymonline.com lookups via Perl script in ~/.bin
+alias imdb='imdb_lookup' #etymonline.com lookups via Perl script in ~/.bin
 alias refresh='source ~/.bashrc' #re-source bashrc easily
 alias s='ssh -t s "tmux attach -d"'
 alias stir='ssh -t s "tmux attach -d"'

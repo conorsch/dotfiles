@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+# retrieve IMDB info on movie title;
+use strict;
+use warnings;
+use feature 'say'; #beats print;
+use LWP::Simple; #for grabbing raw HTML over HTTP;
+
+my @query_terms = @ARGV; #unpack requested movie title as array, in case multiple words;
+#http://www.imdb.com/find?q=the+big+lebowski
+my $imdb_url = 'http://www.imdb.com/find?q='; #store IMDB query URL structure, for concatenation;
+my $query_string; #initialize query string variable for concatenation;
+$query_string .= " $_" for @query_terms; #concatenate multiple terms for searching, with whitespace padding;
+$query_string =~ s/^ //; #remove first whitespace occurrence, unartfully added above;
+$query_string =~ s/ /\+/g; #change all whitespace to + symbol, for use in URL;
+my $query_url = $imdb_url . $query_string; #concatenate base URL with query string;
+
+my $results_raw = get($query_url); #grab raw page;
+my @results_array = split(/\n/, $results_raw); #store string as array for easy looping;
+
+my $movie_url; #initialize variable in proper scope;
+for my $line (@results_array) { #loop through raw page, line by line;
+    next unless $line =~ m|<a href="/(title/\w+/)"|; #skip until first instance of movie URL format;
+    $movie_url = "http://www.imdb.com/$1"; #store that match;
+    last; #let's get out of here;
+}
+
+#use lynx to grab relevant section of IMDB movie page;
+my @movie_page = `lynx -nolist -dump $movie_url | \ 
+                 tail -n +72 | \
+                 head -n 23`;
+
+for my $line (@movie_page) { #loop through relevant portion of IMDB movie page;
+    print $line #display the line, unless it's cruft;
+        unless $line =~ m/(Your rating|\d\.\d|Ratings:|1 2 3 4 5 6 7 8 9 10|Reviews:)/;
+}
