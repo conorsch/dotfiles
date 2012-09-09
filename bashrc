@@ -166,14 +166,14 @@ function genpw() { #generate random 30-character password
 function ugrep() { #look up Unicode characters by name
     egrep -i "^[0-9a-f]{4,} .*$*" $(locate CharName.pm) | while read h d; do /usr/bin/printf "\U$(printf "%08x" 0x$h)\tU+%s\t%s\n" $h "$d"; done
 }
-cd() { #Print working directory after a cd.
-    if [[ $@ == '-' ]]; then
-        builtin cd "$@" > /dev/null  # We'll handle pwd.
-    else
-        builtin cd "$@"
-    fi
-    echo -e "   \033[1;30m"`pwd`"\033[0m"
-}
+#cd() { #Print working directory after a cd.
+#    if [[ $@ == '-' ]]; then
+#        builtin cd "$@" > /dev/null  # We'll handle pwd.
+#    else
+#        builtin cd "$@"
+#    fi
+#    echo -e "   \033[1;30m"`pwd`"\033[0m"
+#}
 function scan_host() { #use nmap to find open ports on a given IP address;
     sudo nmap -sS -P0 -sV -O $@
 }
@@ -216,7 +216,7 @@ function rsyncssh() {
     rsync -e "ssh" -avPh $@
 }
 function cd() {
-    builtin cd $@ && ls -lsh
+    builtin cd "$@" && ls -lsh
 }
 function muzik() {
     if [ -d /home/conor/Valhalla/Media/Heimchen ] 
