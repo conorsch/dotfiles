@@ -273,82 +273,82 @@ function strlength() { #print length of given string
 
 #### GIT #####
 function git_prompt_status() { # for future use, from oh my zsh
-  local index=$(git status --porcelain 2> /dev/null)
-  local gitstatus=""
+    local index=$(git status --porcelain 2> /dev/null)
+    local gitstatus=""
 
-  if $(echo "$index" | grep '^?? ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
+    if $(echo "$index" | grep '^?? ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    fi
 
-if $(echo "$index" | grep '^A ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^M ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
+    if $(echo "$index" | grep '^A ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    elif $(echo "$index" | grep '^M ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    fi
 
-if $(echo "$index" | grep '^ M ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^AM ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^ T ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
+    if $(echo "$index" | grep '^ M ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    elif $(echo "$index" | grep '^AM ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    elif $(echo "$index" | grep '^ T ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    fi
 
-if $(echo "$index" | grep '^R ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
+    if $(echo "$index" | grep '^R ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    fi
 
-if $(echo "$index" | grep '^ D ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^AD ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
+    if $(echo "$index" | grep '^ D ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    elif $(echo "$index" | grep '^AD ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    fi
 
-if $(echo "$index" | grep '^UU ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
+    if $(echo "$index" | grep '^UU ' &> /dev/null); then
+        gitstatus="$gitstatus"
+    fi
 
-echo "$gitstatus"
+    echo "$gitstatus"
 }
 
 function get_git_branch {
-  echo $(__git_ps1 "%s")
+    echo $(__git_ps1 "%s")
 }
 
 function get_git_remote {
-  echo $(git config --get branch.$branch.remote)
+    echo $(git config --get branch.$branch.remote)
 }
 
 function parse_git_unpushed {
-  # Check first for branch remote
-  local branch=`get_git_branch`
-  local remote=`get_git_remote`
-  local unpublished=`__git_refs | grep $remote/$branch`
-  if [[ "$unpublished" == "" ]]; then
+    # Check first for branch remote
+    local branch=`get_git_branch`
+    local remote=`get_git_remote`
+    local unpublished=`__git_refs | grep $remote/$branch`
+    if [[ "$unpublished" == "" ]]; then
     # No remote
-    echo -e "\001\033[1;31m\002\xE2\x9C\xAA"
-  else
-    # Check if we've pushed to remote
-    if [[ $remote != "" ]]; then
-local unpushed=`/usr/bin/git cherry -v $remote/$branch`
+        echo -e "\001\033[1;31m\002\xE2\x9C\xAA"
     else
-local unpushed=`/usr/bin/git cherry -v origin/$branch`
+        # Check if we've pushed to remote
+        if [[ $remote != "" ]]; then
+            local unpushed=`/usr/bin/git cherry -v $remote/$branch`
+        else
+            local unpushed=`/usr/bin/git cherry -v origin/$branch`
+        fi
+        if [[ "$unpushed" != "" ]]; then
+            # Unpushed
+            echo -e "\001\033[1;31m\002\xE2\x9A\xA1"
+        else
+            # Pushed
+            echo -e "\001\033[1;32m\002\xE2\x9D\x80\001\033[0m\002"
+        fi
     fi
-if [[ "$unpushed" != "" ]]; then
-      # Unpushed
-      echo -e "\001\033[1;31m\002\xE2\x9A\xA1"
-    else
-      # Pushed
-      echo -e "\001\033[1;32m\002\xE2\x9D\x80\001\033[0m\002"
-    fi
-fi
 }
 
-parse_git_dirty() {
+function parse_git_dirty() {
     if [[ -n $(git status -s 2> /dev/null) ]]; then
-echo -e "\001\033[1;31m\002\xE2\x9C\x97\001\033[0m\002"
+        echo -e "\001\033[1;31m\002\xE2\x9C\x97\001\033[0m\002"
     else
-local thing=1
+        local thing=1
     fi
 }
 
