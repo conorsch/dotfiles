@@ -1,9 +1,13 @@
 #!/bin/bash
 # parse_git_branch
+#
 # script for showing git branch status
 # intended usage is in PS1, e.g.:
 # export PS1='u@\h{ \w } $(parse_git_branch): ' 
 # drop this script in your PATH and you're good to go
+#
+# shamelessly stolen and modestly adapted from: 
+# https://github.com/caio/oh-my-zsh/blob/a3c2a2f6e8ff9db508070a905de056346386ef4f/lib/git.zsh
 
 git --version 2>/dev/null #try to run git
 if [ $? == 0]; then #if git command above returned 0, indicating git is installed...
