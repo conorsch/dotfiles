@@ -2,7 +2,7 @@
 # for examples
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+#[ -z "$PS1" ] && return
 
 export EDITOR="vim" #use vim as default editor
 #umask 027 #default file permissions should be -rw-r-----
@@ -42,9 +42,9 @@ if [ -n "$force_color_prompt" ]; then
 	# We have color support; assume it's compliant with Ecma-48
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
 	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+        color_prompt=yes
     else
-	color_prompt=
+        color_prompt=
     fi
 fi
 
@@ -345,22 +345,32 @@ fi
 }
 
 parse_git_dirty() {
-  if [[ -n $(git status -s 2> /dev/null) ]]; then
+    if [[ -n $(git status -s 2> /dev/null) ]]; then
 echo -e "\001\033[1;31m\002\xE2\x9C\x97\001\033[0m\002"
-  else
+    else
 local thing=1
-  fi
+    fi
 }
 
 function parse_git_branch {
-  local branch=`get_git_branch`
-  local remote=`get_git_remote`
+    if [ -e /usr/bin/git ]; then #if git exists!
 
-  if [[ $branch != "" && $remote != "" && $remote != "origin" ]]; then
-branch="$remote\001\033[1;34m\002/\001\033[1;33m\002$branch"
-  fi
+        local branch=`get_git_branch`
+        local remote=`get_git_remote`
 
-  [[ $branch ]] && echo -e "[\001\033[1;33m\002$branch$(parse_git_dirty)$(parse_git_unpushed)\001\033[0m\002] "
+        if [[ $branch != "" && $remote != "" && $remote != "origin" ]]; then
+        branch="$remote\001\033[1;34m\002/\001\033[1;33m\002$branch"
+        fi
+
+        [[ $branch ]] && echo -e "[\001\033[1;33m\002$branch$(parse_git_dirty)$(parse_git_unpushed)\001\033[0m\002] "
+    else
+        echo ''
+    fi
+
 }
 
-export PS1='( \! ) \u@\h{ \w } $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
+if (( $UID == 0 )); then #if root, color prompt red
+    export PS1='\[\e[1;31m\]( \! ) \u@\h{ \w } \[\e[0m\] $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
+else #if normal user, don't color the prompt red;
+    export PS1='( \! ) \u@\h{ \w } $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
+fi
