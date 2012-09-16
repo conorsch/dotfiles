@@ -9,21 +9,8 @@
 # shamelessly stolen and modestly adapted from: 
 # https://github.com/caio/oh-my-zsh/blob/a3c2a2f6e8ff9db508070a905de056346386ef4f/lib/git.zsh
 
-git --version 2>/dev/null #try to run git
-if [ $? == 0]; then #if git command above returned 0, indicating git is installed...
 
-    local branch=`get_git_branch`
-    local remote=`get_git_remote`
-
-    if [[ $branch != "" && $remote != "" && $remote != "origin" ]]; then
-    branch="$remote\001\033[1;34m\002/\001\033[1;33m\002$branch"
-    fi
-
-    [[ $branch ]] && echo -e "[\001\033[1;33m\002$branch$(parse_git_dirty)$(parse_git_unpushed)\001\033[0m\002] "
-else #if git is NOT installed
-    echo '' #do nothing
-fi
-
+. /etc/bash_completion
 function git_prompt_status() { # for future use, from oh my zsh
     local index=$(git status --porcelain 2> /dev/null)
     local gitstatus=""
@@ -64,7 +51,7 @@ function git_prompt_status() { # for future use, from oh my zsh
 }
 
 function get_git_branch {
-    echo $(__git_ps1 "%s")
+    echo $(__git_ps1 "%s" )
 }
 
 function get_git_remote {
@@ -104,3 +91,17 @@ function parse_git_dirty() {
     fi
 }
 
+git --version &>/dev/null #try to run git
+if [[ $? -eq 0 ]]; then #if git command above returned 0, indicating git is installed...
+
+    branch=`get_git_branch`
+    remote=`get_git_remote`
+
+    if [[ $branch != "" && $remote != "" && $remote != "origin" ]]; then
+    branch="$remote\001\033[1;34m\002/\001\033[1;33m\002$branch"
+    fi
+
+    [[ $branch ]] && echo -e "[\001\033[1;33m\002$branch$(parse_git_dirty)$(parse_git_unpushed)\001\033[0m\002] "
+else #if git is NOT installed
+    echo '' #do nothing
+fi
