@@ -9,10 +9,22 @@ use LWP::Simple; #for easy HTTP GETs;
 use Tie::File; #for easy in-place modification of mocp config file;
 use feature 'say'; #beats print;
 
+my $usage = <<'END';
+lastfm_top10
+
+This script gets the top 10 artists from the specified Last.fm username and 
+sets the mocp FastDirs for the current user according to these artists. 
+Recommended usage is with a daily or weekly cronjob.
+
+Usage:
+
+    lastfm_top10 <username>
+
+END
+
 my $lastfm_username = $ARGV[0] #declare user to find top 10 for;
     or die "Please specify Last.fm username!"; #die if no username given;
 my $home = $ENV{HOME}; #retrieve current user's home for concatenating in pathnames;
-my $xml_filepath = "$home/.moc/lastfm_xml_data"; #declare path to save raw RSS feed to;
 my $moc_config_filepath = "$home/.moc/config"; #declare path to mocp configuration file;
 
 my @artist_list = get_artists($lastfm_username); #retrieve list of artist names;
@@ -23,14 +35,20 @@ sub get_artists { #retrieve artists list;
     my $lastfm_username = shift; #unpack username from caller;
     my $artist_limit = shift || 10; #cap the number of artists collected this way;
     my $feed_url = "http://ws.audioscrobbler.com/2.0/user/$lastfm_username/topartists.xml?period=3month";
+    say "FEEL URL IS: $feed_url";
+    open my $fh, '>', '/home/conor/.bin/_test_logs'
+        or die "COULD NOT WRITE XML OT FILE";
     my $raw_xml = get($feed_url); #retrieve RSS feed from Last.fm;
-    my @raw_xml = split(/\n/, $raw_xml); #create array out of in-memory XML file;
+
+    say $fh $raw_xml;
+    my @xml = split(/\n/, $raw_xml); #create array out of in-memory XML file;
 
     my @artists; #initialize variable in proper scope;
 
-    for (@raw_xml) { #loop through file/array, line by line;
-        next unless $_ =~ m/<name>(\w+)<\/name>/; #skip line unless it's an artist name;
+    for (@xml) { #loop through file/array, line by line;
+        next unless $_ =~ m@<name>([\w|\s]+)</name>@; #skip line unless it's an artist name;
         push @artists, $1; #append matched artist name to list;
+        say "Added artst '$1'";
         last if $#artists >= $artist_limit; #don't keep searching after cap is reached;
     }
 
@@ -47,7 +65,7 @@ sub update_moc_config { #change music dirs in mocp config file to match artist r
     my $current_dir = 0; #initialize counter for keeping track of Fastdirs;
     my $dir_cap = 10; #cap number of Fastdirs to declare;
 
-    foreach (@moc_config) { #loop through moc config file, line by line;
+    for (@moc_config) { #loop through moc config file, line by line;
         next unless $_ =~ m/^#?Fastdir\d+/; #skip unless this line specifies a Fastdir;
         $current_dir++; #increment counter, so we don't make too many Fastdirs;
         my $artist = shift @artists; #yank out top most artist from list;
