@@ -10,7 +10,14 @@
 # https://github.com/caio/oh-my-zsh/blob/a3c2a2f6e8ff9db508070a905de056346386ef4f/lib/git.zsh
 
 
-. /etc/bash_completion
+if [[ -f /etc/bash_completion ]]; then #check for existence of bash_completion file (Ubuntu/Debian)
+    . /etc/bash_completion #source it if found (for __git_ps1 command
+elif [[ -f /etc/bash_completion.d/git.sh ]]; then #check for bash_completion elsewhere (OpenSUSE)
+    . /etc/bash_completion.d/git.sh #source it if found
+else #if bash_completion file does not exist;
+    echo 'err: no bash_completion' #warn that no bash completion exists (echo '' if silent failure is preferred)
+fi
+
 function git_prompt_status() { # for future use, from oh my zsh
     local index=$(git status --porcelain 2> /dev/null)
     local gitstatus=""
