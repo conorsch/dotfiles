@@ -98,6 +98,7 @@ alias killalljobs='kill -9 `jobs -p`'
 alias pmac='format_mac_address' #re-format MAC address in readable way
 alias fmac='format_mac_address' #re-format MAC address in readable way
 alias kj='ssh kj' #ssh into king-james
+alias makesilent="2>/dev/null"
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -114,9 +115,8 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
-export heimchen="/home/conor/Valhalla/Media/Heimchen"
-export PATH=$PATH:/home/conor/.bin
-export makesilent="2>/dev/null"
+export heimchen="$HOME/Valhalla/Media/Heimchen"
+export PATH=$PATH:$HOME/.bin
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
