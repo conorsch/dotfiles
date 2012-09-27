@@ -2,9 +2,10 @@
 # for examples
 
 # If not running interactively, don't do anything
-[ -z "$PS1" ] && return
+#[ -z "$PS1" ] && return
 
 export EDITOR="vim" #use vim as default editor
+#umask 027 #default file permissions should be -rw-r-----
 
 #history options
 HISTCONTROL=ignoredups:ignorespace #don't put duplicate lines in the history. See bash(1) for more options
@@ -41,11 +42,14 @@ if [ -n "$force_color_prompt" ]; then
 	# We have color support; assume it's compliant with Ecma-48
 	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
 	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
+        color_prompt=yes
     else
-	color_prompt=
+        color_prompt=
     fi
 fi
+
+#export tmuxinator projects for tab-completion of session names
+[[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -68,6 +72,7 @@ fi
 alias l='ls -lsh'
 alias ll='ls -lsh'
 alias la='ls -lash'
+alias lash='ls -lashR'
 alias rsync='rsync -avPh'
 alias bi='beet import'
 alias gits='git status'
@@ -83,7 +88,13 @@ alias whereami='externalip | iploc'
 alias whoshere='scan_local_ips' #alias to a Perl script in path, uses nmap;
 alias wp='mwiki' #easier to remember for Wikipedia lookups
 alias etym='etymology_lookup' #etymonline.com lookups via Perl script in ~/.bin
+alias imdb='imdb_lookup' #etymonline.com lookups via Perl script in ~/.bin
 alias refresh='source ~/.bashrc' #re-source bashrc easily
+alias s='ssh -t s "tmux attach -d"'
+alias stir='ssh -t s "tmux attach -d"'
+alias t='ssh -t t "tmux attach -d"'
+alias tepes='ssh -t t "tmux attach -d"'
+alias killalljobs='kill -9 `jobs -p`'
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -102,6 +113,7 @@ fi
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export heimchen="/home/conor/Valhalla/Media/Heimchen"
 export PATH=$PATH:/home/conor/.bin
+export makesilent="2>/dev/null"
 #export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
 #export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
@@ -157,14 +169,14 @@ function genpw() { #generate random 30-character password
 function ugrep() { #look up Unicode characters by name
     egrep -i "^[0-9a-f]{4,} .*$*" $(locate CharName.pm) | while read h d; do /usr/bin/printf "\U$(printf "%08x" 0x$h)\tU+%s\t%s\n" $h "$d"; done
 }
-cd() { #Print working directory after a cd.
-    if [[ $@ == '-' ]]; then
-        builtin cd "$@" > /dev/null  # We'll handle pwd.
-    else
-        builtin cd "$@"
-    fi
-    echo -e "   \033[1;30m"`pwd`"\033[0m"
-}
+#cd() { #Print working directory after a cd.
+#    if [[ $@ == '-' ]]; then
+#        builtin cd "$@" > /dev/null  # We'll handle pwd.
+#    else
+#        builtin cd "$@"
+#    fi
+#    echo -e "   \033[1;30m"`pwd`"\033[0m"
+#}
 function scan_host() { #use nmap to find open ports on a given IP address;
     sudo nmap -sS -P0 -sV -O $@
 }
@@ -187,7 +199,7 @@ function slg(){
 function newestfiles(){
     #Ignores all git and subversion files/directories, because who wants to sort those?
     #Date statement could be cleaner, though; gets ugly on long filenames
-    find "$@" -not -iwholename '*.svn*' -not -iwholename '*.git*' -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6 
+    find "$@" -not -iwholename '*.svn*' -not -iwholename '*.git*' -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6 | tail -n 10
 }
 function explodeavi(){
     ffmpeg -i "$@" -f image2 image-%03d.jpg
@@ -206,11 +218,11 @@ function toritup() {
 function rsyncssh() {
     rsync -e "ssh" -avPh $@
 }
-function cds() {
-    cd $@ && ls -lsh
+function cd() {
+    builtin cd "$@" && ls -lsh
 }
 function muzik() {
-    if [ -e /home/conor/Valhalla/Media/Heimchen ] 
+    if [ -d /home/conor/Valhalla/Media/Heimchen ] 
         then
             mocp
     else 
@@ -239,7 +251,7 @@ function tssh() { #Connect to many machines via SSH by invoking tmux;
 
 #set -o vi #Set vi input mode (instead of default emacs style)
 function g() { 
-    lynx -dump "http://google.com/search?q=$*" | more
+    lynx -dump "http://google.com/search?q=$*" | less
 }
 function afterdownload() { #complete action after a download or transfer completes
     while [ -e $1 ] #$1 should be (hidden) partial file for download
@@ -261,96 +273,8 @@ function strlength() { #print length of given string
     echo "$@" | awk '{ print length }'
 }
 
-#### GIT #####
-function git_prompt_status() { # for future use, from oh my zsh
-  local index=$(git status --porcelain 2> /dev/null)
-  local gitstatus=""
-
-  if $(echo "$index" | grep '^?? ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^A ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^M ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^ M ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^AM ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^ T ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^R ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^ D ' &> /dev/null); then
-gitstatus="$gitstatus"
-  elif $(echo "$index" | grep '^AD ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-if $(echo "$index" | grep '^UU ' &> /dev/null); then
-gitstatus="$gitstatus"
-  fi
-
-echo "$gitstatus"
-}
-
-function get_git_branch {
-  echo $(__git_ps1 "%s")
-}
-
-function get_git_remote {
-  echo $(git config --get branch.$branch.remote)
-}
-
-function parse_git_unpushed {
-  # Check first for branch remote
-  local branch=`get_git_branch`
-  local remote=`get_git_remote`
-  local unpublished=`__git_refs | grep $remote/$branch`
-  if [[ "$unpublished" == "" ]]; then
-    # No remote
-    echo -e "\001\033[1;31m\002\xE2\x9C\xAA"
-  else
-    # Check if we've pushed to remote
-    if [[ $remote != "" ]]; then
-local unpushed=`/usr/bin/git cherry -v $remote/$branch`
-    else
-local unpushed=`/usr/bin/git cherry -v origin/$branch`
-    fi
-if [[ "$unpushed" != "" ]]; then
-      # Unpushed
-      echo -e "\001\033[1;31m\002\xE2\x9A\xA1"
-    else
-      # Pushed
-      echo -e "\001\033[1;32m\002\xE2\x9D\x80\001\033[0m\002"
-    fi
+if (( $UID == 0 )); then #if root, color prompt red
+    export PS1='\[\e[1;31m\]( \! ) \u@\h{ \w } \[\e[0m\] $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
+else #if normal user, don't color the prompt red;
+    export PS1='( \! ) \u@\h{ \w } $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
 fi
-}
-
-parse_git_dirty() {
-  if [[ -n $(git status -s 2> /dev/null) ]]; then
-echo -e "\001\033[1;31m\002\xE2\x9C\x97\001\033[0m\002"
-  else
-local thing=1
-  fi
-}
-
-function parse_git_branch {
-  local branch=`get_git_branch`
-  local remote=`get_git_remote`
-
-  if [[ $branch != "" && $remote != "" && $remote != "origin" ]]; then
-branch="$remote\001\033[1;34m\002/\001\033[1;33m\002$branch"
-  fi
-
-  [[ $branch ]] && echo -e "[\001\033[1;33m\002$branch$(parse_git_dirty)$(parse_git_unpushed)\001\033[0m\002] "
-}
-
-export PS1='( \! ) \u@\h{ \w } $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:

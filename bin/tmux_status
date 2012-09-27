@@ -127,7 +127,7 @@ sub date_and_time { #return date and time information, using Perl's localtime bu
 }
 
 sub network_status { #check whether connected to network and report it;
-    `nm-online -t 1`; #run check (returns 0 for success, 1 for failure);
+    `nm-online -t 2`; #run check (returns 0 for success, 1 for failure);
     if ( $? == 0 ) { #check whether connection check reported success;
 
         #get device name for active connection;
@@ -146,6 +146,9 @@ sub network_status { #check whether connected to network and report it;
             my $ssid = `iwgetid --raw`; #grab SSID of current network connection;
             chomp $ssid; #remove pesky trailing newline;
             print ":$ssid "; #print it;
+        }
+        else { #if not on a wifi connection, no SSID to display;
+            print ' '; #add a single space for readability;
         }
     }
 

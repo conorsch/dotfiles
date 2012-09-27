@@ -259,17 +259,16 @@ ASCIILines		= no
 
 # FastDirs, these allow you to jump directly to a directory, the key bindings
 # are in the keymap file.
-Fastdir1 = /mnt/Valhalla/Media/Heimchen/
-Fastdir2 = /mnt/Valhalla/Media/Heimchen/Arsis
-Fastdir3 = /mnt/Valhalla/Media/Heimchen/In Flames
-#Fastdir3 = /mp3/rap
-#Fastdir4 = /mp3/etc
-#Fastdir5 =
-#Fastdir6 =
-#Fastdir7 =
-#Fastdir8 =
-#Fastdir9 =
-#Fastdir10 =
+Fastdir1 = ${MusicDir}/Cloudkicker
+Fastdir2 = ${MusicDir}/Iron Maiden
+Fastdir3 = ${MusicDir}/The Human Abstract
+Fastdir4 = ${MusicDir}/Avishai Cohen
+Fastdir5 = ${MusicDir}/Katatonia
+Fastdir6 = ${MusicDir}/As I Lay Dying
+Fastdir7 = ${MusicDir}/Soilwork
+Fastdir8 = ${MusicDir}/System of a Down
+Fastdir9 = ${MusicDir}/Son of Aurelius
+Fastdir10 = ${MusicDir}/Periphery
 
 # How fast to seek? Number of seconds per key stroke.
 #SeekTime		= 1

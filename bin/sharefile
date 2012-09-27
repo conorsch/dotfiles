@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+#script to share a file on the local network.
+
+use strict;
+use warnings;
+use feature qw/switch say/;
+use Getopt::Long; #for parsing command-line arguments;
+use File::Basename; #for splitting filename from fullpath;
+
+#### variable declaration ####
+my $usage = <<'END';
+sharefile
+
+This script uses netcat (nc) to share a file via HTTP over LAN. Port 80 is assumed, 
+but this can be changed with the --port flag. 
+
+Usage:
+
+    sharefile <filename>
+    sharefile --port 1001 <filename>
+
+END
+GetOptions (
+        'port|p=s' => \my $port,
+        'help|h|usage|?' => \my $help,
+        ); #This style of grabbing doesn't support flag arguments, just flags
+
+if ($help) { #if user requested help/usage information;
+    say $usage; #display usage information;
+    exit 0; #exit cleanly;
+}
+
+$port = 80 unless defined ($port); #set default value of port 80;
+
+my $file = $ARGV[0] or die "Please specify a file to share!"; #get file to be shared;
+
+my $local_ip = `hostname -I`; #grab local IP address;
+chomp $local_ip; #remove pesky trailing newline;
+$local_ip =~ s/\s*//g; #remove any and all whilespace;
+my $filename = basename($file);
+my $file_address;
+$port == 80 ? #check whether port is 80, the default;
+    $file_address = "http://$local_ip/$filename": #build link to give out;
+    $file_address = "http://$local_ip:$port/$filename"; #build link with port to give out;
+
+say "File will be available on the local network at: 
+$file_address";
+
+system ("sudo nc -v -l $port < '$file'"); #call netcat to host file on port 80
+
+if ($? == 0) { #check for successful exit code from netcat command;
+    say "Transfer complete!"; #share the good news;
+}
+else { #if netcat command was not successful;
+    my $md5sum_raw = `md5sum "$file"`; #capture md5sum of file for reporting;
+    chomp $md5sum_raw; #remove pesky trailing newline;
+    (my $md5sum) = split (/ /, $md5sum_raw);
+    say "An unknown error occurred; try the transfer again.";
+    say "The md5sum for the complete file is: $md5sum";
+}
