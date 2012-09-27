@@ -43,3 +43,5 @@ set splitright "Ensure that horizontal splits add the new frame on the right
 map <Leader># :s:^:#:<CR>:nohl<CR> 
 "remove comments from lines beginning with #
 map <Leader>-# :s:#:^:<CR>:nohl<CR> 
+"remap Perl array to hash, ignore topic variable $_
+map <Leader>h :s/\$_\@!\(\w\+\),*/\1 => \$\1,\r\t/g<CR> 
