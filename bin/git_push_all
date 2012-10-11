@@ -10,8 +10,8 @@ use warnings;
 use feature qw/switch say/;
 use File::Basename 'basename';
 
-my $repo = "/home/conor/gits/dotfiles"; #This path is used on ALL remote machines;
-my $reponame = basename($repo);
+my $repo = "$ENV{'HOME'}/gits/dotfiles"; #This path is used on ALL remote machines;
+my $reponame = basename($repo); # grab name of git repository from fullpath;
 my %cluster = ( #keys are aliases in ~/.ssh/config, values are actual hostnames;
         t => "Tepes",
         s => "Stirling",
