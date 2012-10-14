@@ -1,0 +1,33 @@
+# add help/usage info at top of file
+snippet docs
+	#!/usr/bin/perl
+	# quick script to ${1:Description};
+	use strict;
+	use warnings;
+	use diagnostics; # useful for debugging;
+	use feature 'say'; # beats print;
+	use Getopt::Long; # for parsing command-line options;
+
+	my $usage = <<'END'
+	${2:ScriptName}
+
+	$1. 
+
+	Usage: 
+		$2 --${3:option 1}		
+		$2 --${4:option 2}	
+		$2 --help			# show this usage information
+
+	Supported options:
+
+		-h, --help 			# show this usage information
+		-v, --verbose		# enable chatty output
+
+	
+	END
+
+	GetOptions ( 
+			'help|h|usage|?'	=>	\my $help,
+			'verbose|v'			=>	\my $verbose,
+			) or die "$usage";
+	

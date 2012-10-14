@@ -1,5 +1,5 @@
 call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
+"call pathogen#helptags()
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 
 colorscheme acidcupcake
