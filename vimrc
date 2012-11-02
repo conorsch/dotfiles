@@ -47,3 +47,11 @@ map <Leader># :s:^:#:<CR>:nohl<CR>
 map <Leader>-# :s:#:^:<CR>:nohl<CR> 
 "remap Perl array to hash, ignore topic variable $_
 map <Leader>h :s/\$_\@!\(\w\+\),*/\1 => \$\1,\r\t/g<CR> 
+" Show syntax highlighting groups for word under cursor
+nmap <C-S-P> :call <SID>SynStack()<CR>
+function! <SID>SynStack()
+  if !exists("*synstack")
+    return
+  endif
+  echo map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
+endfunc
