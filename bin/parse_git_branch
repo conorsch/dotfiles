@@ -108,7 +108,7 @@ if [[ $? -eq 0 ]]; then #if git command above returned 0, indicating git is inst
     branch="$remote\001\033[1;34m\002/\001\033[1;33m\002$branch"
     fi
 
-    [[ $branch ]] && echo -e "[\001\033[1;33m\002$branch$(parse_git_dirty)$(parse_git_unpushed)\001\033[0m\002] "
+    [[ $branch ]] && echo -e "[\001\033[1;33m\002$branch$(parse_git_dirty)$(parse_git_unpushed)\001\033[0m\002]"
 else #if git is NOT installed
     echo '' #do nothing
 fi
