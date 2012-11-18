@@ -1,0 +1,84 @@
+#!/usr/bin/perl
+# quick script to check how long a process has been running;
+use strict;
+use warnings;
+use diagnostics; # useful for debugging;
+use feature 'say'; # beats print;
+use Getopt::Long; # for parsing command-line options;
+use Date::Calc;
+use Time::HiRes; # for getting elapsed time values;
+
+my $usage = <<'END';
+sincewhen
+
+check how long a process has been running. Default behavior displays the start time 
+of the process(es), in human-readable format. The --relative flag will show how much 
+time has elapsed since the process was started. 
+
+Usage: 
+    sincewhen --machine <program_name>      # machine-readable output, for easy parsing
+    sincewhen --relative <program_name>     # displays how long process has been running
+    sincewhen --help                        # show this usage information
+
+Supported options:
+
+    -r, --relative       # displays elapsed time process has been running
+    -m, --machine        # machine-readable output, comma-separated
+    -h, --help           # show this usage information
+    -v, --verbose        # enable chatty output
+
+
+END
+
+GetOptions ( 
+        'machine|m'             =>    \my $machine_readable,
+        'relative|r|e|elapsed'  =>    \my $relative,
+        'help|h|usage|?'        =>    \my $help,
+        'verbose|v'             =>    \my $verbose,
+        ) or die "$usage";
+
+my @programs = @ARGV; # rename arguments on command line;
+my %results; # initialize hash for storing results;
+my $mtimes = {}; # initialize hash for last modified times of PID files;
+
+for my $program ( @programs ) { # look at each program user specified;
+    my $pid = `pgrep $program`; # get PID for this application;
+    chomp $pid; # remove pesky trailing newline;
+    unless ( $pid ) { # make sure pgrep returned something to look up;
+        say "Could not find running instance of '$program', skipping..."; # report missing item;
+        exit 1; # exit with failure;
+        next; # move to next program in list;
+    }
+    my $last_modified = ( stat( "/proc/$pid" ) )[9]; # retrieve last modified time for PID file;
+    $mtimes->{$program} = $last_modified; # store modification time;
+}
+
+$relative ? # check whether user requested relative (elapsed time) display;
+    relative_time( $mtimes ): # if so, do a relative check;
+    since_when( $mtimes ); # otherwise, fall back to default of displaying start time;
+
+sub relative_time { # 
+    my $mtimes = shift; # unpack hashref to last_modified times for PID files;
+    for my $program ( keys %$mtimes ) { # retrieve list of programs;
+        my $last_modified = $mtimes->{$program}; # retrieve mtime for this program;
+
+        my @then = ( localtime( $last_modified ) )[5,4,3,2,1,0]; # Y-M-D-h-m-s time format;
+        my @now  = ( localtime( time           ) )[5,4,3,2,1,0]; # Y-M-D-h-m-s time format;
+        my @diff = Date::Calc::Delta_DHMS( @then, @now ); 
+        $machine_readable ? # check whether user specified machine-readable output;
+            say "$program,$diff[0],$diff[1],$diff[2],$diff[3]": # if so, display comma-separated time values;
+            say "$program has been running for $diff[0] days, $diff[1]h:$diff[2]m:$diff[3]s"; # otherwise, human-readable;
+    }
+}
+
+sub since_when { # display start time of specified processes;
+    my $mtimes = shift; # unpack hashref to last_modified times for PID files;
+    for my $program ( keys %$mtimes ) { # retrieve list of programs;
+        my $last_modified = $mtimes->{$program}; # retrieve mtime for this program;
+
+        my $when = localtime( $last_modified ); # retrieve human-readable date format;
+        $machine_readable ? # check whether user specified machine-readable output;
+            say "$program,$last_modified": # if so, display epoch time;
+            say "$program has been running since $when"; # display to user;
+    }
+}
