@@ -62,7 +62,8 @@ sub format_code {
     my $filepath = shift;
     my $just_code = File::Temp->new();
     my $just_code_filepath = $just_code->filename;
-    system(" vim -n '+set ft=perl' +TOhtml '+w! $just_code_filepath' '+qall!' $filepath ");
+    system(" vim -n '+set ft=perl' +TOhtml '+w! $just_code_filepath' '+qall!' $filepath >/dev/null 2>&1");
+
     my $raw_html = do { local $/; <$just_code> }; # slurp file into string;
 
     $raw_html =~ s|(<style.*)</body>|$1|ms;
