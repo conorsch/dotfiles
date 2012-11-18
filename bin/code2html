@@ -58,11 +58,11 @@ my $filepath = $just_code->filename; # retrieve fullpath to tempfile;
 print $just_code $code; # print string to tempfile;
 format_code( $filepath ); # pass fullpath to tempfile to HTML output sub;
 
-sub format_code { 
+sub format_code_old { 
     my $filepath = shift;
     my $just_code = File::Temp->new();
     my $just_code_filepath = $just_code->filename;
-    system(" vim -n '+set ft=perl' +TOhtml '+w! $just_code_filepath' '+qall!' $filepath >/dev/null 2>&1");
+    system(" vim -n '+set ft=perl' +TOhtml '+let html_use_css=1' '+w! $just_code_filepath' '+qall!' $filepath >/dev/null 2>&1");
 
     my $raw_html = do { local $/; <$just_code> }; # slurp file into string;
 
@@ -72,5 +72,23 @@ sub format_code {
     $html =~ s|<body>||ms; # strip out body tag;
     $html =~ s|<!--||ms; # strip out HTML opening comment tag;
     $html =~ s|-->||ms; # strip out HTML closing comment tag;
+    $html =~ s|^body \{|\.codeblock \{|ms; # by default, vim's TOhtml styles <body>, which we don't want;
+    $html =~ s|^(\.codeblock\s+\{[^\{]*)(\})$|$1 display:'inline'; $2|ms; # add inline display to codeblock CSS;
+    $html =~ s|^pre \{.*$||m; # remove CSS formatting for <pre> blocks;
+#    $html =~ s|^.*(<span.*</span>;).*$|$1|ms;
     print $html; # write result to STDOUT;
+}
+sub format_code { 
+    my $filepath = shift;
+    my $just_code = File::Temp->new();
+    my $just_code_filepath = $just_code->filename;
+    system(" vim -n '+set ft=perl' +TOhtml '+let html_use_css=1' '+w! $just_code_filepath' '+qall!' $filepath >/dev/null 2>&1");
+
+    my $formatted_code = '';
+    while ( <$just_code> ) { 
+        chomp; 
+        next unless /^<span/;
+        $formatted_code .= $_;
+    }
+    say $formatted_code;
 }
