@@ -7,3 +7,9 @@
 [submodule "/home/conor/gits/dotfiles/vim/bundle/vim-prose"]
 	path = /home/conor/gits/dotfiles/vim/bundle/vim-prose
 	url = git://github.com/nother/vim-prose.git
+[submodule "vim/bundle/vimroom"]
+	path = vim/bundle/vimroom
+	url = git://github.com/mikewest/vimroom.git
+[submodule "vim/bundle/writer"]
+	path = vim/bundle/writer
+	url = https://github.com/honza/writer.vim
