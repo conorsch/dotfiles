@@ -56,10 +56,13 @@ ok( -d $repo_root, 'local working copy found' );
     # working copy, so let's hop inside that dir temporarily to run the command;
     local $CWD = $repo_root; 
 
-    system( "git submodule add $git_repo $destination" )
-        == 0 or die "Could not create new git submodule for '$software_name'";
+    if ( -d $repo_root ) { # make sure this directory actually exists;
+
+        system( "git submodule add $git_repo $destination" )
+            == 0 or die "Could not create new git submodule for '$software_name'";
+    }
+
+    else { # if somehow the local working copy of the dotfiles repo isn't found;
+        die "Unable to find dotfiles working copy at '$repo_root'";
+    }
 }
-
-
-
-
