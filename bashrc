@@ -8,7 +8,7 @@ export EDITOR="vim" #use vim as default editor
 #umask 027 #default file permissions should be -rw-r-----
 
 #history options
-HISTCONTROL=ignoredups:ignorespace #don't put duplicate lines in the history. See bash(1) for more options
+HISTCONTROL=ignoredups:ignorespace #don't put duplicate lines in the history. See bash(0) for more options
 HISTSIZE=1000 #for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTFILESIZE=2000
 
@@ -18,6 +18,7 @@ shopt -s checkwinsize #check the window size after each command and, if necessar
 shopt -s cdspell #this corrects typos when spelling out paths.
 shopt -s autocd #change directories with just a pathname
 shopt -s cmdhist #Multi-line commands are still entered into history
+CDPATH=".:~:~/gits:~/gits/cets" # add git dirs to path for cd, so projects are always accessible;
 ####END SHELL OPTIONS
 
 # make less more friendly for non-text input files, see lesspipe(1)
