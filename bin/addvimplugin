@@ -7,6 +7,7 @@ use diagnostics; # useful for debugging;
 use feature 'say'; # beats print;
 use Getopt::Long; # for parsing command-line options;
 use File::chdir; #for easy temporary switching of CWD;
+use Test::Simple tests => 2;
 
 my $usage = <<'END';
 addvimplugin
@@ -41,8 +42,14 @@ unless ( $git_repo =~ m/\.git$/i or         # dirty error-checking to make sure 
 
 my $home = $ENV{'HOME'}; # retrieve user ~/ from environment variable special hash;
 my ( $software_name ) = ( $git_repo =~ m/\/(([\w|\-\_]+)(\.git)?)$/ )[1]; # grab last part of repo URL as software name;
-my $destination = $home . '/vim/bundle/' . $software_name; 
+my $destination = 'vim/bundle/';# . $software_name; 
 my $repo_root = $home . '/gits/dotfiles'; 
+say "DESTINATION: '$destination'";
+say "REPO ROOT: '$repo_root'";
+
+
+ok( ! -d $destination, 'destination empty' );
+ok( -d $repo_root, 'local working copy found' );
 
 {
     # `git submodule add` expects to be run from the top-level of the local 
