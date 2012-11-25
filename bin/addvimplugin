@@ -7,7 +7,7 @@ use diagnostics; # useful for debugging;
 use feature 'say'; # beats print;
 use Getopt::Long; # for parsing command-line options;
 use File::chdir; #for easy temporary switching of CWD;
-use Test::Simple tests => 2;
+$|++; # disable line-buffering, for real-time output;
 
 my $usage = <<'END';
 addvimplugin
@@ -33,36 +33,40 @@ GetOptions (
         ) or die "$usage";
 
 
-my $git_repo = $ARGV[0];
-
-unless ( $git_repo =~ m/\.git$/i or         # dirty error-checking to make sure we have a git repo here;
-         $git_repo =~ m/github\.com/ ) { # 
-    die "Specified remote git repository '$git_repo' doesn't look right.";
-}
-
+my @git_repos = @ARGV or die "$usage"; # unpack remote git repos, die if none given;
 my $home = $ENV{'HOME'}; # retrieve user ~/ from environment variable special hash;
-my ( $software_name ) = ( $git_repo =~ m/\/(([\w|\-\_]+)(\.git)?)$/ )[1]; # grab last part of repo URL as software name;
-my $destination = 'vim/bundle/' . $software_name; 
-my $repo_root = $home . '/gits/dotfiles'; 
-say "DESTINATION: '$destination'";
-say "REPO ROOT: '$repo_root'";
+my $repo_root = $home . '/gits/dotfiles'; # concatenate fullpath to expected location of dotfiles dir;
 
+-d $repo_root or die "Can't find local working copy for dotfiles at '$repo_root'";
 
-ok( ! -d $destination, 'destination empty' );
-ok( -d $repo_root, 'local working copy found' );
+say "Now installing " . ( $#git_repos + 1 ) . " submodules in '$repo_root'..." if $verbose; # user feedback;
 
-{
-    # `git submodule add` expects to be run from the top-level of the local 
-    # working copy, so let's hop inside that dir temporarily to run the command;
-    local $CWD = $repo_root; 
+for my $git_repo ( @git_repos ) { # do this for each specified git repo;
 
-    if ( -d $repo_root ) { # make sure this directory actually exists;
-
-        system( "git submodule add $git_repo $destination" )
-            == 0 or die "Could not create new git submodule for '$software_name'";
+    unless ( $git_repo =~ m/\.git$/i or         # dirty error-checking to make sure we have a git repo here;
+             $git_repo =~ m/github\.com/ ) {    # if it contains 'github', should be good;
+        die "Specified remote git repository '$git_repo' doesn't look right.";
     }
 
-    else { # if somehow the local working copy of the dotfiles repo isn't found;
-        die "Unable to find dotfiles working copy at '$repo_root'";
+    my $software_name = ( split( /\//, $git_repo ) )[-1]; # break up that URL, grab last element;
+    $software_name =~ s/(\.\w+)?$//; # strip out suffix on software name, if there;
+    my $destination = 'vim/bundle/' . $software_name;  # concatenate relative path to dir for this submodule;
+
+    say "Setting up '$software_name' in '$destination'..." if $verbose; # user feedback;
+
+    {
+        # `git submodule add` expects to be run from the top-level of the local 
+        # working copy, so let's hop inside that dir temporarily to run the command;
+        local $CWD = $repo_root; 
+
+        if ( -d $repo_root ) { # make sure this directory actually exists;
+
+            system( "git submodule add $git_repo $destination" );
+#== 0 or die "Could not create new git submodule for '$software_name'";
+        }
+
+        else { # if somehow the local working copy of the dotfiles repo isn't found;
+            die "Unable to find dotfiles working copy at '$repo_root'";
+        }
     }
 }
