@@ -42,7 +42,7 @@ unless ( $git_repo =~ m/\.git$/i or         # dirty error-checking to make sure 
 
 my $home = $ENV{'HOME'}; # retrieve user ~/ from environment variable special hash;
 my ( $software_name ) = ( $git_repo =~ m/\/(([\w|\-\_]+)(\.git)?)$/ )[1]; # grab last part of repo URL as software name;
-my $destination = 'vim/bundle/';# . $software_name; 
+my $destination = 'vim/bundle/' . $software_name; 
 my $repo_root = $home . '/gits/dotfiles'; 
 say "DESTINATION: '$destination'";
 say "REPO ROOT: '$repo_root'";
