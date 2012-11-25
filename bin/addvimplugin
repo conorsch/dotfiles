@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+# quick script to add vim plugin via pathogen in git-managed dotfiles;
+# essentially just a wrapper for cd magic and git submodule setup;
+use strict;
+use warnings;
+use diagnostics; # useful for debugging;
+use feature 'say'; # beats print;
+use Getopt::Long; # for parsing command-line options;
+use File::chdir; #for easy temporary switching of CWD;
+
+my $usage = <<'END';
+addvimplugin
+
+add vim plugins via pathogen in git-managed dotfiles;. 
+
+Usage: 
+    addvimplugin --option 1        
+    addvimplugin --option 2    
+    addvimplugin --help            # show this usage information
+
+Supported options:
+
+    -h, --help             # show this usage information
+    -v, --verbose        # enable chatty output
+
+
+END
+
+GetOptions ( 
+        'help|h|usage|?'    =>    \my $help,
+        'verbose|v'            =>    \my $verbose,
+        ) or die "$usage";
+
+
+my $git_repo = $ARGV[0];
+
+unless ( $git_repo =~ m/\.git$/i or         # dirty error-checking to make sure we have a git repo here;
+         $git_repo =~ m/github\.com/ ) { # 
+    die "Specified remote git repository '$git_repo' doesn't look right.";
+}
+
+my $home = $ENV{'HOME'}; # retrieve user ~/ from environment variable special hash;
+my ( $software_name ) = ( $git_repo =~ m/\/(([\w|\-\_]+)(\.git)?)$/ )[1]; # grab last part of repo URL as software name;
+my $destination = $home . '/vim/bundle/' . $software_name; 
+my $repo_root = $home . '/gits/dotfiles'; 
+
+{
+    # `git submodule add` expects to be run from the top-level of the local 
+    # working copy, so let's hop inside that dir temporarily to run the command;
+    local $CWD = $repo_root; 
+
+    system( "git submodule add $git_repo $destination" )
+        == 0 or die "Could not create new git submodule for '$software_name'";
+}
+
+
+
+
