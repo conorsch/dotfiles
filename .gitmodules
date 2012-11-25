@@ -13,3 +13,6 @@
 [submodule "vim/bundle/writer"]
 	path = vim/bundle/writer
 	url = https://github.com/honza/writer.vim
+[submodule "vim/bundle/nerdtree"]
+	path = vim/bundle/nerdtree
+	url = git://github.com/scrooloose/nerdtree.git

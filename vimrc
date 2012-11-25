@@ -27,7 +27,7 @@ set pastetoggle=<F2>
 
 set smartindent "better indentation, e.g. comments to go to first column
 
-map <F4> :NERDTreeToggle <CR>
+map <Leader>n :NERDTreeToggle<CR>
 
 map <F5> :set nowrap! <CR>
 map <F6> :set nonumber! <CR>
