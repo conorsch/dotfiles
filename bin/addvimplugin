@@ -12,18 +12,20 @@ $|++; # disable line-buffering, for real-time output;
 my $usage = <<'END';
 addvimplugin
 
-add vim plugins via pathogen in git-managed dotfiles;. 
+Add vim plugins via pathogen in a git-managed dotfiles repo. Essentially a wrapper 
+on `cd` and `git submodule add`. Accepts multiple repos. Error-checking is minimal, 
+but script manages to fail gracefully on most errors. 
+
+You will have to hard code the location of your local dotfiles working copy!
 
 Usage: 
-    addvimplugin --option 1        
-    addvimplugin --option 2    
+    addvimplugin https://github.com/nother/vim-prose        # installs vim-prose plugin
     addvimplugin --help            # show this usage information
 
 Supported options:
 
     -h, --help             # show this usage information
     -v, --verbose        # enable chatty output
-
 
 END
 
@@ -32,6 +34,10 @@ GetOptions (
         'verbose|v'            =>    \my $verbose,
         ) or die "$usage";
 
+if ( $help ) { # if user requested help/usage info;
+    print $help; # display help/usage info;
+    exit 0; # exit cleanly;
+}
 
 my @git_repos = @ARGV or die "$usage"; # unpack remote git repos, die if none given;
 my $home = $ENV{'HOME'}; # retrieve user ~/ from environment variable special hash;
