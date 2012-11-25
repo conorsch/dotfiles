@@ -6,7 +6,9 @@ colorscheme acidcupcake
 
 set formatoptions=tcroqw
 
+set nobackup
 set noswapfile
+
 set number
 set titlestring=%f
 set title
