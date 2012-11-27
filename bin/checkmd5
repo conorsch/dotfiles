@@ -7,7 +7,8 @@ use strict;
 use warnings;
 use feature 'say'; #say is so much better than print;
 
-my ($target_checksum, $file) = @ARGV; #unpack arguments;
+my ($target_checksum, $file) = @ARGV #unpack arguments;
+   or die 'usage: checkmd5 $md5sum $file'; # die on failure
 
 my $check_output = `md5sum "$file"`; #get the real MD5 sum, for comparison;
 chomp $check_output; #remove pesky trialing newline;

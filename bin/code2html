@@ -1,0 +1,74 @@
+#!/usr/bin/perl
+# quick script to convert a script file to HTML;
+use strict;
+use warnings;
+use diagnostics; # useful for debugging;
+use feature 'say'; # beats print;
+use Getopt::Long; # for parsing command-line options;
+use File::Temp;
+use File::Copy;
+
+my $usage = <<'END';
+code2html
+
+convert a script file to HTML. 
+
+Usage: 
+    code2html --body       # only output in-line style and body, not HTML header info;
+    code2html --string     # read from STDIN/string, rather than from file;
+    code2html --help       # show this usage information;
+    code2html --post       # read in uglyperl post format;
+
+Supported options:
+
+    -h, --help             # show this usage information
+    -v, --verbose        # enable chatty output
+
+
+END
+
+GetOptions ( 
+        'help|h|usage|?'       =>    \my $help,
+        'verbose|v'            =>    \my $verbose,
+        'string|s=s'           =>    \my $string_opt,
+        'post|p=s'             =>    \my $post_opt,
+        ) or die "$usage";
+
+if ( $help ) { # if user requests help/usage info;
+    print $usage; # print help info;
+    exit 0; # exit cleanly;
+}
+
+my $code; # initialize var in proper scope;
+
+if ( $string_opt ) { # if user requested to read from STDIN, rather than file;
+    $code = $string_opt; # set string to be parsed, grabbed from command line;
+    # this method doesn't handle shell characters very well, so nested single-quotes will break
+}
+
+if ( $post_opt ) { # if user requested reading in from post file;
+    my $post_filepath = $post_opt; # 
+    open my $post, '<', $post_filepath or die "Cannot open post: $!";
+    my $raw_post = do { local $/; <$post> }; # slurp file into string;
+    $code = ( split(/\n\n/, $raw_post) )[1];
+}
+
+my $just_code = File::Temp->new(); # request filehandle for tempfile;
+my $filepath = $just_code->filename; # retrieve fullpath to tempfile;
+print $just_code $code; # print string to tempfile;
+format_code( $filepath ); # pass fullpath to tempfile to HTML output sub;
+
+sub format_code { # just grab the damn <span>s and call it a day;
+    my $filepath = shift;
+    my $just_code = File::Temp->new();
+    my $just_code_filepath = $just_code->filename;
+    system(" vim -n '+set ft=perl' +TOhtml '+let html_use_css=1' '+w! $just_code_filepath' '+qall!' $filepath >/dev/null 2>&1");
+
+    my $formatted_code = '';
+    while ( <$just_code> ) { 
+        chomp; 
+        next unless /^<span/;
+        $formatted_code .= $_;
+    }
+    say $formatted_code;
+}
