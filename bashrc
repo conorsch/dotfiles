@@ -186,7 +186,6 @@ function scan_host() { #use nmap to find open ports on a given IP address;
 }
 #####END borrowed tips
 
-
 function canhaz(){
     sudo aptitude -y install $@
 }
@@ -272,13 +271,25 @@ function stereo() { #plays audio file on computer connected to stereo;
 function speaks() { #open mocp on home computer
     ssh -t s mocp
 }
-
 function strlength() { #print length of given string
     echo "$@" | awk '{ print length }'
+}
+function makeiso() { # create ISO from CD/DVD
+    ISONAME=$@
+    dd if=/dev/sr0 of="$ISONAME.iso"
+}
+function atb() {
+    l=$(tar tf $1);
+    if [ $(echo "$l" | wc -l) -eq $(echo "$l" | grep $(echo "$l" | head -n1) | wc -l) ];
+        then tar xf $1;
+    else mkdir ${1%.t(ar.gz||ar.bz2||gz||bz||ar)} &&
+        tar xf $1 -C ${1%.t(ar.gz||ar.bz2||gz||bz||ar)};
+    fi;
 }
 
 if (( $UID == 0 )); then #if root, color prompt red
     export PS1='\[\e[1;31m\]( \! ) \u@\h{ \w } \[\e[0m\] $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
 else #if normal user, don't color the prompt red;
+    export PS1='[\[\h:\]\e[0;36m\]\u\[\e[0;37m\]][\[\e[0;33m\]\w\[\e[0;37m\]]$(parse_git_branch)\n\[\e[1;30m\]>\[\e[0;32m\]>\[\e[1;32m\]>\[\e[0m\] '
     export PS1='( \! ) \u@\h{ \w } $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
 fi
