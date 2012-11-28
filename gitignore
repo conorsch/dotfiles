@@ -2,3 +2,5 @@
 Session.vim
 test.sh
 .gitconfig
+.gitignore
+.nfs*

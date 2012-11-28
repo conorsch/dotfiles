@@ -10,7 +10,7 @@ use feature 'say'; #say is so much better than print;
 my ($target_checksum, $file) = @ARGV #unpack arguments;
    or die 'usage: checkmd5 $md5sum $file'; # die on failure
 
-my $check_output = `md5sum $file`; #get the real MD5 sum, for comparison;
+my $check_output = `md5sum "$file"`; #get the real MD5 sum, for comparison;
 chomp $check_output; #remove pesky trialing newline;
 my @check_output = split('\s', $check_output); #break up md5sum output on whitespace;
 
