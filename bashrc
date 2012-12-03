@@ -102,6 +102,7 @@ alias fmac='format_mac_address' #re-format MAC address in readable way
 alias kj='ssh kj' #ssh into king-james
 alias makesilent="2>/dev/null"
 alias speakertest="speaker-test -t wav -c 2" # test left and right stereo channels
+alias disabletouchpad='xinput set-prop 11 "Device Enabled" 0'
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
