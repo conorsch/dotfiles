@@ -3,7 +3,7 @@
 	email = conor.schaefer@gmail.com
 [core]
 	editor = vim
-	excludesfile = /home/conor/.gitignore
+	excludesfile = ~/.gitignore
 [color]
 	diff = auto
 	status = auto
