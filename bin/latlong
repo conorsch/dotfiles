@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+# quick script to find latitude and longitude, based on current IP address;
+use strict;
+use warnings;
+use feature 'say'; # beats print;
+use LWP::Simple; #for easy HTTP GETs;
+
+my $full_page = get( 'http://ipinfodb.com' ); # grab raw page for parsing;
+$full_page =~ m/Latitude : (-?\d+\.\d+).+?Longitude : (-?\d+\.\d+)/ms; # grab location info;
+say "$1:$2"; # display latitude and longitude, colon-separated;
