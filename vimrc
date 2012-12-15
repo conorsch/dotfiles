@@ -23,6 +23,9 @@ set nowrap
 set wildmode=longest,list,full
 set wildmenu
 
+" reformat file using perltidy
+noremap <Leader>t :%!perltidy -q<CR> 
+
 set pastetoggle=<F2>
 
 set smartindent "better indentation, e.g. comments to go to first column

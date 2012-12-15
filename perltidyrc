@@ -1,0 +1,8 @@
+# This is a simple of a .perltidyrc configuration file
+# This implements a highly spaced style
+-pt=0  # parens not tight at all
+-bt=0  # braces not tight
+-sbt=0 # square brackets not tight
+#-csc   # add closing side comments (e.g. 'end sub <whatever>')
+-l=150 # declare max line length in number of characters
+#--backup-and-modify-in-place
