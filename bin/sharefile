@@ -46,7 +46,8 @@ $port == 80 ? #check whether port is 80, the default;
 say "File will be available on the local network at: 
 $file_address";
 
-system ("sudo nc -v -l $port < '$file'"); #call netcat to host file on port 80
+system ("sudo nc -v -l $port < '$file'") #call netcat to host file on port 80
+    == 0 or die "Failed to post file using netcat (is netcat installed?)"; # die on failure;
 
 if ($? == 0) { #check for successful exit code from netcat command;
     say "Transfer complete!"; #share the good news;
