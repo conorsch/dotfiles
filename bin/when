@@ -18,6 +18,7 @@ Usage:
 
 Supported options:
 
+    -i, --interval             # specify how many seconds between each attempt
     -h, --help             # show this usage information
     -v, --verbose        # enable chatty output
 
@@ -25,11 +26,13 @@ Supported options:
 END
 
 GetOptions ( 
+        'interval|i=s'    =>    \my $interval,
         'help|h|usage|?'    =>    \my $help,
         'verbose|v'            =>    \my $verbose,
         ) or die "$usage";
 
 
+$interval = 5 unless $interval; # set default if user omitted option;
 
 if ( $ARGV[-2] # if user specified a host to check on...
         and $ARGV[-1] =~ m/[up|online|u|on]/i ) { # by asking about 'up' or 'online' status;
@@ -64,7 +67,7 @@ sub wait_for_it { # keep running a code reference until it returns true;
     while ( not $go ) { # check for sign that command completed successfully;
     &$coderef ? # run that test code;
         $go = 1: # if code returned success, let's break out of this;
-        sleep 5; # wait, then try again;
+        sleep $interval; # wait, then try again;
     }
 
     
