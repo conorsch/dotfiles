@@ -25,13 +25,12 @@ There are also several convenient shortcuts for checking on state changes:
 
 
 Usage: 
-    letmeknow --terminal        # just print notification to STDOUT 
-    letmeknow --window          # display an X11 window
-    letmeknow --notification    # use desktop environment's notification tray
-    letmeknow --email           # send email to current user
-    letmeknow --audible         # make a noise to alert the user 
-    letmeknow --message         # declare custom message to display;
-    letmeknow --help            # show this usage information
+    letmeknow --by window          # display an X11 window
+    letmeknow --by systemtray      # use desktop environment's notification tray
+    letmeknow --by email           # send email to current user
+    letmeknow --by audio           # make a noise to alert the user 
+    letmeknow --message            # declare custom message to display;
+    letmeknow --help               # show this usage information
 
 Supported options:
 
@@ -42,6 +41,12 @@ Supported options:
 END
 
 GetOptions(
+    'window|w'       => \my $window,
+    'systemtray|s'   => \my $systemtray,
+    'email|e'        => \my $email,
+    'audio|a'        => \my $audio,
+    'by|b'           => \my $by,
+    'message|m=s'    => \my $message,
     'help|h|usage|?' => \my $help,
     'verbose|v'      => \my $verbose,
 ) or die "$usage";
