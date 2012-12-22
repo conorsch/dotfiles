@@ -32,14 +32,13 @@ GetOptions (
         ) or die "$usage";
 
 
+### BEGIN main logic ###
 $interval = 5 unless $interval; # set default if user omitted option;
 
 if ( $ARGV[-2] # if user specified a host to check on...
         and $ARGV[-1] =~ m/[up|online|u|on]/i ) { # by asking about 'up' or 'online' status;
 
     my $host = $ARGV[ -2 ]; # lexicalize what must be the host identifying string;
-    $host = check_for_ssh_alias( $host ) # search for SSH alias for this host;
-        or die "Something went wrong with SSH file reading"; # should return same host on failure;
 
     print "Waiting for host '$host' to come online... " if $verbose; # chatty output;
 
@@ -64,12 +63,15 @@ else { # if input was not understood;
     say $usage; # display help/usage info;
     exit 1; # exit error;
 }
+### END main logic ###
 
+### subroutines ###
 sub check_internet { # check for online status;
+
         return not system( "nm-online" ) # return result of nm-online check...;
             if system ( "which nm-online >/dev/null 2>&1" ) == 0; # if user has NetworkManager installed;
 
-        return system( "ping -c -online >/dev/null 2>&1" ); # return result of nm-online check...;
+        return not system( "ping -c 1 google.com >/dev/null 2>&1" ); # return result of nm-online check...;
 }
 
 sub wait_for_it { # keep running a code reference until it returns true;
@@ -123,7 +125,11 @@ sub check_for_ssh_alias { # determine whether host string is an SSH alias;
 
 sub check_host { # check whether given host is up by pinging it;
     my $host = shift or return; # unpack host from caller;
+    $host = check_for_ssh_alias( $host ) # search for SSH alias for this host;
+        or die "Something went wrong with SSH file reading"; # should return same host on failure;
+
     system( "ping -c 1 $host >/dev/null 2>&1" ); # shell out for ping;
+
     return not $?; # flip exit code from shell-style to function-style;
 }
-
+### subroutines ###
