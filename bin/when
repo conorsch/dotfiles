@@ -36,6 +36,7 @@ if ( $ARGV[-2] # if user specified a host to check on...
         and $ARGV[-1] =~ m/[up|online|u|on]/i ) { # by asking about 'up' or 'online' status;
 
     my $host = $ARGV[ -2 ]; # lexicalize what must be the host identifying string;
+    $host = check_for_ssh_alias( $host ) or die "Something went wrong with SSH file reading";
     wait_for_it( sub { 
         check_host( $host ); # check whether host is online (pingable);
     }, "The host $host is now online!"); # wait around until it happens;
@@ -52,9 +53,43 @@ sub wait_for_it { # keep running a code reference until it returns true;
         $go = 1: # if code returned success, let's break out of this;
         sleep 5; # wait, then try again;
     }
+
     
     say $notification ; # notify user in whatever way is appropriate;
 }
+
+sub check_for_ssh_alias { # determine whether host string is an SSH alias;
+    my $host = shift or return; # check out that string;
+    my $ssh_file = $ENV{ 'HOME' } . '/' . '.ssh/config'; # concatenate filepath;
+
+    open my $ssh, '<', $ssh_file # open up file for reading;
+        or return $host; # just give up if we can't open SSH config file;
+
+    my $alias_match; # initialize variable for storing a found entry;
+
+
+    while ( <$ssh> ) { # read through file, line by line;
+        chomp; # remove pesky trailing newline;
+        if ( $alias_match ) { # check for found entry in previous run;
+            next unless /^\s+Hostname/; # we only want hostname declarations;
+
+            my $hostname = ( split )[ -1 ]; # final element on line nust be hostname;
+            say "Using hostname '$hostname' for host '$host'" if $verbose; # chatty output;
+            return $hostname;
+        }
+
+        else { # if we're still looking for an alias match;
+
+            next unless /^Host/; # we only want host declarations;
+
+            $alias_match = grep { /^$host$/ } split # check each alias on this line for match;
+                or next; # skip if no matches were found;
+        }
+
+    }
+    return $host; # if no match was found, just pass back what we started with;
+}
+
 
 sub check_host { # check whether given host is up by pinging it;
     my $host = shift or return; # unpack host from caller;
