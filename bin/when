@@ -1,0 +1,64 @@
+#!/usr/bin/perl
+# quick script to chain commands conditionally;
+use strict;
+use warnings;
+use diagnostics; # useful for debugging;
+use feature 'say'; # beats print;
+use Getopt::Long; # for parsing command-line options;
+use Net::Ping; # for checking upness of hosts;
+
+my $usage = <<'END';
+when
+
+chain commands conditionally. 
+
+Usage: 
+    when --option 1        
+    when --option 2         
+    when --help            # show this usage information
+
+Supported options:
+
+    -h, --help             # show this usage information
+    -v, --verbose        # enable chatty output
+
+
+END
+
+GetOptions ( 
+        'help|h|usage|?'    =>    \my $help,
+        'verbose|v'            =>    \my $verbose,
+        ) or die "$usage";
+
+
+
+if ( $ARGV[-2] # if user specified a host to check on...
+        and $ARGV[-1] =~ m/[up|online|u|on]/i ) { # by asking about 'up' or 'online' status;
+
+    my $host = $ARGV[ -2 ]; # lexicalize what must be the host identifying string;
+    wait_for_it( sub { 
+        check_host( $host ); # check whether host is online (pingable);
+    }, "The host $host is now online!"); # wait around until it happens;
+}
+
+
+sub wait_for_it { # keep running a code reference until it returns true;
+    my $coderef = shift or return; # unpack specified command;
+    my $notification = shift; # unpack optional message to display during notification;
+
+    my $go; # initialize flag for success check of provided coderef;
+    while ( not $go ) { # check for sign that command completed successfully;
+    &$coderef ? # run that test code;
+        $go = 1: # if code returned success, let's break out of this;
+        sleep 5; # wait, then try again;
+    }
+    
+    say $notification ; # notify user in whatever way is appropriate;
+}
+
+sub check_host { # check whether given host is up by pinging it;
+    my $host = shift or return; # unpack host from caller;
+    my $pinger = Net::Ping->new; # call forth an object for pinging;
+    return $pinger->ping( $host ); # explicitly pass back result of ping check;
+}
+
