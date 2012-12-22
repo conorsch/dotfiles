@@ -36,8 +36,6 @@ Supported options:
 
     -h, --help                  # show this usage information
     -v, --verbose               # enable chatty output
-
-
 END
 
 GetOptions(
@@ -51,3 +49,30 @@ GetOptions(
     'verbose|v'      => \my $verbose,
 ) or die "$usage";
 
+my @clause = @ARGV; # unpack all non-option arguments as a command to run;
+
+if ( $clause[ -1 ] =~ m/^(finish|done|complete)/  # check for '... finishes' structure to command;
+     and $#clause > 0 ) { # make sure there are multiple args here, including "finish" request;
+    pop @clause; # toss away that word, because we don't need it;
+    my $command = join( ' ', @clause ); # assume that remaining arguments constitute a command to be run;
+
+    print "Running command '$command'... " if $verbose; # chatty output;
+    system( "$command" ); # shell out to run given operation;
+    my $success = not $?; # store that status code;
+
+    if ( $verbose ) { # only do this if chatty output was requested;
+        $success ? # check for successful return value (non-zero means failure, so flip it);
+            say "done.": # report success;
+            say "failed."; # report failure;
+        say "SUCCESS IS: '$success'";
+    }
+
+    notify_user( $success, $command ) # pass exit value of system() call and the command run to notification subroutine;
+        or die "Failed to notify user of command completion."; # die on failure;
+}
+
+sub notify_user { # send notification about command completion, according to options specified;
+    my $success = shift or return; # unpack exit value from previous command;
+    my @command = @_ or return; # unpack all remaining arguments as the command that was run;
+    ...
+}
