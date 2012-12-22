@@ -38,18 +38,31 @@ if ( $ARGV[-2] # if user specified a host to check on...
         and $ARGV[-1] =~ m/[up|online|u|on]/i ) { # by asking about 'up' or 'online' status;
 
     my $host = $ARGV[ -2 ]; # lexicalize what must be the host identifying string;
-    $host = check_for_ssh_alias( $host ) or die "Something went wrong with SSH file reading";
+    $host = check_for_ssh_alias( $host ) # search for SSH alias for this host;
+        or die "Something went wrong with SSH file reading"; # should return same host on failure;
+
+    print "Waiting for host '$host' to come online... " if $verbose; # chatty output;
+
     wait_for_it( sub { # feed in code reference to block until true for;
         check_host( $host ); # check whether host is online (pingable);
-    }, "The host $host is now online!"); # wait around until it happens;
+    }); # wait around until it happens;
+
+    say "$host now online!" if $verbose; # chatty output;
 }
 
 elsif ( $#ARGV == 0 # check for exactly one argument...
-        and $ARGV[ 0 ] =~ m/^[internet|net|online|on]$/ ) { # and it was about online status;
+        and $ARGV[ 0 ] =~ m/^(internet|net|online|on)$/ ) { # and it was about online status;
 
+    print "Waiting for internet connection... " if $verbose; # chatty output;
     wait_for_it( sub { # feed in code reference to block until true for;
         check_internet(); # check whether online connection exists;
     }); # wait around until it happens;
+    say "now online!" if $verbose; # chatty output;
+}
+
+else { # if input was not understood;
+    say $usage; # display help/usage info;
+    exit 1; # exit error;
 }
 
 sub check_internet { # check for online status;
@@ -71,7 +84,8 @@ sub wait_for_it { # keep running a code reference until it returns true;
     }
 
     
-    say $notification ; # notify user in whatever way is appropriate;
+    say $notification # notify user in whatever way is appropriate;
+        if $notification and $verbose; # only do it if appropriate;
 }
 
 sub check_for_ssh_alias { # determine whether host string is an SSH alias;
