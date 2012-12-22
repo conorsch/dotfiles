@@ -5,7 +5,6 @@ use warnings;
 use diagnostics; # useful for debugging;
 use feature 'say'; # beats print;
 use Getopt::Long; # for parsing command-line options;
-use Net::Ping; # for checking upness of hosts;
 
 my $usage = <<'END';
 when
@@ -41,7 +40,6 @@ if ( $ARGV[-2] # if user specified a host to check on...
         check_host( $host ); # check whether host is online (pingable);
     }, "The host $host is now online!"); # wait around until it happens;
 }
-
 
 sub wait_for_it { # keep running a code reference until it returns true;
     my $coderef = shift or return; # unpack specified command;
@@ -93,7 +91,7 @@ sub check_for_ssh_alias { # determine whether host string is an SSH alias;
 
 sub check_host { # check whether given host is up by pinging it;
     my $host = shift or return; # unpack host from caller;
-    my $pinger = Net::Ping->new; # call forth an object for pinging;
-    return $pinger->ping( $host ); # explicitly pass back result of ping check;
+    system( "ping -c 1 $host >/dev/null 2>&1" ); # shell out for ping;
+    return not $?; # flip exit code from shell-style to function-style;
 }
 
