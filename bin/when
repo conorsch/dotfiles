@@ -36,9 +36,24 @@ if ( $ARGV[-2] # if user specified a host to check on...
 
     my $host = $ARGV[ -2 ]; # lexicalize what must be the host identifying string;
     $host = check_for_ssh_alias( $host ) or die "Something went wrong with SSH file reading";
-    wait_for_it( sub { 
+    wait_for_it( sub { # feed in code reference to block until true for;
         check_host( $host ); # check whether host is online (pingable);
     }, "The host $host is now online!"); # wait around until it happens;
+}
+
+elsif ( $#ARGV == 0 # check for exactly one argument...
+        and $ARGV[ 0 ] =~ m/^[internet|net|online|on]$/ ) { # and it was about online status;
+
+    wait_for_it( sub { # feed in code reference to block until true for;
+        check_internet(); # check whether online connection exists;
+    }); # wait around until it happens;
+}
+
+sub check_internet { # check for online status;
+        return not system( "nm-online" ) # return result of nm-online check...;
+            if system ( "which nm-online >/dev/null 2>&1" ) == 0; # if user has NetworkManager installed;
+
+        return system( "ping -c -online >/dev/null 2>&1" ); # return result of nm-online check...;
 }
 
 sub wait_for_it { # keep running a code reference until it returns true;
