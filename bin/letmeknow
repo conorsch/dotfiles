@@ -1,0 +1,48 @@
+#!/usr/bin/perl
+# quick script to notify completed comnmands or changes to system state;
+use strict;
+use warnings;
+use diagnostics;      # useful for debugging;
+use feature 'say';    # beats print;
+use Getopt::Long;     # for parsing command-line options;
+use Net::Ping;        # for checking upness of hosts;
+
+my $usage = <<'END';
+letmeknow
+
+notify about completed comnmands or changes to system state. 
+
+Run this command if you want to look away from your terminal for a while, 
+waiting for a process to complete. Without any arguments it will notify 
+when the previous command completes, optionally emailing the user. Make 
+sure to use a ~/.forward file, because the mail is sent to the logged in user. 
+
+There are also several convenient shortcuts for checking on state changes: 
+
+    - check for internet 
+    - watch for a host to come online 
+    - command completes
+
+
+Usage: 
+    letmeknow --terminal        # just print notification to STDOUT 
+    letmeknow --window          # display an X11 window
+    letmeknow --notification    # use desktop environment's notification tray
+    letmeknow --email           # send email to current user
+    letmeknow --audible         # make a noise to alert the user 
+    letmeknow --message         # declare custom message to display;
+    letmeknow --help            # show this usage information
+
+Supported options:
+
+    -h, --help                  # show this usage information
+    -v, --verbose               # enable chatty output
+
+
+END
+
+GetOptions(
+    'help|h|usage|?' => \my $help,
+    'verbose|v'      => \my $verbose,
+) or die "$usage";
+
