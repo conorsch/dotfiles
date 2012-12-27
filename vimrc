@@ -5,6 +5,7 @@ autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 colorscheme acidcupcake
 
 set formatoptions=tcroqw
+filetype plugin indent on
 
 set nobackup
 set noswapfile
@@ -15,9 +16,6 @@ set title
 set cindent
 set autoindent
 set smartindent
-set tabstop=2
-set shiftwidth=2
-set expandtab
 set nowrap
 
 set wildmode=longest,list,full
