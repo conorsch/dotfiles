@@ -15,8 +15,8 @@ set title
 set cindent
 set autoindent
 set smartindent
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 set nowrap
 
@@ -49,8 +49,12 @@ set splitright "Ensure that horizontal splits add the new frame on the right
 
 "comment out lines with #
 map <Leader># :s:^:#:<CR>:nohl<CR> 
+"comment out lines with //
+map <Leader>\ :s:^://:<CR>:nohl<CR>
 "remove comments from lines beginning with #
 map <Leader>-# :s:#:^:<CR>:nohl<CR> 
+"remove comments from lines beginning with //
+map <Leader>-\ :s://:^:<CR>:nohl<CR> 
 "remap Perl array to hash, ignore topic variable $_
 map <Leader>h :s/\$_\@!\(\w\+\),*/\1 => \$\1,\r\t/g<CR> 
 " Show syntax highlighting groups for word under cursor
