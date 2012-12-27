@@ -92,5 +92,32 @@ elsif ( $#clause >= 0 ) { # if arguments were specified, assume it's a command t
 sub notify_user { # send notification about command completion, according to options specified;
     my $success = shift or return; # unpack exit value from previous command;
     my @command = @_ or return; # unpack all remaining arguments as the command that was run;
-    ...
+    my $time = localtime; # grab scalar time value for reporting;
+    my $notification; # initialize variable for storing message string;
+
+    $notification = "The following command completed successfully:\n\n@command\n\nat $time." if $success;
+    $notification = "The following command failed:\n\n@command\n\nat $time." if not $success;
+
+    my $notify_command; # initialize string to shell out to notification system;
+
+    if ( $window ) { # if user requested that an X11 window be drawn with notification;
+        $notify_command = "kdialog --msgbox '$notification'"
+            if system( "which kdialog >/dev/null 2>&1" ) == 0; # only do this if package is installed;
+
+        system( $notify_command ) if $notify_command; # only shell out if supported command is found;
+    }
+
+    if ( $email ) { # if user requested that an email be sent as notification;
+        $notify_command = "sendmail -s 'Operation complete' -t " . getpwuid( $< );
+
+        open my $mail_tube, '>', "$notify_command |" # open pipe to mail command, for writing notification to;
+            or die "Could not open pipe to mail $!"; # die on failure to open mail pipe;
+
+        say $mail_tube $notification; # write to pipe;
+        close $mail_tube # close pipe, which sends mail;
+            or die "Could not close pipe to mail $!"; # die on failure to close mail pipe;
+    }
+
+    say $notification # display notification message in terminal;
+        unless $window or $email; # don't do this if another method was specified;
 }
