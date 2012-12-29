@@ -6,14 +6,16 @@ use diagnostics;      # useful for debugging;
 use feature 'say';    # beats print;
 use Getopt::Long;     # for parsing command-line options;
 use File::Temp;       # for tempdirs to store scratch files;
+use File::Find;       # for traversing directories and pruning files;
 $|++;                 # disable line-buffering, for real-time output;
 
 my $usage = <<'END';
 vid2gif
 
-convert a video file to a GIF based on time indicators. 
+Convert a video file to an animated GIF. Requires a start time for the GIF.  
 
 Usage: 
+
 	vid2gif --start 00:01:10   		# begin GIF at time HH::MM::SS
 	vid2gif --length 2		   		# GIF should include 2 seconds of video
 	vid2gif --resolution 425x320	# reformat GIF to given dimensions
@@ -46,20 +48,40 @@ else {                                        # if no custom resolution was requ
 
 my $video_file = pop @ARGV or die "$usage";    # grab video file as last element on command line;
 
-my $tempdir = File::Temp->newdir                         # create
-  or die "Could not create temporary directory $!";      # die on failure;
+my $tempdir = File::Temp->newdir                       # create
+  or die "Could not create temporary directory $!";    # die on failure;
 
-print "Generating intermediate images... " if $verbose;  # chatty output;
+print "Generating intermediate images... " if $verbose;    # chatty output;
 system( "mplayer -quiet -ao null -ss $start_time -endpos $length $video_file -vo jpeg:outdir=$tempdir/ $resolution >/dev/null 2>&1" ) == 0
   or die "Could not generate temporary images; please manually cleanup $tempdir.";    # die on failure
 say "done." if $verbose;                                                              # chatty output;
 
-print "Assembling full animated GIF... " if $verbose;                                 # chatty output;
-system( "convert $tempdir/*.jpg output.gif >/dev/null 2>&1" )                         # shell out to convert to run conversion;
-  == 0 or die "Could not create assembled GIF image.";                                # die on failure;
-say "done." if $verbose;                                                              # chatty output;
+my $orig_count = `ls $tempdir | wc -l`;                                               # grab original file count;
+print "Optimizing base frame count... " if $verbose;                                  # chatty output;
+
+my $counter = 1;                                                                      # initialize counter for use while iterating over files;
+find(
+    {
+        wanted => sub {                                                               # declare &wanted subroutine anonymously;
+            unlink if $counter % 4;                                                   # keep 25% of the files, toss the rest;
+            $counter++;                                                               # increment that counter;
+        },
+        preprocess => sub {                                                           # prepare directory before running &wanted subroutine;
+            return sort @_;    # sort all filenames in this directory, so destruction is ordered;
+          }
+    },
+    $tempdir                   # declare temp directory as target for this find operation;
+);
+my $final_count = `ls $tempdir | wc -l`;    # grab new file count;
+chomp( $orig_count, $final_count );         # remove pesky trailing newline;
+say "$orig_count -> $final_count, done." if $verbose;    # chatty output;
+
+print "Assembling full animated GIF... " if $verbose;    # chatty output;
+system( "convert -delay 10 $tempdir/*.jpg output.gif " ) # shell out to convert to run conversion;
+  == 0 or die "Could not create assembled GIF image.";   # die on failure;
+say "done." if $verbose;                                 # chatty output;
 say "View the file at: output.gif" if $verbose;
 
-File::Temp::cleanup;           # remove any unused temp files;
-system( "rm -rf $tempdir" )    # hard-remove the temp directory, because cleanup() doesn't work if there are files;
+File::Temp::cleanup;                                     # remove any unused temp files;
+system( "rm -rf $tempdir" )                              # hard-remove the temp directory, because cleanup() doesn't work if there are files;
   == 0 or die "Failed to clean up temp directory at $tempdir";    # die on failure to remove temp directory;
