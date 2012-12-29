@@ -7,6 +7,7 @@ use feature 'say';    # beats print;
 use Getopt::Long;     # for parsing command-line options;
 use File::Temp;       # for tempdirs to store scratch files;
 use File::Find;       # for traversing directories and pruning files;
+use File::Spec;       # for converting relative paths to absolute paths;
 $|++;                 # disable line-buffering, for real-time output;
 
 my $usage = <<'END';
@@ -21,6 +22,7 @@ Usage:
 	vid2gif --start 00:01:10   		# begin GIF at time HH::MM::SS
 	vid2gif --length 2		   		# GIF should include 2 seconds of video
 	vid2gif --resolution 425x320	# reformat GIF to given dimensions
+	vid2gif --output				# name the product GIF
 	vid2gif --help		       		# show this usage information
 
 	vid2gif --start 00:00:07 --length 7 --resolution 50x50 video.mp4
@@ -30,6 +32,7 @@ Supported options:
 	-s, --start 	    # begin GIF at time (HH:MM:SS format)
 	-l, --length 	    # number of seconds of video to convert to GIF
 	-r, --resolution 	# GIF should be rendered in given dimensions (640x480 format)
+	-o, --output 		# GIF should be named with the specified string
 	-h, --help 			# show this usage information
 	-v, --verbose		# enable chatty output
 
@@ -39,6 +42,7 @@ GetOptions(
     'start|s=s'      => \my $start_time,
     'resolution|r=s' => \my $resolution,
     'length|l=s'     => \my $length,
+    'output|o=s'     => \my $output_file,
     'help|h|usage|?' => \my $help,
     'verbose|v'      => \my $verbose,
 ) or die "$usage";
@@ -51,6 +55,13 @@ else {                                        # if no custom resolution was requ
     $resolution = '';                         # set to empty string, so it can still be interpolated in the system() call;
 }
 
+if ( $output_file ) {                         # check whether user specified a custom filename for product GIF;
+    $output_file =~ s/(\.gif)+?$/\.gif/i;     # make sure there's only one file extension on this thing;
+}
+else {                                        # if user did not specify a custom name for product GIF;
+    $output_file = 'output.gif';              # choose a rather bland default;
+}
+$output_file = File::Spec->rel2abs( $output_file );
 my $video_file = pop @ARGV or die "$usage";    # grab video file as last element on command line;
 
 my $tempdir = File::Temp->newdir                       # create
@@ -82,11 +93,11 @@ chomp( $orig_count, $final_count );         # remove pesky trailing newline;
 say "$orig_count -> $final_count, done." if $verbose;    # chatty output;
 
 print "Assembling full animated GIF... " if $verbose;    # chatty output;
-system( "convert -delay 10 $tempdir/*.jpg output.gif " ) # shell out to convert to run conversion;
-  == 0 or die "Could not create assembled GIF image.";   # die on failure;
-say "done." if $verbose;                                 # chatty output;
-say "View the file at: output.gif" if $verbose;
+system( "convert -delay 10 $tempdir/*.jpg '$output_file'" )    # shell out to convert to run conversion;
+  == 0 or die "Could not create assembled GIF image.";         # die on failure;
+say "done." if $verbose;                                       # chatty output;
+say "View the file at: $output_file" if $verbose;
 
-File::Temp::cleanup;                                     # remove any unused temp files;
-system( "rm -rf $tempdir" )                              # hard-remove the temp directory, because cleanup() doesn't work if there are files;
-  == 0 or die "Failed to clean up temp directory at $tempdir";    # die on failure to remove temp directory;
+File::Temp::cleanup;                                           # remove any unused temp files;
+system( "rm -rf $tempdir" )                                    # hard-remove the temp directory, because cleanup() doesn't work if there are files;
+  == 0 or die "Failed to clean up temp directory at $tempdir"; # die on failure to remove temp directory;
