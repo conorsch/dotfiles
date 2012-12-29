@@ -59,7 +59,7 @@ my @desired_videos = ( sort { $video_files{ $b } <=> $video_files{ $a } } keys %
 if ( @desired_videos >= 0 ) { # make sure files were found;
 	say "Copying " . ( $#desired_videos + 1 ) . " videos to $dest..." if $verbose; # chatty output;
 
-	system( "cp @desired_videos $dest" ) == 0 
+	system( "rsync -avPh @desired_videos $dest" ) == 0
 		or die "Could not copy video files to '$dest'";
 }
 else { 
