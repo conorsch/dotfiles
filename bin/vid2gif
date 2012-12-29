@@ -35,14 +35,15 @@ GetOptions(
     'verbose|v'      => \my $verbose,
 ) or die "$usage";
 
-$resolution = 'scale=$resolution' if $resolution;    # prepend option title if user requested certain resolution;
-my $video_file = pop @ARGV or die "$usage";          # grab video file as last element on command line;
+$resolution = "-vf scale=$resolution" if $resolution;    # prepend option title if user requested certain resolution;
+$resolution = ' ' if not $resolution;
+my $video_file = pop @ARGV or die "$usage";              # grab video file as last element on command line;
 
-my $tempdir = File::Temp->newdir                     # create
-  or die "Could not create temporary directory $!";  # die on failure;
+my $tempdir = File::Temp->newdir                         # create
+  or die "Could not create temporary directory $!";      # die on failure;
 
-print "Generating intermediate images... " if $verbose;    # chatty output;
-system( "mplayer -quiet -ao null -ss $start_time -endpos $length $video_file -vo jpeg:outdir=$tempdir/ >/dev/null 2>&1" ) == 0
+print "Generating intermediate images... " if $verbose;  # chatty output;
+system( "mplayer -quiet -ao null -ss $start_time -endpos $length $video_file -vo jpeg:outdir=$tempdir/ $resolution >/dev/null 2>&1" ) == 0
   or die "Could not generate temporary images; please manually cleanup $tempdir.";    # die on failure
 say "done." if $verbose;                                                              # chatty output;
 
