@@ -1,5 +1,7 @@
 #!/usr/bin/perl
-# quick script to convert a video file to a GIF based on time indicators;
+# Quick script to convert a video file to a GIF based on time indicators.
+# Inspired by the ugly Bash script at http://www.davidgouveia.net/2011/09/how-to-convert-video-to-animated-gifs-from-a-linux-console/
+# See `vid2gif --help` for more info.
 use strict;
 use warnings;
 use diagnostics;      # useful for debugging;
