@@ -49,7 +49,7 @@ GetOptions(
     'verbose|v'      => \my $verbose,
 ) or die "$usage";
 
-check_options(); # run options-checking subroutine;
+check_options();    # run options-checking subroutine;
 my $video_file = pop @ARGV or die "$usage";    # grab video file as last element on command line;
 
 my $tempdir = File::Temp->newdir                       # create temporary directory for writing image files to;
@@ -90,23 +90,24 @@ File::Temp::cleanup;                                           # remove any unus
 system( "rm -rf $tempdir" )                                    # hard-remove the temp directory, because cleanup() doesn't work if there are files;
   == 0 or die "Failed to clean up temp directory at $tempdir"; # die on failure to remove temp directory;
 
+sub check_options {                                            # run initialization on command-line options, set defaults;
 
-sub check_options { # run initialization on command-line options, set defaults;
+    if ( $resolution ) {                                       # check whether user specified a custom resolution for GIF;
+        $resolution = '1280x720' if $resolution =~ m/^full$/;    # expand to full resolution if asked;
+        $resolution =~ s/x/:/;                                   # swap in a colon where x is more user-friendly;
+        $resolution = "-vf scale=$resolution";                   # prepend option title if user requested certain resolution;
+    }
+    else {                                                       # if no custom resolution was requested;
+        $resolution = '-vf scale=425:320';                       # set to small format, which can be overridden with 'full' option to --resolution
+    }
 
-	if ( $resolution ) {    # check whether user specified a custom resolution for GIF;
-		$resolution =~ s/x/:/;    # swap in a colon where x is more user-friendly;
-		$resolution = "-vf scale=$resolution";    # prepend option title if user requested certain resolution;
-	}
-	else {                                        # if no custom resolution was requested;
-		$resolution = '';                         # set to empty string, so it can still be interpolated in the system() call;
-	}
+    if ( $output_file ) {                                        # check whether user specified a custom filename for product GIF;
+        $output_file .= '.gif'                                   # append GIF file extension;
+          unless $output_file =~ m/\.gif$/i;                     # don't append if file extension is there already;
+    }
+    else {                                                       # if user did not specify a custom name for product GIF;
+        $output_file = 'output.gif';                             # choose a rather bland default;
+    }
 
-	if ( $output_file ) {                         # check whether user specified a custom filename for product GIF;
-		$output_file =~ s/(\.gif)+?$/\.gif/i;     # make sure there's only one file extension on this thing;
-	}
-	else {                                        # if user did not specify a custom name for product GIF;
-		$output_file = 'output.gif';              # choose a rather bland default;
-	}
- 
-	$output_file = File::Spec->rel2abs( $output_file ); # expand to fullpath for better feedback;
+    $output_file = File::Spec->rel2abs( $output_file );          # expand to fullpath for better feedback;
 }
