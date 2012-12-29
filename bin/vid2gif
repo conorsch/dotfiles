@@ -60,6 +60,6 @@ system( "convert $tempdir/*.jpg output.gif >/dev/null 2>&1" )                   
 say "done." if $verbose;                                                              # chatty output;
 say "View the file at: output.gif" if $verbose;
 
-File::Temp::cleanup;                                                                  # remove all temporary directories!;
-system( "rm -rf $tempdir" ) == 0 or die "Failed to clean up temp directory at $tempdir";
-say "TEMP DIR PERSISTS" if -e $tempdir;
+File::Temp::cleanup;           # remove any unused temp files;
+system( "rm -rf $tempdir" )    # hard-remove the temp directory, because cleanup() doesn't work if there are files;
+  == 0 or die "Failed to clean up temp directory at $tempdir";    # die on failure to remove temp directory;
