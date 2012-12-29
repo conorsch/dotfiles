@@ -110,4 +110,7 @@ sub check_options {                                            # run initializat
     }
 
     $output_file = File::Spec->rel2abs( $output_file );          # expand to fullpath for better feedback;
+
+    $start_time = '00:00:00' unless $start_time;                 # set default to start at beginning of GIF;
+    $length     = 5          unless $length;                     # set default of 5 seconds to loop;
 }
