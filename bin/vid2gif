@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-#!/usr/bin/perl
 # quick script to convert a video file to a GIF based on time indicators;
 use strict;
 use warnings;
