@@ -2,11 +2,12 @@
 # quick script to grab newest video file from phone;
 use strict;
 use warnings;
-use diagnostics;      # useful for debugging;
-use feature 'say';    # beats print;
-use Getopt::Long;     # for parsing command-line options;
-use File::Find;       # for finding files;
-$|++;                 # disable line-buffering (for real-time output);
+use diagnostics;       # useful for debugging;
+use feature 'say';     # beats print;
+use Getopt::Long;      # for parsing command-line options;
+use File::Find;        # for finding files;
+use File::Basename;    # for splitting up dirs and filenames in fullpaths;
+$|++;                  # disable line-buffering (for real-time output);
 
 my $usage = <<'END';
 get_newest_video
@@ -29,20 +30,22 @@ END
 
 GetOptions(
     'number|n=s'     => \my $max_requested,
+    'gif|g'          => \my $gif,
     'help|h|usage|?' => \my $help,
     'verbose|v'      => \my $verbose,
 ) or die "$usage";
 
 my $dir  = '/mnt/NEXUSONE/DCIM/Camera';      # declare fullpath to directory containing video files;
 my $dest = $ENV{ 'HOME' } . '/Downloads';    # declare fullpath to directory to which files will be copied;
-my %video_files;                             # initialize hash in proper scope;
-my $counter = 1;                             # initialize counter for verbose output;
+-d $_ or die "Can't find directory at '$_'" for ( $dir, $dest );    # a little error-checking;
+my %video_files;                                                    # initialize hash in proper scope;
+my $counter = 1;                                                    # initialize counter for verbose output;
 
-if ( $max_requested ) {                      # check whether user requested certain number of videos;
-    $max_requested--;                        # if so, decrement it by one, so it applies as array index;
+if ( $max_requested ) {                                             # check whether user requested certain number of videos;
+    $max_requested--;                                               # if so, decrement it by one, so it applies as array index;
 }
 else {
-    $max_requested = 0;                      # if not, set it to zero, so just one result is returned;
+    $max_requested = 0;                                             # if not, set it to zero, so just one result is returned;
 }
 
 find(
@@ -56,13 +59,25 @@ find(
 
 my @desired_videos = ( sort { $video_files{ $b } <=> $video_files{ $a } } keys %video_files )[ 0 .. $max_requested ];
 
-if ( @desired_videos >= 0 ) { # make sure files were found;
-	say "Copying " . ( $#desired_videos + 1 ) . " videos to $dest..." if $verbose; # chatty output;
+if ( @desired_videos >= 0 ) {                                          # make sure files were found;
+    say "Copying " . ( $#desired_videos + 1 ) . " videos to $dest..." if $verbose;    # chatty output;
+    say @desired_videos if $verbose;                                                  # chatty output;
 
-	system( "rsync -avPh @desired_videos $dest" ) == 0
-		or die "Could not copy video files to '$dest'";
+    system( "rsync -Ph @desired_videos $dest" ) == 0
+      or die "Could not copy video files to '$dest'";
 }
-else { 
-	say "No video files were found in '$dir'."; # inform user of error;
-	exit 1; # exit with failure;
+else {
+    say "No video files were found in '$dir'.";                                       # inform user of error;
+    exit 1;                                                                           # exit with failure;
+}
+
+if ( $gif ) {                                                                         # only do this if user requested that a GIF be made;
+
+    for my $video ( @desired_videos ) {                                               # look at each video just copied;
+        my $local_path = $dest . '/' . basename( $video );                            # concatenate path to vid;
+
+        say "##### Creating GIF #####" if $verbose;                                   # chatty output;
+        system( "vid2gif --verbose $local_path" ) == 0
+          or die "Could not create animated GIF!";                                    # die on failure
+    }
 }
