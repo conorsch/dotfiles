@@ -81,7 +81,9 @@ chomp( $orig_count, $final_count );         # remove pesky trailing newline;
 say "$orig_count -> $final_count, done." if $verbose;    # chatty output;
 
 print "Assembling full animated GIF... " if $verbose;    # chatty output;
-system( "convert -delay $length $tempdir/*.jpg '$output_file'" )    # shell out to convert to run conversion;
+my $delay = $length > 10 ? $length : 10; # check whether more than 10 seconds of video conversion was requested;
+
+system( "convert -delay $delay $tempdir/*.jpg '$output_file'" )    # shell out to convert to run conversion;
   == 0 or die "Could not create assembled GIF image.";         # die on failure;
 say "done." if $verbose;                                       # chatty output;
 say "View the file at: $output_file" if $verbose;
