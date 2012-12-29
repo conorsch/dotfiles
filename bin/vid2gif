@@ -1,0 +1,57 @@
+#!/usr/bin/perl
+#!/usr/bin/perl
+# quick script to convert a video file to a GIF based on time indicators;
+use strict;
+use warnings;
+use diagnostics;      # useful for debugging;
+use feature 'say';    # beats print;
+use Getopt::Long;     # for parsing command-line options;
+use File::Temp;       # for tempdirs to store scratch files;
+$|++;                 # disable line-buffering, for real-time output;
+
+my $usage = <<'END';
+vid2gif
+
+convert a video file to a GIF based on time indicators. 
+
+Usage: 
+	vid2gif --start 00:01:10   		# begin GIF at time HH::MM::SS
+	vid2gif --length 2		   		# GIF should include 2 seconds of video
+	vid2gif --resolution 320x480	# reformat GIF to given dimensions
+	vid2gif --help		       		# show this usage information
+
+Supported options:
+
+	-h, --help 			# show this usage information
+	-v, --verbose		# enable chatty output
+
+END
+
+GetOptions(
+    'start|s=s'      => \my $start_time,
+    'resolution|r=s' => \my $resolution,
+    'length|l=s'     => \my $length,
+    'help|h|usage|?' => \my $help,
+    'verbose|v'      => \my $verbose,
+) or die "$usage";
+
+$resolution = 'scale=$resolution' if $resolution;    # prepend option title if user requested certain resolution;
+my $video_file = pop @ARGV or die "$usage";          # grab video file as last element on command line;
+
+my $tempdir = File::Temp->newdir                     # create
+  or die "Could not create temporary directory $!";  # die on failure;
+
+print "Generating intermediate images... " if $verbose;    # chatty output;
+system( "mplayer -quiet -ao null -ss $start_time -endpos $length $video_file -vo jpeg:outdir=$tempdir/ >/dev/null 2>&1" ) == 0
+  or die "Could not generate temporary images; please manually cleanup $tempdir.";    # die on failure
+say "done." if $verbose;                                                              # chatty output;
+
+print "Assembling full animated GIF... " if $verbose;                                 # chatty output;
+system( "convert $tempdir/*.jpg output.gif >/dev/null 2>&1" )                         # shell out to convert to run conversion;
+  == 0 or die "Could not create assembled GIF image.";                                # die on failure;
+say "done." if $verbose;                                                              # chatty output;
+say "View the file at: output.gif" if $verbose;
+
+File::Temp::cleanup;                                                                  # remove all temporary directories!;
+system( "rm -rf $tempdir" ) == 0 or die "Failed to clean up temp directory at $tempdir";
+say "TEMP DIR PERSISTS" if -e $tempdir;
