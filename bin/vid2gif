@@ -12,7 +12,9 @@ $|++;                 # disable line-buffering, for real-time output;
 my $usage = <<'END';
 vid2gif
 
-Convert a video file to an animated GIF. Requires a start time for the GIF.  
+Convert a video file to an animated GIF. Accepts arguments for start time 
+of GIF in the video file, length of video segment to convert to GIF, and 
+resolution for the product GIF. Provides sane defaults for all of these, too.
 
 Usage: 
 
@@ -21,10 +23,13 @@ Usage:
 	vid2gif --resolution 425x320	# reformat GIF to given dimensions
 	vid2gif --help		       		# show this usage information
 
-	vid2gif --start 00:00:07 --length 7 --resolution 50x50
+	vid2gif --start 00:00:07 --length 7 --resolution 50x50 video.mp4
 
 Supported options:
 
+	-s, --start 	    # begin GIF at time (HH:MM:SS format)
+	-l, --length 	    # number of seconds of video to convert to GIF
+	-r, --resolution 	# GIF should be rendered in given dimensions (640x480 format)
 	-h, --help 			# show this usage information
 	-v, --verbose		# enable chatty output
 
