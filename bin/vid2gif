@@ -16,8 +16,10 @@ convert a video file to a GIF based on time indicators.
 Usage: 
 	vid2gif --start 00:01:10   		# begin GIF at time HH::MM::SS
 	vid2gif --length 2		   		# GIF should include 2 seconds of video
-	vid2gif --resolution 320x480	# reformat GIF to given dimensions
+	vid2gif --resolution 425x320	# reformat GIF to given dimensions
 	vid2gif --help		       		# show this usage information
+
+	vid2gif --start 00:00:07 --length 7 --resolution 50x50
 
 Supported options:
 
@@ -34,9 +36,15 @@ GetOptions(
     'verbose|v'      => \my $verbose,
 ) or die "$usage";
 
-$resolution = "-vf scale=$resolution" if $resolution;    # prepend option title if user requested certain resolution;
-$resolution = ' ' if not $resolution;
-my $video_file = pop @ARGV or die "$usage";              # grab video file as last element on command line;
+if ( $resolution ) {    # check whether user specified a custom resolution for GIF;
+    $resolution =~ s/x/:/;    # swap in a colon where x is more user-friendly;
+    $resolution = "-vf scale=$resolution";    # prepend option title if user requested certain resolution;
+}
+else {                                        # if no custom resolution was requested;
+    $resolution = '';                         # set to empty string, so it can still be interpolated in the system() call;
+}
+
+my $video_file = pop @ARGV or die "$usage";    # grab video file as last element on command line;
 
 my $tempdir = File::Temp->newdir                         # create
   or die "Could not create temporary directory $!";      # die on failure;
