@@ -101,8 +101,6 @@ alias fmac='format_mac_address' #re-format MAC address in readable way
 alias kj='ssh kj' #ssh into king-james
 alias makesilent="2>/dev/null"
 alias speakertest="speaker-test -t wav -c 2" # test left and right stereo channels
-alias disabletouchpad='xinput set-prop 11 "Device Enabled" 0'
-alias formyeyes="latlong | redshift -l &" # feed current location data into redshift;
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
@@ -288,6 +286,12 @@ function atb() {
     else mkdir ${1%.t(ar.gz||ar.bz2||gz||bz||ar)} &&
         tar xf $1 -C ${1%.t(ar.gz||ar.bz2||gz||bz||ar)};
     fi;
+}
+function disabletouchpad() {
+    xinput list | grep TouchPad | perl -n -e 'm/id=(\d+)/g; `xinput --set-prop $1 "Synaptics Off" 1`;'
+}
+function formyeyes() {
+    redshift -l `latlong` > /dev/null & # feed current location data into redshift;
 }
 
 if (( $UID == 0 )); then #if root, color prompt red
