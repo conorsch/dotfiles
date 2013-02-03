@@ -1,12 +1,17 @@
 call pathogen#runtime_append_all_bundles()
 "call pathogen#helptags()
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
+autocmd Filetype html setlocal ts=2 sts=2 sw=2
+autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
+autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
+autocmd Filetype perl setlocal ts=4 sts=4 sw=4
 
 colorscheme acidcupcake
 
 set formatoptions=tcroqw
-filetype plugin indent on
+filetype indent on
 
+set nocompatible
 set nobackup
 set noswapfile
 
@@ -25,8 +30,6 @@ set wildmenu
 noremap <Leader>t :%!perltidy -q<CR> 
 
 set pastetoggle=<F2>
-
-set smartindent "better indentation, e.g. comments to go to first column
 
 map <Leader>n :NERDTreeToggle<CR>
 
