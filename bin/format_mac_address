@@ -1,54 +1,59 @@
-#!/usr/bin/perl
-#quick script to format MAC addresses according to two options:
-#pretty formatting for pasting into an email and communicating with users,
-#and a MathWorks-compatible version with colons removed.
-#if supplied argument doesn't look like a MAC address, informs the user.
+#!/usr/bin/ruby
+# quick script to format MAC addresses according to two options:
+# pretty formatting for pasting into an email and communicating with users,
+# and a MathWorks-compatible version with colons removed.
+# if supplied argument doesn't look like a MAC address, informs the user.
 
-use strict;
-use warnings;
-use Getopt::Long;
-use feature 'say';
+require 'optparse' # for parsing command-line options
+options = {} # initialize empty hash, for storing command-line options
 
-GetOptions( #process command-line option flags;
-    'pretty|p'                       => \my $opt_pretty, #specify user 'type' from typedb;
-    'mathworks|m|bare|b|simple|s'    => \my $opt_mathworks, #specify file to read from--maybe better just to read from STDIN; 
-    'help|h|?'                       => \my $opt_help, #specify file to read from--maybe better just to read from STDIN; 
-    ) or die("Couldn't parse options\n"); #if option processing failed, don't continue to run;
- 
-my @MACs = @ARGV; #unpack all non-options as list of MAC addresses to be processed;
-@MACs = <STDIN> unless @MACs; #read from STDIN if no arguments were supplied;
+OptionParser.new do |opts|
+	opts.banner = <<-USAGE.gsub(/^( |\t)*/, '') # provide overview of script functionality, strip leading whitespace
+	format_mac_address
 
-foreach my $mac_address (@MACs) { #look at each candidate for some error-checking;
-    chomp $mac_address; #remove pesky trailing newline (in case read from STDIN);
+	Formats MAC addresses. Also validates that strings are properly 
+	constructed MAC addresess. Default behavior is to render valid MACs as 
+	colon-separated uppercase strings. A custom separator can be specified 
+	with the --separator option, or ommitted with --bare. 
 
-    $mac_address =~ s/\s+//g; #strip any and all whitespace from MAC address;
-    $mac_address =~ s/>//g; #strip any '>' (from copy/pasting out of email quoted blocks); 
-    say "MAC address '$mac_address' appears malformed; contains non-hex characters: '$&'"
-        if $mac_address =~ m/[^[0-9A-F|:|-]]/i; #if MAC address contains a non-hex, non-colon character;
+	When running the --validate option, the program will return 0 if all MACs 
+	are validly constructed, and 1 if any fails validation.
 
-    say "MAC address '$mac_address' appears malformed; wrong character or group count."
-        if $mac_address !~ m/^([0-9A-F]{2}[:|-]?){6}$/i; #if MAC address doesn't look like a MAC address;
+USAGE
+	opts.on("-b", "--bare", "print only alphanumerics (no separator)") do |b|
+		$bare = b
+	end
+	opts.on("-d", "--validate", "check for validly constructed MACs") do |d|
+		$validate = d
+	end
+	opts.on("-s", "--separator [SEPARATOR]", "set a custom separate (default is ':')") do |s|
+		$separator = s
+	end
+	opts.on("-v", "--verbose", "enable chatty output") do |v|
+		$verbose = v
+	end
+end.parse!
 
-    $mac_address =~ tr/[a-z]/[A-Z]/; #convert all characters to uppercase;
-}
+MACs = ARGV # grab MAC addresses from command line
 
-if ($opt_mathworks) { #if MathWorks-compatible formatting was requested;
-    
-    foreach my $mac_address (@MACs) { #look at each candidate;
+MACs.each do |mac_orig|
+	mac = mac_orig.dup.chomp.upcase!
+	mac.gsub!(/(\s|>)+/, '') # strip all whitespace from MAC address, also '>' (text email quoting)
 
-        $mac_address =~ s/([0-9A-Z]{2})([:|-]?)/$1/g; #omit colons or hyphens from hex digit groupings;
+	if mac !~ /^[[:xdigit:]|:|-]+$/ # if MAC address contains a non-hex, non-colon character
+		exit 1 if $validate # report failure if validating addresses
+		warn "MAC address #{mac_orig} appears malformed; contains non-hex characters"
+	end
 
-    }
-}
+	if mac !~ /^([[:xdigit:]]{2}[:|-]?){6}$/ # if MAC address doesn't look like a MAC address
+		exit 1 if $validate # report failure if validating addresses
+		warn "MAC address #{mac_orig} appears malformed; wrong character or group count." 
+		next
+	end
 
-else { #if no option was specified, assume pretty/readable format is desired;
+	$separator =  ":" if defined?($separator).nil? # provide default separator, if no special requests were made
 
-    foreach my $mac_address (@MACs) { #look at each candidate;
-
-        $mac_address =~ s/([0-9A-Z]{2})([:|-]?)/$1:/g; #ensure colons are placed after every two hex chars;
-        $mac_address =~ s/:$//g; #strip final colon, which was unartfully appended above;
-
-    }
-}
-
-say $_ for @MACs; #display results to user;
+	mac.gsub!(/([[:xdigit:]]{2})[:|-]?/, $bare ? '\1' : '\1' + "#{$separator}" ) # omit colons or hyphens from hex digit groupings;
+	mac.chop! unless $bare # remove final colon
+	puts mac unless $validate # print that result, unless we're being quiet
+end
