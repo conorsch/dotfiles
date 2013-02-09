@@ -1,48 +1,47 @@
-#!/usr/bin/perl
-# quick script to convert a CSV file to Wiki table markup;
-use strict;
-use warnings;
-use diagnostics; # useful for debugging;
-use feature 'say'; # beats print;
-use Getopt::Long; # for parsing command-line options;
+#!/usr/bin/ruby
+# quick script to format MAC addresses according to two options:
+# pretty formatting for pasting into an email and communicating with users,
+# and a MathWorks-compatible version with colons removed.
+# if supplied argument doesn't look like a MAC address, informs the user.
 
-my $usage = <<'END';
-csv2wiki
+require 'optparse' # for parsing command-line options
+options = {} # initialize empty hash, for storing command-line options
 
-convert a CSV file to Wiki table markup. This script reads from STDIN, 
-and writes to STDOUT, so getcher pipes ready. Spit a file at it and 
-direct the result wherever you want.
+OptionParser.new do |opts|
+	opts.banner = <<-USAGE.gsub(/^( |\t)*/, '') # provide overview of script functionality, strip leading whitespace
+	csv2wiki
 
-Usage: 
-    cat FILE | csv2wiki 
-    cat FILE | csv2wiki > NEWFILE
-    csv2wiki --help                     # show this usage information
+	Converts a CSV file to Wiki table markup. This script reads from STDIN, 
+	and writes to STDOUT, so getcher pipes ready. Spit a file at it and 
+	direct the result wherever you want.
 
-Supported options:
+	The default behavior uses a comma as the field delimiter, but you can specify 
+	a colon with the --colon option, or some other separator with the --separator 
+	option. The --separator option doesn't understand colons, though.
 
-    -h, --help                          # show this usage information
+	USAGE
 
-END
+	opts.on("-s", "--separator [SEPARATOR]", "set a custom separate (default is ':')") do |s|
+		$separator = s
+	end
+	opts.on("-:", "--colon", "specify field delimiter of ':'") do 
+		$separator = ':'
+	end
+	opts.on("-,", "--comma", "specify field delimiter of ',' (default)") do
+		$separator = ',' 
+	end
+	opts.on("-v", "--verbose", "enable chatty output") do |v|
+		$verbose = v
+	end
+end.parse!
 
-GetOptions ( 
-        'd|delimiter=s'     =>    \my $delimiter,
-        'help|h|usage|?'    =>    \my $help,
-        'verbose|v'         =>    \my $verbose,
-        ) or die "$usage";
+$separator = ',' unless $separator # provide a default value for CSV file
 
-say '{| border="1" cellspacing="0" cellpadding="5" align="center"'; # open table formatting;
-my ( @headers, @rows ); # initialize arrays for storing headers differently from data;
-while ( <STDIN> ) { # read from STDIN for CSV data;
-    chomp $_; # remove pesky trailing newline;
+puts '{| border="1" cellspacing="0" cellpadding="5" align="center"'; # open table formatting;
 
-    if ( $. == 1 ) { # treat first line of file differently (assume headers/column names);
-        say '!' . $_ for ( split( /:/, $_ ) ); # write headers to STDOUT ( '!' in wiki markup means bold those headers);
-        say '|-'; # end this line of the wiki table;
-        next; # skip to next line;
-    }
+while STDIN.gets # read from STDIN for CSV data;
+	$_.split(/#{$separator}/).each { |line| puts ( $. == 1 ? '!' : '|' ) + line } # write headers to STDOUT ( '!' in wiki markup means bold those headers);
+	puts '|-' # end this line of the wiki table;
+end
 
-    say '|' . $_ for ( split(/:/, $_ ) ); # split file on commas;
-    say '|-'; # end this line of the wiki table;
-}
-
-say '|}'; # close table formatting;
+puts '|}'; # close table formatting;
