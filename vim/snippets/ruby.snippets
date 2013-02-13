@@ -1,0 +1,36 @@
+# add help/usage info at top of file
+snippet docs
+	#!/usr/bin/ruby
+	# quick script to ${description}
+
+
+	require 'optparse' # for parsing command-line options
+	options = {} # initialize empty hash, for storing command-line options
+
+	OptionParser.new do |opts|
+		opts.banner = <<-USAGE.gsub(/^( |\t)*/, '') # provide overview of script functionality, strip leading whitespace
+		${2:ScriptName} 
+
+		$1.
+
+		Lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum 
+		lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum 
+		lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum 
+		lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum 
+		lorem ipsum lorem ipsum lorem ipsum.
+		
+		
+		Lorem ipsum.
+
+		USAGE
+
+		opts.on("-s", "--separator [SEPARATOR]", "set a custom separate (default is ':')") do |s|
+			$separator = s
+		end
+		opts.on("-v", "--verbose", "enable chatty output") do |v|
+			$verbose = v
+		end
+	end.parse!
+
+	my $usage = <<'END';
+	${2:ScriptName}
