@@ -1,17 +1,65 @@
-#!/usr/bin/perl
+#!/usr/bin/ruby
 # quick script to grab NPR's Morning Edition audio file and play it;
 # recommended usage is daily invocation via cronjob, so you can hear the news over breakfast;
-use strict;
-use warnings;
-use feature 'say';
-use LWP::Simple;
 
-my $feed_url = 'http://www.npr.org/templates/rss/podlayer.php?id=129577422'; #declare RSS feed URL 
-my @raw_feed = get($feed_url); #grab raw XML data via HTTP;
-my $audio_file_url; #initialize variable in proper scope;
-for (@raw_feed) { #loop through raw RSS feed, line by line;
-    next unless /<enclosure url="(.*\.mp3)\?.*" length/; #skip line unless MP3 URL is present;
-    $audio_file_url = $1; #store matched glob as URL to audio file;
-    last; #break out of loop, we got what we came for;
-}
-exec ("mplayer \"$audio_file_url\""); #pass audio file URL to mplayer, then we're out of here;
+# an example URL for Morning Edition: 
+# http://pd.npr.org/anon.npr-mp3/npr/me/2013/02/20130212_me_51.mp3?dl=1
+
+require 'optparse' # for parsing command-line options
+options = {} # initialize empty hash, for storing command-line options
+
+OptionParser.new do |opts|
+	opts.banner = <<-USAGE.gsub(/^( |\t)*/, '') # provide overview of script functionality, strip leading whitespace
+	npr-listener
+
+	Plays NPR podcasts via mplayer. Default settings will play 
+	today's Morning Edition, but it understands flags like --program 
+	and --episode in case you want to fine-tune your NPR listening.
+
+	Requires mplayer.
+
+	USAGE
+
+	opts.on("-p", "--program [PROGRAM]", "listen to a specific program (default is today's Morning Edition)") do |p|
+		$program = p
+	end
+
+	opts.on("-e", "--episode [EPISODE]", "listen to a specific episode (default is today's first episode)") do |e|
+		$episode = e
+	end
+
+	opts.on("-v", "--verbose", "enable chatty output") do |v|
+		$verbose = v
+	end
+end.parse!
+
+date = Time.new.strftime("%Y/%m/%Y%m%d") # date in the format the API expects
+base_uri = 'http://pd.npr.org/anon.npr-mp3/npr' # declare first part of URL
+
+supported_programs = [ 'me', 'atc', 'wesat', 'wesun' ] # declare list of NPR programs this script understands
+if $program # if user requested a specific program, we'll want to check it out
+	unless supported_programs.include? $program # check if program is recognized, continue if not
+		puts "Didn't understand program '#{$program}'. Supported programs are:" # inform user of error
+		supported_programs.each do |sp| puts "\t#{sp}" end # list out support programs, because that's helpful
+		exit 1
+	end
+else
+	$program = 'me' # declare a default program to retrieve (me = Morning Edition)
+end
+
+if $episode # if user requested a specific episode, we'll want to check it out
+	unless $episode =~ /^\d{1,2}$/ # episode should be 1-99
+		puts "Didn't understand episode '$episode'. Pick a number, 1-99."
+		exit 1
+	end
+else
+	$episode = 1 unless $episode # declare default episode, unless one was specified;
+end
+
+podcast_url = "#{base_uri}/#{$program}/#{date}_#{$program}_#{$episode}.mp3?dl=1" # concatenate full URL
+
+(($episode.to_i .. $episode.to_i + 50).map {|n| "%02d" % n} ).each do |ep| # do 20 eps, padded with leading zeros
+	podcast_url = "#{base_uri}/#{$program}/#{date}_#{$program}_#{ep}.mp3?dl=1" # concatenate full URL
+	puts "Now fetching podcast at URL: #{podcast_url}" if $verbose # chatty output
+	exec("mplayer", '-really-quiet', podcast_url) # shell out to mplayer
+end
