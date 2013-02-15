@@ -24,3 +24,13 @@ snippet docs
 		-v, --verbose		# enable chatty output
 
 	END
+
+	GetOptions(
+	    'help|h|?|usage'    => \my $help,
+	    'verbose|v'         => \my $verbose,
+	) or die "$usage";
+
+	if ( $help ) {    # if user requested usage information;
+	    say $usage;    # display usage information;
+	    exit 0;        # exit cleanly;
+	}
