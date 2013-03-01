@@ -279,6 +279,10 @@ function makeiso() { # create ISO from CD/DVD
     ISONAME=$@
     dd if=/dev/sr0 of="$ISONAME.iso"
 }
+function burniso() { # burn ISO to DVD
+    ISONAME=$@
+    growisofs -dvd-compat -Z /dev/sr0="$ISONAME"
+}
 function atb() {
     l=$(tar tf $1);
     if [ $(echo "$l" | wc -l) -eq $(echo "$l" | grep $(echo "$l" | head -n1) | wc -l) ];
