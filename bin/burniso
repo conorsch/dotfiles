@@ -1,0 +1,46 @@
+#!/usr/bin/ruby
+# quick script to create and burn ISO DVD images
+
+require 'optparse' # for parsing command-line options
+options = {} # initialize empty hash, for storing command-line options
+
+OptionParser.new do |opts|
+	opts.banner = <<-USAGE.gsub(/^( |\t)*/, '') # provide overview of script functionality, strip leading whitespace
+	isotron
+
+	Rips and burns DVD data images to or from ISO files. Default settings will 
+	rip a DVD ISO image from /dev/sr0. Use the --burn option to create a disc.
+
+	Requires growisofs.
+
+	USAGE
+
+	opts.on("-b", "--burn", "create DVD from ISO file") do |b|
+		$burn = b
+	end
+
+	opts.on("-d", "--device [DEVICE]", "specify custom device to rip from or burn to (default is /dev/sr0)") do |e|
+		$device = e
+	end
+
+	opts.on("-c", "--check", "verify MD5 checksum for disc after burning") do |c|
+		$check = c
+	end
+
+	opts.on("-o", "--output", "declare name for output file") do |o|
+		$output = o
+	end
+
+	opts.on("-v", "--verbose", "enable chatty output") do |v|
+		$verbose = v
+	end
+end.parse!
+
+def rip_dvd(out_file)
+	`dd if=$device of=$output`
+end
+
+def burn_dvd(iso)
+  `growisofs -dvd-compat -Z #{$device}="#{iso}"`
+end
+
