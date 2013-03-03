@@ -3,11 +3,11 @@
 # essentially just a wrapper for cd magic and git submodule setup;
 use strict;
 use warnings;
-use diagnostics; # useful for debugging;
-use feature 'say'; # beats print;
-use Getopt::Long; # for parsing command-line options;
-use File::chdir; #for easy temporary switching of CWD;
-$|++; # disable line-buffering, for real-time output;
+use diagnostics;      # useful for debugging;
+use feature 'say';    # beats print;
+use Getopt::Long;     # for parsing command-line options;
+use File::chdir;      #for easy temporary switching of CWD;
+$|++;                 # disable line-buffering, for real-time output;
 
 my $usage = <<'END';
 addvimplugin
@@ -16,62 +16,69 @@ Add vim plugins via pathogen in a git-managed dotfiles repo. Essentially a wrapp
 on `cd` and `git submodule add`. Accepts multiple repos. Error-checking is minimal, 
 but script manages to fail gracefully on most errors. 
 
-You will have to hard code the location of your local dotfiles working copy!
+This script assumes that the dotfiles repo to which the submodule should be added 
+lives at ~/gits/dotfiles. If this is not the case, make sure to specify the correct 
+repository location on your system with the --destination option.
 
 Usage: 
-    addvimplugin https://github.com/nother/vim-prose        # installs vim-prose plugin
-    addvimplugin --help            # show this usage information
+    addvimplugin https://github.com/nother/vim-prose                # installs vim-prose plugin as submodule
+    addvimplugin -d ~/.vim https://github.com/nother/vim-prose      # installs vim-prose plugin as submodule
+    addvimplugin --help                                             # show this usage information
 
 Supported options:
 
-    -h, --help             # show this usage information
+    -d, --destination    # specify dotfiles repo for adding submodule (default is ~/gits/dotfiles)
+    -h, --help           # show this usage information
     -v, --verbose        # enable chatty output
 
 END
 
-GetOptions ( 
-        'help|h|usage|?'    =>    \my $help,
-        'verbose|v'            =>    \my $verbose,
-        ) or die "$usage";
+GetOptions(
+    'help|h|usage|?'         => \my $help,
+    'verbose|v'              => \my $verbose,
+    'destination|dotfiles|d' => \my $repo_root,
+) or die "$usage";
 
-if ( $help ) { # if user requested help/usage info;
-    print $help; # display help/usage info;
-    exit 0; # exit cleanly;
+if ( $help ) {    # if user requested help/usage info;
+    say $usage;    # display help/usage info;
+    exit 0;        # exit cleanly;
 }
 
-my @git_repos = @ARGV or die "$usage"; # unpack remote git repos, die if none given;
-my $home = $ENV{'HOME'}; # retrieve user ~/ from environment variable special hash;
-my $repo_root = $home . '/gits/dotfiles'; # concatenate fullpath to expected location of dotfiles dir;
+my @git_repos = @ARGV or die "$usage";    # unpack remote git repos, die if none given;
+my $home = $ENV{ 'HOME' };                # retrieve user ~/ from environment variable special hash;
+$repo_root = $home . '/gits/dotfiles'     # concatenate fullpath to expected location of dotfiles dir;
+  unless $repo_root;                      # don't clobber a user-specified dir with this;
 
--d $repo_root or die "Can't find local working copy for dotfiles at '$repo_root'";
+-d $repo_root or die "Can't find local working copy for dotfiles at '$repo_root'";    # fail out if repo doesn't exist;
 
-say "Now installing " . ( $#git_repos + 1 ) . " submodules in '$repo_root'..." if $verbose; # user feedback;
+say "Now installing " . ( $#git_repos + 1 ) . " submodules in '$repo_root'..." if $verbose;    # user feedback;
 
-for my $git_repo ( @git_repos ) { # do this for each specified git repo;
+for my $git_repo ( @git_repos ) {                                                              # do this for each specified git repo;
 
-    unless ( $git_repo =~ m/\.git$/i or         # dirty error-checking to make sure we have a git repo here;
-             $git_repo =~ m/github\.com/ ) {    # if it contains 'github', should be good;
-        die "Specified remote git repository '$git_repo' doesn't look right.";
-    }
+    die "Specified remote git repository '$git_repo' doesn't look right."    # fail out if URL for submodule repo doesn't look right;
+      unless $git_repo =~ m/\.git$/i                                         # dirty error-checking to make sure we have a git repo here;
+          or $git_repo =~ m/github\.com/i;                                   # if it contains 'github.com', should be good;
 
-    my $software_name = ( split( /\//, $git_repo ) )[-1]; # break up that URL, grab last element;
-    $software_name =~ s/(\.\w+)?$//; # strip out suffix on software name, if there;
-    my $destination = 'vim/bundle/' . $software_name;  # concatenate relative path to dir for this submodule;
+    my $software_name = ( split( /\//, $git_repo ) )[ -1 ];                  # break up that URL, grab last element;
+    $software_name =~ s/(\.\w+)?$//;                                         # strip out suffix on software name, if there;
+    my $destination = 'vim/bundle/' . $software_name;                        # concatenate relative path to dir for this submodule;
 
-    say "Setting up '$software_name' in '$destination'..." if $verbose; # user feedback;
+    say "Setting up '$software_name' in '$destination'..." if $verbose;      # user feedback;
 
     {
-        # `git submodule add` expects to be run from the top-level of the local 
-        # working copy, so let's hop inside that dir temporarily to run the command;
-        local $CWD = $repo_root; 
 
-        if ( -d $repo_root ) { # make sure this directory actually exists;
+        # `git submodule add` expects to be run from the top-level of the local
+        # working copy, so let's hop inside that dir temporarily to run the command;
+        local $CWD = $repo_root;
+
+        if ( -d $repo_root ) {                                               # make sure this directory actually exists;
 
             system( "git submodule add $git_repo $destination" );
-#== 0 or die "Could not create new git submodule for '$software_name'";
+
+            #== 0 or die "Could not create new git submodule for '$software_name'";
         }
 
-        else { # if somehow the local working copy of the dotfiles repo isn't found;
+        else {                                                               # if somehow the local working copy of the dotfiles repo isn't found;
             die "Unable to find dotfiles working copy at '$repo_root'";
         }
     }
