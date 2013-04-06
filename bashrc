@@ -283,6 +283,9 @@ function burniso() { # burn ISO to DVD
     ISONAME=$@
     growisofs -dvd-compat -Z /dev/sr0="$ISONAME"
 }
+function ackr () { # for all files containing regex1, perform substition via regex2
+  ack-grep $1 -l | xargs perl -pi -E "$2"
+}
 function atb() {
     l=$(tar tf $1);
     if [ $(echo "$l" | wc -l) -eq $(echo "$l" | grep $(echo "$l" | head -n1) | wc -l) ];
