@@ -41,6 +41,8 @@ my $dest = $ENV{ 'HOME' } . '/Downloads';    # declare fullpath to directory to 
 my %video_files;                                                    # initialize hash in proper scope;
 my $counter = 1;                                                    # initialize counter for verbose output;
 
+say $usage and exit if $help;
+
 if ( $max_requested ) {                                             # check whether user requested certain number of videos;
     $max_requested--;                                               # if so, decrement it by one, so it applies as array index;
 }
