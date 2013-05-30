@@ -14,10 +14,9 @@ my $repo = "$ENV{'HOME'}/gits/dotfiles"; #This path is used on ALL remote machin
 my $reponame = basename($repo); # grab name of git repository from fullpath;
 my %cluster = ( #keys are aliases in ~/.ssh/config, values are actual hostnames;
         t => "Tepes",
-        s => "Stirling",
         p => "Petrichor",
-        w => "Wolke",
-        ss => "softserv",
+        s => "Sonder",
+#        ss => "softserv",
         );
 
 my $base_command = "cd $repo; git pull"; #This is the command we want to run on remote machines;
