@@ -274,7 +274,7 @@ function stereo() { #plays audio file on computer connected to stereo;
     cat "$@" | ssh s "mplayer -cache 10000 -cache-min 1 - "
 }
 function speaks() { #open mocp on home computer
-    ssh -t s mocp
+    ssh -t 10.0.0.14 mocp
 }
 function strlength() { #print length of given string
     echo "$@" | awk '{ print length }'

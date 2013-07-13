@@ -2,10 +2,10 @@
 # quick script to unescape HTML escape chars in strings;
 use strict;
 use warnings;
-use diagnostics; # useful for debugging;
-use feature 'say'; # beats print;
-use Getopt::Long; # for parsing command-line options;
-use URI::Escape; # for handling HTML escape characters;
+use diagnostics;      # useful for debugging;
+use feature 'say';    # beats print;
+use Getopt::Long;     # for parsing command-line options;
+use URI::Escape;      # for handling HTML escape characters;
 
 my $usage = <<'END';
 unescape
@@ -24,31 +24,31 @@ Supported options:
     -v, --verbose                           # enable chatty output
 END
 
-GetOptions ( 
-        'escape|e'    =>    \my $escape_opt,
-        'help|h|usage|?'    =>    \my $help,
-        'verbose|v'            =>    \my $verbose,
-        ) or die "$usage";
+GetOptions(
+    'escape|e|r|reverse' => \my $escape_opt,
+    'help|h|usage|?'     => \my $help,
+    'verbose|v'          => \my $verbose,
+) or die "$usage";
 
-my $string = $ARGV[-1]; # take last element on command line and unescape that;
+my $string = $ARGV[ -1 ];    # take last element on command line and unescape that;
 
-if ( $help ) { # if user requested help/usage info;
-    say $usage; # display that help/usage info;
-    exit 0; # exit cleanly;
+if ( $help ) {               # if user requested help/usage info;
+    say $usage;              # display that help/usage info;
+    exit 0;                  # exit cleanly;
 }
 
-unless ( $escape_opt ) { # default mode is unescaping text, but check for option
-    say "Will now unescape HTML characters in the following string:\n
-        $string
-
-        The results of that look like this:\n" if $verbose; # chatty is as chatty does;
-    say uri_unescape( $string ); # say that beautiful result;
-}
-
-else { # oh my, user wants escaping done;
+if ( $escape_opt ) {         # oh my, user wants escaping done;
     say "Will now escape unwebby characters in the following string:\n
         $string
 
-        The results of that look like this:\n" if $verbose; # chatty is as chatty does;
-    say uri_escape( $string ); # say that ugly result;
+        The results of that look like this:\n" if $verbose;    # chatty is as chatty does;
+    say uri_escape( $string );                                 # say that ugly result;
+}
+
+elsif ( $escape_opt ) {                                        # default mode is unescaping text, but check for option
+    say "Will now unescape HTML characters in the following string:\n
+        $string
+
+        The results of that look like this:\n" if $verbose;    # chatty is as chatty does;
+    say uri_unescape( $string );                               # say that beautiful result;
 }
