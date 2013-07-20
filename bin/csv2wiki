@@ -2,9 +2,9 @@
 # quick script to convert a CSV file to Wiki table markup;
 use strict;
 use warnings;
-use diagnostics; # useful for debugging;
-use feature 'say'; # beats print;
-use Getopt::Long; # for parsing command-line options;
+use diagnostics;      # useful for debugging;
+use feature 'say';    # beats print;
+use Getopt::Long;     # for parsing command-line options;
 
 my $usage = <<'END';
 csv2wiki
@@ -24,25 +24,27 @@ Supported options:
 
 END
 
-GetOptions ( 
-        'd|delimiter=s'     =>    \my $delimiter,
-        'help|h|usage|?'    =>    \my $help,
-        'verbose|v'         =>    \my $verbose,
-        ) or die "$usage";
+GetOptions(
+    'd|delimiter=s'  => \my $delimiter,
+    'help|h|usage|?' => \my $help,
+    'verbose|v'      => \my $verbose,
+) or die "$usage";
 
-say '{| border="1" cellspacing="0" cellpadding="5" align="center"'; # open table formatting;
-my ( @headers, @rows ); # initialize arrays for storing headers differently from data;
-while ( <STDIN> ) { # read from STDIN for CSV data;
-    chomp $_; # remove pesky trailing newline;
+$delimiter = ',' unless $delimiter;    # set comma as default field separator;
 
-    if ( $. == 1 ) { # treat first line of file differently (assume headers/column names);
-        say '!' . $_ for ( split( /:/, $_ ) ); # write headers to STDOUT ( '!' in wiki markup means bold those headers);
-        say '|-'; # end this line of the wiki table;
-        next; # skip to next line;
+say '{| border="1" cellspacing="0" cellpadding="5" align="center"';    # open table formatting;
+my ( @headers, @rows );                                                # initialize arrays for storing headers differently from data;
+while ( <STDIN> ) {                                                    # read from STDIN for CSV data;
+    chomp $_;                                                          # remove pesky trailing newline;
+
+    if ( $. == 1 ) {                                                   # treat first line of file differently (assume headers/column names);
+        say '!' . $_ for ( split( /$delimiter/, $_, -1 ) );                # write headers to STDOUT ( '!' in wiki markup means bold those headers);
+        say '|-';                                                      # end this line of the wiki table;
+        next;                                                          # skip to next line;
     }
 
-    say '|' . $_ for ( split(/:/, $_ ) ); # split file on commas;
-    say '|-'; # end this line of the wiki table;
+    say '|' . $_ for ( split( /$delimiter/, $_, -1 ) );                    # split file on commas;
+    say '|-';                                                          # end this line of the wiki table;
 }
 
-say '|}'; # close table formatting;
+say '|}';                                                              # close table formatting;
