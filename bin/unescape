@@ -31,6 +31,7 @@ GetOptions(
 ) or die "$usage";
 
 my $string = $ARGV[ -1 ];    # take last element on command line and unescape that;
+$string = <STDIN> unless $string;
 
 if ( $help ) {               # if user requested help/usage info;
     say $usage;              # display that help/usage info;
