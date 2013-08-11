@@ -12,10 +12,12 @@
 
 if [[ -f /etc/bash_completion ]]; then #check for existence of bash_completion file (Ubuntu/Debian)
     . /etc/bash_completion #source it if found (for __git_ps1 command
-elif [[ -f /etc/bash_completion.d/git.sh ]]; then #check for bash_completion elsewhere (OpenSUSE)
+fi
+if [[ -f /etc/bash_completion.d/git.sh ]]; then #check for bash_completion elsewhere (OpenSUSE)
     . /etc/bash_completion.d/git.sh #source it if found
-else #if bash_completion file does not exist;
-    echo 'err: no bash_completion' #warn that no bash completion exists (echo '' if silent failure is preferred)
+fi
+if [[ -f /etc/bash_completion.d/git-prompt.sh ]]; then #check for bash_completion elsewhere (OpenSUSE)
+    . /etc/bash_completion.d/git-prompt.sh #source it if found
 fi
 
 function git_prompt_status() { # for future use, from oh my zsh
