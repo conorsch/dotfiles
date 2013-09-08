@@ -7,6 +7,7 @@ use feature 'say';     # beats print;
 use Getopt::Long;      # for parsing command-line options;
 use WWW::Mechanize;    # for parsing URL content and downloading files;
 use File::Spec;        # for creating local fullpaths to filenames;
+$|++;                  # don't buffer STDOUT;
 
 my $usage = <<"END";
 $0 
@@ -26,12 +27,12 @@ Supported options:
 END
 
 GetOptions(
-    'directory|destination|dest|dir|d' => \my $destination_directory,
-    'extension|ext|e'                  => \my $extension,
-    'show|s'                           => \my $show,
-    'quiet|q'                          => \my $quiet,
-    'help|h|?|usage'                   => \my $help,
-    'verbose|v'                        => \my $verbose,
+    'directory|destination|dest|dir|d=s' => \my $destination_directory,
+    'extension|ext|e=s'                  => \my $extension,
+    'show|s=s'                           => \my $show,
+    'quiet|q'                            => \my $quiet,
+    'help|h|?|usage'                     => \my $help,
+    'verbose|v'                          => \my $verbose,
 ) or die "$usage";
 
 say $usage and exit if $help;    # display usage information;
