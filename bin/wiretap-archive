@@ -1,0 +1,64 @@
+#!/usr/bin/perl
+# quick script to grab newest Wiretap episodes and store them offline;
+use strict;
+use warnings;
+use diagnostics;       # useful for debugging;
+use feature 'say';     # beats print;
+use Getopt::Long;      # for parsing command-line options;
+use WWW::Mechanize;    # for parsing URL content and downloading files;
+use File::Spec;        # for creating local fullpaths to filenames;
+
+my $usage = <<"END";
+$0 
+
+Retrieves current episodes of Wiretap and stores them offline. This is handy for 
+folks who don't have iTunes (like Linux users). By default, writes new files to /tmp.
+Override this with the --destination (or --dir) flag.
+
+Supported options:
+
+    -d, --destination         # destination directory to save files in
+    -s, --show                # title of show, used when creating local file
+    -e, --extension           # file extension for deciding which links to retrieve from the given URL
+    -q, --quiet               # silence output (useful for cronjobs)
+    -h, --help                # show this usage information
+    -v, --verbose             # enable chatty output
+END
+
+GetOptions(
+    'directory|destination|dest|dir|d' => \my $destination_directory,
+    'extension|ext|e'                  => \my $extension,
+    'show|s'                           => \my $show,
+    'quiet|q'                          => \my $quiet,
+    'help|h|?|usage'                   => \my $help,
+    'verbose|v'                        => \my $verbose,
+) or die "$usage";
+
+say $usage and exit if $help;    # display usage information;
+
+close STDOUT if $quiet;          # silence output if asked;
+$destination_directory = '/tmp' unless $destination_directory;
+die "Destination dir '$destination_directory' is not valid" unless -d $destination_directory;    # error-checking;
+$extension = 'mp3'     unless $extension;    # provide default file extension for downloading files;
+$show      = 'Wiretap' unless $show;         # default option is Wiretap;
+my $url = $ARGV[ 0 ] || 'http://www.cbc.ca/wiretap/podcasts/';    # provide default URL to grab, but grab from ARGV if possible;
+
+my $m = WWW::Mechanize->new;                                      # create Mechanize object;
+say "Looking for " . uc( $extension ) . " files on $url..." if $verbose;    # chatty output;
+$m->get( $url );                                                            # grab podcasts page;
+
+for my $episode ( grep { $_->url =~ m/$extension$/i } $m->links ) {         # search page for given file extension (MP3 by default);
+    my ( $date ) = ( split( '/', $episode->url ) )[ -1 ] =~ m/^wiretap_(\d{8})_/
+      or warn "Could not retrieve date for Wiretap episode at " . $episode->url;
+
+    $date =~ s/^(\d{4})(\d{2})(\d{2})/$1-$2-$3/;                            # make date more readable by inserting hyphens;
+
+    my ( $title ) = $episode->text =~ s/^\[IMG\]Download\s?+//r;            # remove download button from title text;
+    my $filename = ucfirst $show . " $date $title.$extension";              # concatenate a pretty title for saving this file;
+    $filename = File::Spec->catfile( $destination_directory, $filename );   # build full path to save file;
+
+    print "Saving file: $filename... " if $verbose;                         # chatty output;
+    $m->mirror( $episode->url, $filename )                                  # save file;
+      or die "Could not save file!";                                        # die on failure;
+    say "done." if $verbose;                                                # chatty output;
+}
