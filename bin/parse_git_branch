@@ -19,6 +19,9 @@ fi
 if [[ -f /etc/bash_completion.d/git-prompt.sh ]]; then #check for bash_completion elsewhere (OpenSUSE)
     . /etc/bash_completion.d/git-prompt.sh #source it if found
 fi
+if [[ -f /etc/bash_completion.d/git-prompt ]]; then #check for bash_completion elsewhere (OpenSUSE)
+    . /etc/bash_completion.d/git-prompt #source it if found
+fi
 
 function git_prompt_status() { # for future use, from oh my zsh
     local index=$(git status --porcelain 2> /dev/null)
