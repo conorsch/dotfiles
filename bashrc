@@ -311,3 +311,10 @@ else #if normal user, don't color the prompt red;
     export PS1='[\[\h:\]\e[0;36m\]\u\[\e[0;37m\]][\[\e[0;33m\]\w\[\e[0;37m\]]$(parse_git_branch)\n\[\e[1;30m\]>\[\e[0;32m\]>\[\e[1;32m\]>\[\e[0m\] '
     export PS1='( \! ) \u@\h{ \w } $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
 fi
+if which ruby >/dev/null && which gem >/dev/null; then
+            PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
+fi
+
+export GEM_HOME=$HOME/gems
+export GEM_PATH=$HOME/gems:/usr/lib/ruby/gems/1.8/
+export PATH=$PATH:$HOME/gems/bin
