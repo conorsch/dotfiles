@@ -49,7 +49,9 @@ GetOptions(
     'verbose|v'      => \my $verbose,
 ) or die "$usage";
 
-my @clause = @ARGV; # unpack all non-option arguments as a command to run;
+say $usage and exit if $help; # show help/usage info;
+
+my @clause = @ARGV or die "$usage\nNo command given.\n"; # unpack all non-option arguments as a command to run;
 
 if ( $clause[ -1 ] =~ m/^(finish|done|complete)/  # check for '... finishes' structure to command;
      and $#clause > 0 ) { # make sure there are multiple args here, including "finish" request;
@@ -61,10 +63,7 @@ if ( $clause[ -1 ] =~ m/^(finish|done|complete)/  # check for '... finishes' str
     my $success = not $?; # store that status code;
 
     if ( $verbose ) { # only do this if chatty output was requested;
-        $success ? # check for successful return value (non-zero means failure, so flip it);
-            say "done.": # report success;
-            say "failed."; # report failure;
-        say "SUCCESS IS: '$success'";
+        say $success ? "done." : "failed."; # check for successful return value (non-zero means failure, so flip it);
     }
 
     notify_user( $success, $command ) # pass exit value of system() call and the command run to notification subroutine;
@@ -80,9 +79,7 @@ elsif ( $#clause >= 0 ) { # if arguments were specified, assume it's a command t
     my $success = not $?; # store that status code;
 
     if ( $verbose ) { # only do this if chatty output was requested;
-        $success ? # check for successful return value (non-zero means failure, so flip it);
-            say "done.": # report success;
-            say "failed."; # report failure;
+        say $success ? "done." : "failed."; # check for successful return value (non-zero means failure, so flip it);
     }
 
     notify_user( $success, $command ) # pass exit value of system() call and the command run to notification subroutine;
@@ -108,6 +105,7 @@ sub notify_user { # send notification about command completion, according to opt
     }
 
     if ( $email ) { # if user requested that an email be sent as notification;
+
         $notify_command = "sendmail -s 'Operation complete' -t " . getpwuid( $< );
 
         open my $mail_tube, '>', "$notify_command |" # open pipe to mail command, for writing notification to;
