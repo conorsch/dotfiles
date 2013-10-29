@@ -2,14 +2,13 @@
 # for examples
 
 # If not running interactively, don't do anything
-#[ -z "$PS1" ] && return
+[ -z "$PS1" ] && return
 
 export EDITOR="vim" #use vim as default editor
-#umask 027 #default file permissions should be -rw-r-----
 
-#history options
-HISTCONTROL=ignoredups:ignorespace #don't put duplicate lines in the history. See bash(0) for more options
-HISTSIZE=1000 #for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+# history options
+HISTCONTROL=ignoredups:ignorespace # don't put duplicate lines in the history. See bash(0) for more options
+HISTSIZE=1000 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTFILESIZE=2000
 
 ####BEGIN SHELL OPTIONS
@@ -29,7 +28,7 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-case "$TERM" in #set a fancy prompt (non-color, unless we know we "want" color)
+case "$TERM" in # set a fancy prompt (non-color, unless we know we "want" color)
     xterm-color) color_prompt=yes;;
 esac
 
@@ -49,16 +48,13 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-#export tmuxinator projects for tab-completion of session names
+# export tmuxinator projects for tab-completion of session names
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
@@ -123,8 +119,6 @@ fi
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export heimchen="$HOME/Valhalla/Media/Heimchen"
 export PATH=$PATH:$HOME/.bin
-#export PATH="${PATH}$(find /home/conor/githubrepos -name '.*' -prune -o -type d -printf ':%p')"
-#export PATH=$PATH:$(find /home/conor/githubrepos -type d | sed '/\/./d' | tr '\n' ':' | sed 's/:$//') 
 
 #####BEGIN borrowed tips
 function matrix(){
@@ -178,14 +172,7 @@ function genpw() { #generate random 30-character password
 function ugrep() { #look up Unicode characters by name
     egrep -i "^[0-9a-f]{4,} .*$*" $(locate CharName.pm) | while read h d; do /usr/bin/printf "\U$(printf "%08x" 0x$h)\tU+%s\t%s\n" $h "$d"; done
 }
-#cd() { #Print working directory after a cd.
-#    if [[ $@ == '-' ]]; then
-#        builtin cd "$@" > /dev/null  # We'll handle pwd.
-#    else
-#        builtin cd "$@"
-#    fi
-#    echo -e "   \033[1;30m"`pwd`"\033[0m"
-#}
+
 function scan_host() { #use nmap to find open ports on a given IP address;
     sudo nmap -sS -P0 -sV -O $@
 }
@@ -257,7 +244,6 @@ function tssh() { #Connect to many machines via SSH by invoking tmux;
     tmux new "ssh-everywhere.sh $HOSTS" #Open new tmux session by calling script;
 }
 
-#set -o vi #Set vi input mode (instead of default emacs style)
 function g() { 
     lynx -dump "http://google.com/search?q=$*" | less
 }
@@ -305,16 +291,11 @@ function formyeyes() {
     redshift -l `latlong` > /dev/null & # feed current location data into redshift;
 }
 
-if (( $UID == 0 )); then #if root, color prompt red
-    export PS1='\[\e[1;31m\]( \! ) \u@\h{ \w } \[\e[0m\] $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
-else #if normal user, don't color the prompt red;
-    export PS1='[\[\h:\]\e[0;36m\]\u\[\e[0;37m\]][\[\e[0;33m\]\w\[\e[0;37m\]]$(parse_git_branch)\n\[\e[1;30m\]>\[\e[0;32m\]>\[\e[1;32m\]>\[\e[0m\] '
-    export PS1='( \! ) \u@\h{ \w } $(parse_git_branch): ' #( history ) user@hostname{ cwd } sigil:
-fi
-if which ruby >/dev/null && which gem >/dev/null; then
-            PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
-fi
+# enable liquidprompt for PS1, from https://github.com/nojhan/liquidprompt
+source ~/gits/liquidprompt/liquidprompt
+source ~/.liquidpromptrc
 
-export GEM_HOME=$HOME/gems
-export GEM_PATH=$HOME/gems:/usr/lib/ruby/gems/1.8/
-export PATH=$PATH:$HOME/gems/bin
+# configure local Ruby gem support
+if which ruby >/dev/null && which gem >/dev/null; then
+    PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
+fi
