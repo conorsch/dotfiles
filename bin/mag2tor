@@ -11,6 +11,7 @@ if [[ "$1" =~ dn=([^&/]+) ]];then
 else
     filename=$hashh
 fi
-#echo "d10:magnet-uri${#1}:${1}e" > "meta-$filename.torrent" #print conversion for user
+echo "d10:magnet-uri${#1}:${1}e" > "meta-$filename.torrent" # create torrent file
 torrentname="meta-$filename.torrent"
 scp $torrentname "$REMOTE_DIR/$torrentname" #move torrent file to remote watching directory;
+
