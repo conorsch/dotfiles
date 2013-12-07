@@ -12,7 +12,7 @@ my $usage = <<'END';
 sharefile
 
 This script uses netcat (nc) to share a file via HTTP over LAN. Port 80 is assumed, 
-but this can be changed with the --port flag. 
+but a custom port can be specified via the --port flag. 
 
 Usage:
 
@@ -21,42 +21,36 @@ Usage:
 
 END
 GetOptions(
-    'port|p=s'       => \my $port,
+    'port|p=i'       => \my $port,
     'help|h|usage|?' => \my $help,
-);    #This style of grabbing doesn't support flag arguments, just flags
+);
 
-if ( $help ) {    #if user requested help/usage information;
-    say $usage;    #display usage information;
-    exit 0;        #exit cleanly;
-}
+say $usage and exit if $help;    # display help/usage info;
 
-$port = 80 unless defined( $port );    #set default value of port 80;
+$port = 80 unless defined( $port );    # set default value of port 80;
 
-my $file = $ARGV[ 0 ] or die "Please specify a file to share!";    #get file to be shared;
+my $file = $ARGV[ 0 ] or die "Please specify a file to share!";    # get file to be shared;
 
-my $local_ip = `hostname -I`;                                      #grab local IP address;
-chomp $local_ip;                                                   #remove pesky trailing newline;
-$local_ip =~ s/\s*//g;                                             #remove any and all whilespace;
-my $filename = basename( $file );
-my $file_address;
-$port == 80
-  ?                                                                #check whether port is 80, the default;
-  $file_address = "http://$local_ip/$filename"
-  :                                                                #build link to give out;
-  $file_address = "http://$local_ip:$port/$filename";              #build link with port to give out;
+my $local_ip = ( split( /\s/, `hostname -I` ) )[ 0 ];              # grab local IP address;
+chomp $local_ip;                                                   # remove pesky trailing newline;
+$local_ip =~ s/\s*//g;                                             # remove any and all whilespace;
+my $filename = basename( $file );                                  # strip off the directory prefix (if any) from filename;
 
-say "File will be available on the local network at: 
-$file_address";
+# only display port in URL if it's not 80
+my $file_address = "http://$local_ip" . ( $port == 80 ? q{} : ":$port" ) . "/$filename";
 
-system( "sudo nc -v -l $port < '$file'" )                          #call netcat to host file on port 80
+say "File will be available on the local network at:\n$file_address";
+
+system( qq/ sudo nc -v -l -p $port < '$file'/ )                    # call netcat to host file on port 80
   == 0 or die "Failed to post file using netcat (is netcat installed?)";    # die on failure;
 
-if ( $? == 0 ) {                                                            #check for successful exit code from netcat command;
-    say "Transfer complete!";                                               #share the good news;
+if ( $? == 0 ) {                                                            # check for successful exit code from netcat command;
+    say "Transfer complete!";                                               # share the good news;
 }
-else {                                                                      #if netcat command was not successful;
-    my $md5sum_raw = `md5sum "$file"`;                                      #capture md5sum of file for reporting;
-    chomp $md5sum_raw;                                                      #remove pesky trailing newline;
+
+else {                                                                      # if netcat command was not successful;
+    my $md5sum_raw = `md5sum "$file"`;                                      # capture md5sum of file for reporting;
+    chomp $md5sum_raw;                                                      # remove pesky trailing newline;
     ( my $md5sum ) = split( / /, $md5sum_raw );
     say "An unknown error occurred; try the transfer again.";
     say "The md5sum for the complete file is: $md5sum";
