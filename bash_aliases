@@ -37,7 +37,6 @@ alias speakertest="speaker-test -t wav -c 2" # test left and right stereo channe
 alias onemonitor="xrandr --output VGA1 --off" # disconnect external monitor
 alias therecanbeonlyone="onemonitor" # disconnect external monitor
 alias gdns="echo 'nameserver 8.8.8.8' | sudo tee /etc/resolv.conf"
-alias git="hub"
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
