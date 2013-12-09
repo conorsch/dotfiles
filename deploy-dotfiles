@@ -30,8 +30,8 @@ USAGE
     end
 end.parse!
 
-parent_dir = File.absolute_path('..', __FILE__) # get directory from which this script is run (repo root)
-dotfiles = Dir.entries(parent_dir).reject{|entry| entry =~ /^(\.|README$|#{__FILE__}$)/}
+parent_dir = File.absolute_path("#{__FILE__}/.." ) # get directory from which this script is run (repo root)
+dotfiles = Dir.entries(parent_dir).reject{|entry| entry =~ /(^\.|README$|#{__FILE__}$)/}.map {|f| File.join( parent_dir, f ) }
 
 dotfiles.each do |source| # look at each file in the repository root
   source = File.absolute_path(source) # make full path out of relative filepath
