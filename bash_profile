@@ -1,2 +1,5 @@
 source ~/.bashrc
-source ~/.bash_env_secure
+if [[ -f ~/.bash_env_secure ]]; then
+    source ~/.bash_env_secure
+fi
+
