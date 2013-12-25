@@ -78,6 +78,7 @@ fi
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export heimchen="$HOME/Valhalla/Media/Heimchen"
 export PATH=$PATH:$HOME/.bin
+export NLTK_DATA=$HOME/.nltk_data
 
 # enable liquidprompt for PS1, from https://github.com/nojhan/liquidprompt
 source ~/gits/liquidprompt/liquidprompt
