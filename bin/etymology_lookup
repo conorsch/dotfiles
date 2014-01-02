@@ -1,24 +1,36 @@
-#!/usr/bin/perl 
-#Script for quick English language etymology lookups;
-#Future versions should parse multiple entries as titles and paragraphs for 
-#dynamic support of line widths;
-use strict;
-use warnings;
-use feature 'say';
+#!/usr/bin/python
+import BeautifulSoup
+import requests
+import re
+import sys
+from blessings import Terminal
 
-my $word = $ARGV[0]; #get search term for use in URL request;
+if len(sys.argv) < 2:
+    sys.exit("Provide a word to look up.")
 
-#Call lynx, forget URLs, dump page text for search term;
-#Then get 20 lines of context after each occurrence of the search term;
-#Chop off the first 23 lines;
-#Chop off everything but the first 15 lines; 
-#Feed text into remove_linebreaks for pretty formatting;
-my $page_dump = `lynx -nolist -dump "http://www.etymonline.com/index.php?search=$word" | \
-                grep -A 20 $word | \
-                tail -n +23 | \
-                head -n 25 | \
-                remove_linebreaks -f t -n 1` or die "Unable to access EtymOnline.com; check internet connection.";
-my $results = $page_dump; #Create new variable for final reporting actoins;
-$results =~ s/Look up .+ at Dictionary\.com//g; #Remove alt-text for "Look up at Dictionary.com" links;
-chomp $results; #Remove any trailing whitespace at the end;
-say $results; #Print results, with friendly single newline on the end;
+query = sys.argv.pop()
+assert isinstance(query, str)
+
+r = requests.get("http://www.etymonline.com/index.php?search=" + query)
+
+soup = BeautifulSoup.BeautifulSoup(r.content)
+
+try: 
+    hit = soup.dt.a.text
+except:
+    sys.exit("Found no hits for query '%s'." % query)
+
+def beautify(soupBowl):
+    # BeautifulSoup strips out whitespace around in-line markup tags, see 
+    # http://stackoverflow.com/a/16767636 for explanation of solution used below.
+    beautifulText = ' '.join(unicode(i.string) for i in soup.dd)
+
+    # Clean up 
+    beautifulText = re.sub('\s{2,}', ' ', beautifulText)
+    beautifulText = re.sub('\s+([,)\].;:])', '\g<1>', beautifulText)
+    return beautifulText
+
+definition = beautify(soup.dd)
+t = Terminal()
+print t.bold(hit)
+print definition
