@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import BeautifulSoup
+from BeautifulSoup import BeautifulSoup
 import requests
 import re
 import sys
@@ -13,7 +13,7 @@ assert isinstance(query, str)
 
 r = requests.get("http://www.etymonline.com/index.php?search=" + query)
 
-soup = BeautifulSoup.BeautifulSoup(r.content)
+soup = BeautifulSoup(r.content, convertEntities=BeautifulSoup.HTML_ENTITIES)
 
 try: 
     hit = soup.dt.a.text
@@ -23,7 +23,7 @@ except:
 def beautify(soupBowl):
     # BeautifulSoup strips out whitespace around in-line markup tags, see 
     # http://stackoverflow.com/a/16767636 for explanation of solution used below.
-    beautifulText = ' '.join(unicode(i.string) for i in soup.dd)
+    beautifulText = ' '.join(unicode(i.string) for i in soupBowl)
 
     # Clean up 
     beautifulText = re.sub('\s{2,}', ' ', beautifulText)
@@ -32,5 +32,6 @@ def beautify(soupBowl):
 
 definition = beautify(soup.dd)
 t = Terminal()
+
 print t.bold(hit)
 print definition
