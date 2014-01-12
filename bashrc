@@ -83,8 +83,3 @@ export NLTK_DATA=$HOME/.nltk_data
 # enable liquidprompt for PS1, from https://github.com/nojhan/liquidprompt
 source ~/gits/liquidprompt/liquidprompt
 source ~/.liquidpromptrc
-
-# configure local Ruby gem support
-if which ruby >/dev/null && which gem >/dev/null; then
-    PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
-fi
