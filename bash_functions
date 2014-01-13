@@ -14,8 +14,23 @@ wp() { #short wikipedia entries from DNS query
 formyeyes() { # enable redshift at this geographic location (IP-based);
     redshift -l `latlong` > /dev/null & # feed current location data into redshift;
 }
-disabletouchpad() {
-    xinput list | grep TouchPad | perl -n -e 'm/id=(\d+)/g; `xinput --set-prop $1 "Synaptics Off" 1`;'
+touchpad() {
+    trackpad_id=`xinput list | grep TouchPad | perl -ne 'm/id=(\d+)/g; print $1'`
+
+    case "$1" in
+        "")
+           echo "Usage: touchpad [on|off]"
+           RETVAL=1
+           ;;
+        on)
+           trackpad_state=0
+           ;;
+        off)
+           trackpad_state=1
+           ;;
+    esac
+
+    xinput --set-prop $trackpad_id "Synaptics Off" $trackpad_state
 }
 extr_mp3() { 
     ffmpeg -i "$1" -f mp4 -ar 44100 -ac 2 -ab 192k -vn -y -acodec copy "$1.mp3"
