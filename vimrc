@@ -1,5 +1,7 @@
 call pathogen#runtime_append_all_bundles()
 "call pathogen#helptags()
+
+" Configure indent and whitespace preferences for languages
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd BufNewFile,BufRead *.html set syntax=html
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
@@ -9,6 +11,11 @@ autocmd Filetype python setlocal ts=4 sts=4 sw=4
 autocmd Filetype perl setlocal ts=4 sts=4 sw=4
 autocmd Filetype python setlocal ts=4 sts=4 sw=4
 set expandtab
+
+" Disable warning about files changing on disk.
+" This happens all the time when branching in git...
+autocmd FileChangedShell * echon ""
+
 
 colorscheme acidcupcake
 
@@ -25,13 +32,16 @@ set title
 set cindent
 set autoindent
 set smartindent
-" set nowrap
+set nowrap
 
 set wildmode=longest,list,full
 set wildmenu
 
 " reformat file using perltidy
 noremap <Leader>t :%!perltidy -q<CR> 
+
+" disable Ex mode (default binding 'Q')
+nnoremap Q <nop>
 
 set pastetoggle=<F2>
 
