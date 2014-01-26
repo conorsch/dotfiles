@@ -5,6 +5,7 @@ if [[ -f ~/.bash_env_secure ]]; then
 fi
 
 eval "$(rbenv init -)"
+export PYTHONPATH="PYTHONPATH:$HOME/.local/lib/python2.7/site-packages"
 
 # configure local Ruby gem support
 if which ruby >/dev/null && which gem >/dev/null; then
