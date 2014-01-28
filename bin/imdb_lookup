@@ -1,35 +1,75 @@
-#!/usr/bin/perl
-# retrieve IMDB info on movie title;
-use strict;
-use warnings;
-use feature 'say'; #beats print;
-use LWP::Simple; #for grabbing raw HTML over HTTP;
+#!/usr/bin/python
+from BeautifulSoup import BeautifulSoup
+import requests
+import sys
 
-my @query_terms = @ARGV; #unpack requested movie title as array, in case multiple words;
-#http://www.imdb.com/find?q=the+big+lebowski
-my $imdb_url = 'http://www.imdb.com/find?q='; #store IMDB query URL structure, for concatenation;
-my $query_string; #initialize query string variable for concatenation;
-$query_string .= " $_" for @query_terms; #concatenate multiple terms for searching, with whitespace padding;
-$query_string =~ s/^ //; #remove first whitespace occurrence, unartfully added above;
-$query_string =~ s/ /\+/g; #change all whitespace to + symbol, for use in URL;
-my $query_url = $imdb_url . $query_string; #concatenate base URL with query string;
+IMDB_BASE_URL = "http://www.imdb.com"
+IMDB_QUERY_ROUTE = IMDB_BASE_URL + "/find?q="
+        
+if len(sys.argv) < 2:
+    sys.exit("Provide a word to look up.")
 
-my $results_raw = get($query_url); #grab raw page;
-my @results_array = split(/\n/, $results_raw); #store string as array for easy looping;
+query = sys.argv.pop()
 
-my $movie_url; #initialize variable in proper scope;
-for my $line (@results_array) { #loop through raw page, line by line;
-    next unless $line =~ m|<a href="/(title/\w+/)"|; #skip until first instance of movie URL format;
-    $movie_url = "http://www.imdb.com/$1"; #store that match;
-    last; #let's get out of here;
-}
+def findFirstResult(query):
 
-#use lynx to grab relevant section of IMDB movie page;
-my @movie_page = `lynx -nolist -dump $movie_url | \ 
-                 tail -n +72 | \
-                 head -n 23`;
+    r = requests.get(IMDB_QUERY_ROUTE + query)
+    soup = BeautifulSoup(r.content, convertEntities=BeautifulSoup.HTML_ENTITIES)
+    hits = soup.findAll('a', heef=True, text=query.title());
+    hits = soup.findAll('td',attrs={'class':'result_text'});
 
-for my $line (@movie_page) { #loop through relevant portion of IMDB movie page;
-    print $line #display the line, unless it's cruft;
-        unless $line =~ m/(Your rating|\d\.\d|Ratings:|1 2 3 4 5 6 7 8 9 10|Reviews:)/;
-}
+    # Assume top hit is the right one.
+    th = hits[0]
+    m = th.findChild()
+    movie_title = m.contents
+    movie_url = IMDB_BASE_URL + m.attrs[0][1]
+    return movie_url
+
+def parseMoviePage(movie_url):
+
+    r = requests.get(movie_url)
+    soup = BeautifulSoup(r.content, convertEntities=BeautifulSoup.HTML_ENTITIES)
+
+    y = soup.find('span', attrs={'class': 'nobr'})
+    year = y.findChildren()[0].getText()
+
+    t = soup.find('span', attrs={'itemprop': 'name'})
+    title = t.getText()
+
+    d = soup.find('div', attrs={'itemprop': 'director'})
+    director = d.findChildren()[1].getText()
+
+    w = soup.find('div', attrs={'itemprop': 'creator'})
+    writer = d.findChildren()[1].getText()
+
+    a = soup.find('div', attrs={'itemprop': 'actors'})
+    a.findAll('span', attrs={'itemprop': 'name'})[0].getText()
+    actors = [ person.getText() for person in a.findAll('span', attrs={'itemprop': 'name'})]
+
+    movie = {
+            'title': title,
+            'year': year,
+            'director': director,
+            'writer': writer,
+            'actors': actors,
+            'url': movie_url
+            }
+
+    return movie
+
+def findMovie(query):
+    m = findFirstResult(query)
+    info = parseMoviePage(m)
+    return info
+
+def movieDescription(m):
+
+    print "%s (%s)" % (m['title'], m['year'])
+    print "Directed by %s" % m['director']
+    print "Written by %s" % m['writer']
+    print "Starring:"
+    for a in m['actors']:
+        print "\t- %s" % a
+
+m = findMovie(query)
+movieDescription(m)
