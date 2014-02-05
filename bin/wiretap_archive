@@ -1,0 +1,46 @@
+#!/bin/env/python
+
+import feedparser
+import requests
+from BeautifulSoup import BeautifulSoup
+import urllib
+import sys
+import os
+
+feed = 'http://www.cbc.ca/podcasting/includes/wiretap.xml'
+
+if len(sys.argv) < 2:
+    dest = '/tmp'
+else:
+    dest = sys.argv.pop()
+
+def getEpisodes(feed):
+    d = feedparser.parse(feed)
+    return [Episode(e) for e in d.entries]
+
+def downloadEpisodes(feed):
+
+    print "Downloading files to %s..." % dest
+    for e in getEpisodes(feed): 
+        f = os.path.join(dest, e.filename())
+        urllib.urlretrieve(e.url, f)
+
+class Episode(object):
+
+    def __init__(self, entry):
+
+        for key in entry:
+            setattr(self, key, entry[key])
+
+        self.url = entry.id
+        self.program_name = 'Wiretap'
+
+    def date_normalized(self):    
+        y, m, d = [ getattr(self.published_parsed, d) for d in ['tm_year', 'tm_mon', 'tm_mday']]
+        return "{:0>4d}-{:0>2d}-{:0>2d}".format(y, m, d)
+
+    def filename(self):
+        return ' '.join([self.program_name, self.date_normalized(), self.title])  + '.mp3'
+
+if __name__ == '__main__':
+    downloadEpisodes(feed)
