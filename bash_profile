@@ -6,6 +6,7 @@ fi
 
 eval "$(rbenv init -)"
 export PYTHONPATH="PYTHONPATH:$HOME/.local/lib/python2.7/site-packages"
+export PATH="$HOME/.local/bin:$PATH"
 
 # configure local Ruby gem support
 if which ruby >/dev/null && which gem >/dev/null; then
