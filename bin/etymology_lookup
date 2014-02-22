@@ -3,7 +3,10 @@ from BeautifulSoup import BeautifulSoup
 import requests
 import re
 import sys
+import os
+from textwrap import wrap, fill
 from blessings import Terminal
+
 
 if len(sys.argv) < 2:
     sys.exit("Provide a word to look up.")
@@ -30,8 +33,11 @@ def beautify(soupBowl):
     beautifulText = re.sub('\s+([,)\].;:])', '\g<1>', beautifulText)
     return beautifulText
 
+def getColumnCount():
+    rows, columns = os.popen('stty size').read().split()
+    return int(columns)
+
 definition = beautify(soup.dd)
 t = Terminal()
-
 print t.bold(hit)
-print definition
+print fill(definition, width=getColumnCount())
