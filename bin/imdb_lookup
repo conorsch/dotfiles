@@ -64,12 +64,21 @@ def findMovie(query):
 
 def movieDescription(m):
 
-    print "%s (%s)" % (m['title'], m['year'])
-    print "Directed by %s" % m['director']
-    print "Written by %s" % m['writer']
-    print "Starring:"
+    description = """\
+%(title)s (%(year)s)
+Directed by %(director)s
+Written by %(writer)s
+""" %  {'title': m['title'], 
+    'year': m['year'],
+    'director': m['director'],
+    'writer': m['writer'],
+    }
+
+    description += "Starring:\n"
     for a in m['actors']:
-        print "\t- %s" % a
+        description += "\t- %s\n" % a
+
+    print description
 
 m = findMovie(query)
 movieDescription(m)
