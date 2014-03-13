@@ -1,3 +1,6 @@
+editall() { # edit all files by file extension
+     find . -type f -iname '*.'"$1" -and -not -iname '__init__*' -exec vim -p {} +
+}
 genpw() { # generate random 30-character password
     strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
 }
@@ -171,3 +174,4 @@ nyancat() {
     telnet miku.acm.uiuc.edu
 }
 #### SILLY ####
+
