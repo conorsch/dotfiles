@@ -1,43 +1,98 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from BeautifulSoup import BeautifulSoup
-import requests
-import re
-import sys
 import os
+import sys
+import re
+import random
+import requests
 from textwrap import wrap, fill
 from blessings import Terminal
 
 
-if len(sys.argv) < 2:
-    sys.exit("Provide a word to look up.")
-
-query = sys.argv.pop()
-assert isinstance(query, str)
-
-r = requests.get("http://www.etymonline.com/index.php?search=" + query)
-
-soup = BeautifulSoup(r.content, convertEntities=BeautifulSoup.HTML_ENTITIES)
-
-try: 
-    hit = soup.dt.a.text
-except:
-    sys.exit("Found no hits for query '%s'." % query)
-
-def beautify(soupBowl):
+def beautify(soup):
     # BeautifulSoup strips out whitespace around in-line markup tags, see 
     # http://stackoverflow.com/a/16767636 for explanation of solution used below.
-    beautifulText = ' '.join(unicode(i.string) for i in soupBowl)
+    beautifiedText = ' '.join(unicode(i.string) for i in soup)
 
     # Clean up 
-    beautifulText = re.sub('\s{2,}', ' ', beautifulText)
-    beautifulText = re.sub('\s+([,)\].;:])', '\g<1>', beautifulText)
-    return beautifulText
+    beautifiedText = re.sub('\s{2,}', ' ', beautifiedText)
+    beautifiedText = re.sub('\s+([,)\].;:])', '\g<1>', beautifiedText)
+    return beautifiedText
 
-def getColumnCount():
+def getTerminalColumnCount():
     rows, columns = os.popen('stty size').read().split()
     return int(columns)
 
-definition = beautify(soup.dd)
-t = Terminal()
-print t.bold(hit)
-print fill(definition, width=getColumnCount())
+def getRandomLemma(): 
+    from nltk.stem.wordnet import WordNetLemmatizer
+    lemmatizer = WordNetLemmatizer()
+
+    # Ideally, we should use NLTK's list of all English words.
+    # In testing, however, etymonline.com returns zero results for many 
+    # entries in the 'words' corpus, so let's just read from the system dictionary.
+    #
+    # from nltk.corpus import words
+    # candidate = random.choice(words.words())
+
+    candidate = random.choice(open("/usr/share/dict/words").readlines()).rstrip('\n')
+    candidate = lemmatizer.lemmatize(candidate)
+
+    return candidate
+
+    # Let's refuse any candidates that aren't strictly alphanumeric, 
+    # since lemmatizing will be difficult with those, and thus etymonline.com 
+    # will return zero hits. 
+#    if re.match(r'^\w+$', candidate):
+#        return candidate
+#    else:
+#        return getRandomLemma()
+
+
+class NoResultsFound(Exception):
+    def __init__(self, value):
+        self.value = "Found no hits for query '%s'." % value
+
+    def __str__(self):
+        return repr(self.value)
+
+def queryEtymOnline(query):
+
+    #print "Querying etymonline.com for '%s'..." % query
+    r = requests.get("http://www.etymonline.com/index.php?search=" + query)
+    soup = BeautifulSoup(r.content, convertEntities=BeautifulSoup.HTML_ENTITIES)
+
+    try:
+        hit = soup.dt.a.text
+    except:
+        raise NoResultsFound(query)
+
+    etymology = beautify(soup.dd)
+    return (hit, etymology)
+
+def main():
+    if len(sys.argv) < 2:
+        randomQuery = True
+        query = getRandomLemma()
+        #sys.exit("Provide a word to look up.")
+    else:
+        randomQuery = False
+        query = ' '.join(sys.argv[1:])
+
+    for attempts in range(5):
+        try:
+            (hit, etymology) = queryEtymOnline(query)
+        except NoResultsFound:
+            if randomQuery:
+                query = getRandomLemma()
+                continue
+            else:
+                sys.exit("No etymology found for '%s'." % query)
+        except requests.exceptions.ConnectionError:
+            sys.exit("Could not query etymonline.com; check internet connection.")
+
+    t = Terminal()
+    print t.bold(hit)
+    print fill(etymology, width=getTerminalColumnCount())
+
+if __name__ == '__main__':
+    main()
