@@ -4,18 +4,12 @@ if [[ -f ~/.bash_env_secure ]]; then
     source ~/.bash_env_secure
 fi
 
-eval "$(rbenv init -)"
 export PYTHONPATH="PYTHONPATH:$HOME/.local/lib/python2.7/site-packages"
 export PATH="$HOME/.local/bin:$PATH"
 
 # configure local Ruby gem support
 if which ruby >/dev/null && which gem >/dev/null; then
-    # I like my gems out of the way, so stuff 'em in ~/.gems:
-    export GEM_HOME="$HOME/.gems"
-    export GEM_PATH="$GEM_HOME/bin"
-    export PATH="$PATH:$GEM_PATH"
-    # assume rbenv is present if ruby is:
-    export PATH="$HOME/.rbenv/bin:$PATH"
+    export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
 fi
 
 if [ -f ~/.bash_aliases ]; then # source bash_aliases file if it exists
