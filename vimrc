@@ -33,6 +33,7 @@ set cindent
 set autoindent
 set smartindent
 set nowrap
+set clipboard=unnamed
 
 set wildmode=longest,list,full
 set wildmenu
