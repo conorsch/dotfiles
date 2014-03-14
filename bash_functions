@@ -121,10 +121,6 @@ tssh() { #Connect to many machines via SSH by invoking tmux;
     declare -a HOSTS=$@ #Necessary to rename array due to quoting quirks
     tmux new "ssh-everywhere.sh $HOSTS" #Open new tmux session by calling script;
 }
-
-g() { 
-    lynx -dump "http://google.com/search?q=$*" | less
-}
 afterdownload() { #complete action after a download or transfer completes
     while [ -e $1 ] #$1 should be (hidden) partial file for download
         do sleep 1 #wait, check again
