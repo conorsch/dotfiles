@@ -18,7 +18,6 @@ alias externalip='curl ifconfig.me'
 alias internalip='hostname -I'
 alias whereami='externalip | iploc'
 alias whoshere='scan_local_ips' # alias to a Perl script in path, uses nmap;
-alias etym='etymology_lookup' # etymonline.com lookups in the shell!
 #alias imdb='imdb_lookup' # broken IMDB lookups
 alias refresh='source ~/.bash_profile' # re-source ENV easily (~/.bash_profile calls ~/.bashrc)
 alias fmac='format_mac_address' #re-format MAC address in readable way
