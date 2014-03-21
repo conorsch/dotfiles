@@ -13,6 +13,9 @@ alias gits='git status'
 alias gh='github_browse'
 alias pushall='git_push_all'
 
+alias ipy='ipython --no-banner --no-confirm-exit -i'
+alias vssh='vagrant ssh'
+
 alias ack='ack-standalone'
 alias externalip='curl ifconfig.me'
 alias internalip='hostname -I'
