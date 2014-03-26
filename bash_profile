@@ -58,4 +58,4 @@ export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export heimchen="$HOME/Valhalla/Media/Heimchen"
 export PATH=$PATH:$HOME/.bin
 export NLTK_DATA=$HOME/.nltk_data
-
+export BROWSER="firefox"
