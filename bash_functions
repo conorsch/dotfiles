@@ -7,9 +7,8 @@ genpw() { # generate random 30-character password
 ackr() { # for all files matching regex1, perform in-place substition with regex2
     ack-grep $1 -l | xargs perl -pi -E "$2"
 }
-md() { # create directory, then cd into it
-    dir=$1
-    mkdir -p "$dir" && cd "$dir"
+gethtmlformfields() { # spit out list of HTML form field "name"s
+    perl -nE '/name=['\''"](\w+)['\''"]/; say $1 if $1;' "$1" | awk '!x[$0]++'
 }
 wp() { #short wikipedia entries from DNS query
     dig +short txt "$*".wp.dg.cx

@@ -1,12 +1,20 @@
 ---
-gem: --user-install --no-document
+# It appears these 'gem' flags aren't honored when running 'gem install'
+gem: --user-install --no-document --no-format-executable
 
-sources:
+:sources:
 - http://gems.rubyforge.org/
 - http://gems.github.com
-update_sources: true
+
+:update_sources: true
+:bulk_threshold: 1000
+:backtrace: false
+:verbose: true
 
 benchmark: false
-bulk_threshold: 1000
-backtrace: false
-verbose: true
+
+# Force 'local' (per user) installation of gems by default
+# Also, don't append version number of Ruby to executable names.
+install: --no-format-executable --user-install
+uninstall: --no-format-executable  --user-install
+update: --no-format-executable --user-install
