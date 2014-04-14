@@ -10,6 +10,7 @@ export PATH="$HOME/.local/bin:$PATH"
 # configure local Ruby gem support
 if which ruby >/dev/null && which gem >/dev/null; then
     export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
+    export GEM_HOME="$(ruby -rubygems -e 'puts Gem.user_dir')"
 fi
 
 if [ -f ~/.bash_aliases ]; then # source bash_aliases file if it exists
