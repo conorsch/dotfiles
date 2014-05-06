@@ -15,6 +15,7 @@ alias pushall='git_push_all'
 
 alias ipy='ipython --no-banner --no-confirm-exit -i'
 alias vssh='vagrant ssh'
+alias ebssh='ssh -i ~/.ssh/beanstalk-dev.pem -l ec2-user' # ssh into elastic beanstalk instances with just a hostname
 
 alias ack='ack-standalone'
 alias externalip='curl ifconfig.me'
