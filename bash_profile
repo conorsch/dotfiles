@@ -6,6 +6,7 @@ fi
 
 export PYTHONPATH="PYTHONPATH:$HOME/.local/lib/python2.7/site-packages"
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="/opt/AWS-ElasticBeanstalk-CLI-2.6.1/eb/linux/python2.7:$PATH"
 
 # configure local Ruby gem support
 if which ruby >/dev/null && which gem >/dev/null; then
