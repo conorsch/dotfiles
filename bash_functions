@@ -102,7 +102,7 @@ toritup() {
 rsyncssh() {
     rsync -e "ssh" -avPh $@
 }
-cd() {
+cdl() {
     builtin cd "$@" && ls -lsh
 }
 muzik() {
