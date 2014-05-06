@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+# Get catpics in a hurry!
+import webbrowser
+url = 'http://thecatapi.com/api/images/get?format=src&type=jpg'
+webbrowser.open(url)
