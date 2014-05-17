@@ -49,7 +49,7 @@ bindsym $mod+Shift+l move up
 bindsym $mod+Shift+semicolon move right
 
 # split in horizontal orientation
-bindsym $mod+h split h
+bindsym $mod+minus split h
 
 # split in vertical orientation
 bindsym $mod+v split v
