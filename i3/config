@@ -142,5 +142,5 @@ exec --no-startup-id nm-applet
 
 # Start these things when I log in, on specific workspaces
 #exec --no-startup-id sh ~/.fehbg
-exec --no-startup-id i3-msg 'workspace 1; exec firefox'
-exec --no-startup-id i3-msg 'workspace 2; exec konsole -e tmux'
+exec --no-startup-id i3-msg 'workspace 1; exec konsole -e tmux'
+exec --no-startup-id i3-msg 'workspace 2; exec firefox'
