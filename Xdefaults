@@ -1,0 +1,51 @@
+URxvt.background: [75]#2c2c2c
+*foreground: #dcdccc
+*cursorColor: #93a1a1
+
+!! black dark/light
+*color0: #3f3f3f
+*color8: #709080
+
+!! red dark/light
+*color1: #705050
+*color9: #dca3a3
+
+!! green dark/light
+*color2: #60848a
+*color10: #72d5a3
+
+!! yellow dark/light
+*color3: #dfaf8f
+*color11: #f0dfaf
+
+!! blue dark/light
+*color4: #9ab8d7
+*color12: #94bff3
+
+!! magenta dark/light
+*color5: #dc8cc3
+*color13: #ec93d3
+
+!! cyan dark/light
+*color6: #8cd0d3
+*color14: #93e0e3
+
+!! white dark/light
+*color7:  #f3f8fa
+*color15: #ffffff
+
+URxvt*depth: 32
+URxvt*saveLines: 1000
+URxvt*font: xft:Ubuntu Mono:pixelsize=18
+URxvt*boldFont: xft:Ubuntu Mono:bold:pixelsize=18
+
+!URxvt.perl-ext-common: default,matcher
+!URxvt.url-launcher: /usr/bin/google-chrome -new-tab
+!URxvt.matcher.button: 1
+!URxvt.colorUL: #4682B4
+
+URxvt*scrollBar: false
+URxvt*scrollBar_right: false
+URxvt*scrollstyle: rxvt
+
+visualbell: on
