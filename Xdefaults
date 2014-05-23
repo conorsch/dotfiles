@@ -3,8 +3,8 @@ URxvt.background: [75]#2c2c2c
 *cursorColor: #93a1a1
 
 !! black dark/light
-*color0: #3f3f3f
-*color8: #709080
+*color0: #000000
+*color8: #686868
 
 !! red dark/light
 *color1: #B21818
@@ -35,12 +35,10 @@ URxvt.background: [75]#2c2c2c
 *color15: #FFFFFF
 
 URxvt*depth: 32
+urxvt*background: rgba:0000/0000/0200/c800
 URxvt*saveLines: 1000
 URxvt*font: xft:Ubuntu Mono:pixelsize=18:antialias=true:hinting=true
 URxvt*boldFont: xft:Ubuntu Mono:bold:pixelsize=18:antialias=true:hinting=true
-
-URxvt.transparent:   true
-URxvt.shading:       40
 
 !URxvt.perl-ext-common: default,matcher
 !URxvt.url-launcher: /usr/bin/firefox -new-tab
