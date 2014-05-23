@@ -7,32 +7,32 @@ URxvt.background: [75]#2c2c2c
 *color8: #709080
 
 !! red dark/light
-*color1: #705050
-*color9: #dca3a3
+*color1: #B21818
+*color9: #FF5454
 
 !! green dark/light
-*color2: #60848a
-*color10: #72d5a3
+*color2: #18B218
+*color10: #54FF54
 
 !! yellow dark/light
-*color3: #dfaf8f
-*color11: #f0dfaf
+*color3: #B26818
+*color11: #FFFF54
 
 !! blue dark/light
-*color4: #9ab8d7
-*color12: #94bff3
+*color4: #1818B2
+*color12: #5454FF
 
 !! magenta dark/light
-*color5: #dc8cc3
-*color13: #ec93d3
+*color5: #B218B2
+*color13: #FF54FF
 
 !! cyan dark/light
-*color6: #8cd0d3
-*color14: #93e0e3
+*color6: #18B2B2
+*color14: #54FFFF
 
 !! white dark/light
-*color7:  #f3f8fa
-*color15: #ffffff
+*color7:  #B2B2B2
+*color15: #FFFFFF
 
 URxvt*depth: 32
 URxvt*saveLines: 1000
