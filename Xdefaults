@@ -36,8 +36,8 @@ URxvt.background: [75]#2c2c2c
 
 URxvt*depth: 32
 URxvt*saveLines: 1000
-URxvt*font: xft:Ubuntu Mono:pixelsize=18
-URxvt*boldFont: xft:Ubuntu Mono:bold:pixelsize=18
+URxvt*font: xft:Ubuntu Mono:pixelsize=18:antialias=true:hinting=true
+URxvt*boldFont: xft:Ubuntu Mono:bold:pixelsize=18:antialias=true:hinting=true
 
 !URxvt.perl-ext-common: default,matcher
 !URxvt.url-launcher: /usr/bin/google-chrome -new-tab
