@@ -39,6 +39,9 @@ URxvt*saveLines: 1000
 URxvt*font: xft:Ubuntu Mono:pixelsize=18:antialias=true:hinting=true
 URxvt*boldFont: xft:Ubuntu Mono:bold:pixelsize=18:antialias=true:hinting=true
 
+URxvt.transparent:   true
+URxvt.shading:       40
+
 !URxvt.perl-ext-common: default,matcher
 !URxvt.url-launcher: /usr/bin/firefox -new-tab
 !URxvt.matcher.button: 1
