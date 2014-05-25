@@ -44,12 +44,15 @@ URxvt.transparent:   true
 URxvt.shading:       40
 
 URxvt.perl-ext-common: default,matcher,clipboard
-URxvt.keysym.M-c:   perl:clipboard:copy
-URxvt.keysym.M-v:   perl:clipboard:paste
-URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
+URxvt.keysym.C-S-c:   perl:clipboard:copy
+URxvt.keysym.C-S-v:   perl:clipboard:paste
+URxvt.keysym.C-S-C-v: perl:clipboard:paste_escaped
 URxvt.url-launcher: /usr/bin/firefox -new-tab
 URxvt.matcher.button: 1
 URxvt.colorUL: #4682B4
+URxvt.clipboard.autocopy: true
+
+!! Tighten up font
 URxvt.letterSpace: -1
 
 URxvt*scrollBar: false
