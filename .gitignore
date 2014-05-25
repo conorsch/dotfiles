@@ -1,6 +1,6 @@
-moc/playlist.m3u
-vim/.netrwhist
-moc/cache
-moc/last_directory
-moc/pid
-bash_env_secure
+home/.vim/.netrwhist
+home/.moc/playlist.m3u
+home/.moc/cache
+home/.moc/last_directory
+home/.moc/pid
+home/.bash_env_secure
