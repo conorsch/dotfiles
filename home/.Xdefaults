@@ -35,10 +35,13 @@ URxvt.background: [75]#2c2c2c
 *color15: #FFFFFF
 
 URxvt*depth: 32
-urxvt*background: rgba:0000/0000/0200/c800
 URxvt*saveLines: 1000
-URxvt*font: xft:Ubuntu Mono:pixelsize=18:antialias=true:hinting=true
-URxvt*boldFont: xft:Ubuntu Mono:bold:pixelsize=18:antialias=true:hinting=true
+URxvt*font: xft:Monospace:pixelsize=14:antialias=true:hinting=true
+URxvt*boldFont: xft:Monospace:bold:pixelsize=14:antialias=true:hinting=true
+
+!! urxvt*background: rgba:0000/0000/0200/c800
+URxvt.transparent:   true
+URxvt.shading:       40
 
 URxvt.perl-ext-common: default,matcher,clipboard
 URxvt.keysym.M-c:   perl:clipboard:copy
