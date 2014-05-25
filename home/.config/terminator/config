@@ -7,6 +7,7 @@
     background_darkness = 0.67
     background_type = transparent
     use_system_font = False
+    foreground_color = "#dcdcdc"
     show_titlebar = False
     font = Monospace 11
 [layouts]
