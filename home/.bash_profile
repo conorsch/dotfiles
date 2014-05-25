@@ -1,15 +1,6 @@
 source ~/.bashrc
 
-if [[ -f ~/.bash_env_secure ]]; then
-    source ~/.bash_env_secure
-fi
-
-export PYTHONPATH="PYTHONPATH:$HOME/.local/lib/python2.7/site-packages"
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="/opt/AWS-ElasticBeanstalk-CLI-2.6.1/eb/linux/python2.7:$PATH"
-export SRILM="/opt/srilm"
-export PATH="$SRILM/bin:$PATH"
-export PATH="$SRILM/bin/i686-ubuntu:$PATH"
+[[ -f ~/.bash_env_secure ]] && source ~/.bash_env_secure
 
 # configure local Ruby gem support
 if which ruby >/dev/null && which gem >/dev/null; then
@@ -17,13 +8,11 @@ if which ruby >/dev/null && which gem >/dev/null; then
     export GEM_HOME="$(ruby -rubygems -e 'puts Gem.user_dir')"
 fi
 
-if [ -f ~/.bash_aliases ]; then # source bash_aliases file if it exists
-    . ~/.bash_aliases
-fi
+# source bash_aliases file if it exists
+[ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
-if [ -f ~/.bash_functions ]; then # source bash_functions file if it exists
-    . ~/.bash_functions
-fi
+# source bash_functions file if it exists
+[ -f ~/.bash_functions ] && . ~/.bash_functions
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
@@ -55,12 +44,4 @@ fi
 # export tmuxinator projects for tab-completion of session names
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 
-# enable liquidprompt for PS1, from https://github.com/nojhan/liquidprompt
-source ~/gits/liquidprompt/liquidprompt
-source ~/.liquidpromptrc
 
-export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
-export heimchen="$HOME/Valhalla/Media/Heimchen"
-export PATH=$PATH:$HOME/.bin
-export NLTK_DATA=$HOME/.nltk_data
-export BROWSER="firefox"
