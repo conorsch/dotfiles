@@ -20,11 +20,15 @@ font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # chose a FreeType font, such as:
 # font pango:DejaVu Sans Mono 10
 
+# Disable all window titles, via: https://faq.i3wm.org/question/1238/is-it-possible-to-hide-window-title-for-all-windows/
+for_window [class="^.*"] border pixel 1
+bindsym Control+Shift+1 [class="^.*"] border toggle
+
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Return exec konsole
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -137,10 +141,13 @@ bar {
         status_command i3status
 }
 
+# start xcompmgr (for terminal transparency, e.g. in Konsole)
+exec --no-startup-id xcompmgr
+
 # start nm-applet (NetworkManager) 
 exec --no-startup-id nm-applet
 
 # Start these things when I log in, on specific workspaces
 #exec --no-startup-id sh ~/.fehbg
-exec --no-startup-id i3-msg 'workspace 1; exec urxvt -e tmux'
-exec --no-startup-id i3-msg 'workspace 2; exec firefox'
+#exec --no-startup-id i3-msg 'workspace 1; exec urxvt -e tmux'
+#exec --no-startup-id i3-msg 'workspace 2; exec firefox'
