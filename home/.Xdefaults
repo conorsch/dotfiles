@@ -1,6 +1,10 @@
 URxvt.background: [75]#2c2c2c
-*foreground: #dcdccc
-*cursorColor: #93a1a1
+
+!! Hard-coded foreground color overrides some GUI apps.
+!! It's useful for urxvt, but not at the cost of other apps. 
+!! Leaving commented out for now.
+!! *foreground: #dcdccc
+!! *cursorColor: #93a1a1
 
 !! black dark/light
 *color0: #000000
