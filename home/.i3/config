@@ -137,6 +137,9 @@ bar {
         status_command i3status
 }
 
+#  start xcompmgr (for terminal transparency, e.g. in Konsole)
+exec --no-startup-id xcompmgr
+
 # start nm-applet (NetworkManager) 
 exec --no-startup-id nm-applet
 
