@@ -149,9 +149,10 @@ exec --no-starup-id nitrogen --restore
 exec --no-startup-id xscreensaver -no-splash
 # start xcompmgr (for terminal transparency, e.g. in Konsole)
 exec --no-startup-id xcompmgr
-
 # start nm-applet (NetworkManager) 
 exec --no-startup-id nm-applet
+# set up multihead monitors (work desktop only)
+exec --no-startup-id ~/.kestrel_monitor_setup
 # configure custom X keybindings
 exec --no-startup-id setxkbmap -layout us -option caps:escape -option compose:ralt
 
