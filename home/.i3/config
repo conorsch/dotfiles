@@ -143,6 +143,8 @@ bar {
         status_command i3status
 }
 
+# restore nitrogen (desktop background) settings
+exec --no-starup-id nitrogen --restore
 # start xscreensaver daemon
 exec --no-startup-id xscreensaver -no-splash
 # start xcompmgr (for terminal transparency, e.g. in Konsole)
