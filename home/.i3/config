@@ -152,6 +152,8 @@ exec --no-startup-id xcompmgr
 
 # start nm-applet (NetworkManager) 
 exec --no-startup-id nm-applet
+# configure custom X keybindings
+exec --no-startup-id setxkbmap -layout us -option caps:escape -option compose:ralt
 
 # Start these things when I log in, on specific workspaces
 #exec --no-startup-id sh ~/.fehbg
