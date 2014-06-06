@@ -137,10 +137,15 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# audio/volume controls
+# audio/volume controls using hardware buttons on laptop
 bindsym XF86AudioRaiseVolume exec amixer -q set Master 10%+ unmute
 bindsym XF86AudioLowerVolume exec amixer -q set Master 10%- unmute
 bindsym XF86AudioMute exec amixer -q set Master toggle
+
+# audio/volume controls using arrow keys (nice on desktop)
+bindsym $mod+Up exec amixer -q set Master 10%+ unmute
+bindsym $mod+Down exec amixer -q set Master 10%- unmute
+bindsym $mod+m exec amixer -q set Master toggle
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
