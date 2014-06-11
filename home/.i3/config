@@ -108,6 +108,8 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# lock the screen
+bindsym $mod+z exec "i3lock -c 000000 > /dev/null || xscreensaver-command --lock"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -135,17 +137,34 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# audio/volume controls using hardware buttons on laptop
+bindsym XF86AudioRaiseVolume exec amixer -q set Master 10%+ unmute
+bindsym XF86AudioLowerVolume exec amixer -q set Master 10%- unmute
+bindsym XF86AudioMute exec amixer -q set Master toggle
+
+# audio/volume controls using arrow keys (nice on desktop)
+bindsym $mod+Up exec amixer -q set Master 10%+ unmute
+bindsym $mod+Down exec amixer -q set Master 10%- unmute
+bindsym $mod+m exec amixer -q set Master toggle
+
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
         status_command i3status
 }
 
+# restore nitrogen (desktop background) settings
+exec --no-starup-id nitrogen --restore
+# start xscreensaver daemon
+exec --no-startup-id xscreensaver -no-splash
 # start xcompmgr (for terminal transparency, e.g. in Konsole)
 exec --no-startup-id xcompmgr
-
 # start nm-applet (NetworkManager) 
 exec --no-startup-id nm-applet
+# set up multihead monitors (work desktop only)
+exec --no-startup-id ~/.kestrel_monitor_setup
+# configure custom X keybindings
+exec --no-startup-id setxkbmap -layout us -option caps:escape -option compose:ralt
 
 # Start these things when I log in, on specific workspaces
 #exec --no-startup-id sh ~/.fehbg
