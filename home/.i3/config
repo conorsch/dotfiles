@@ -145,7 +145,7 @@ bindsym XF86AudioMute exec amixer -q set Master toggle
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3status
+        status_command i3status -c ~/.i3/i3status.conf
 }
 
 # restore nitrogen (desktop background) settings
