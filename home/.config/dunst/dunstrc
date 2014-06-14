@@ -1,3 +1,4 @@
+# taken from https://gist.githubusercontent.com/fd0/9876490/raw/1c1ad2c23b6b888f1442c2b68661cac72ccdd4f4/dunstrc
 [global]
     font = Terminus 8
 
