@@ -2,8 +2,13 @@
 editall() { # edit all files by file extension
      find . -type f -iname '*.'"$1" -and -not -iname '__init__*' -exec vim -p {} +
 }
+noscrob() { # disable lastfm scrobbling while practicing music
+     sudo service lastfmsubmitd stop &&\
+     muzik &&\
+     sudo service lastfmsubmitd start
+}
 dirwatch() { # run ls repeatedly with colors preserved
-     watch --color "ls -lsh --color"
+     watch --color "ls -lsh --color $1"
 }
 genpw() { # generate random 30-character password
     strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
