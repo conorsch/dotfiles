@@ -1,9 +1,9 @@
-[submodule "/home/conor/gits/dotfiles/vim/bundle/vim-prose"]
-	path = /home/conor/gits/dotfiles/vim/bundle/vim-prose
-	url = git://github.com/nother/vim-prose.git
+[submodule "home/.vim/bundle/vim-prose"]
+	path = home/.vim/bundle/vim-prose
+	url = https://github.com/nother/vim-prose.git
 [submodule "home/.vim/bundle/jedi-vim"]
 	path = home/.vim/bundle/jedi-vim
-	url = git@github.com:davidhalter/jedi-vim.git
+	url = https://github.com/davidhalter/jedi-vim.git
 [submodule "home/.vim/bundle/nerdtree"]
 	path = home/.vim/bundle/nerdtree
 	url = https://github.com/scrooloose/nerdtree
