@@ -1,0 +1,27 @@
+#!/bin/bash
+# dual-monitor configs for various machines
+
+if [[ $(hostname) == 'kestrel' ]]; then 
+   # desktop workstation, two widescreen monitors with left profile and right landscape
+   LMON='DisplayPort-0'
+   RMON='DVI-0'
+   xrandr --output $LMON --left-of $RMON --rotate right
+   xrandr --output $RMON --primary
+
+   # below this line are KDE settings
+   #xrandr --output $LMON --mode 1920x1080
+   #xrandr --output $LMON --rotate right
+   #xrandr --output $RMON --right-of $LMON
+   #xrandr --output $RMON --mode 1920x1080
+   #xrandr --output $LMON --primary
+
+elif [[ $(hostname) == 'Petrichor' ]]; then
+   # laptop, usually just the one screen, sometimes a VGA connected externally 
+   # if no external screen is plugged in, this won't do anything (which is good)
+   EXTERNAL_MONITOR='VGA1'
+   INTERNAL_MONITOR='LVDS1'
+   xrandr --auto
+   xrandr --output $EXTERNAL_MONITOR
+   xrandr --output $EXTERNAL_MONITOR --left-of $INTERNAL_MONITOR
+   xrandr --output $INTERNAL_MONITOR --primary
+fi
