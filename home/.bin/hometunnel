@@ -28,7 +28,7 @@ foreach my $preexisting_tunnel (@preexisting_tunnels) {
 #    system ("kill $ssh_pid"); #If so, kill it;
 #}
 say "Attempting to open ssh tunnel now..."; #Give the user a little feedback;
-`ssh -D 2002 -f -q -N -o ConnectTimeout=$timeout_duration -C $host` #Perform the actual connection;
+system(qx{ssh -D 2002 -f -q -N -o ConnectTimeout=$timeout_duration -C $host}) == 0 #Perform the actual connection;
     or die "    After $timeout_duration seconds, no connection could be established.
     Please check connection to internet."; #Report failure if unable to connect;
 #system ("ssh -D $port -f -q -N -C $host"); #Perform the actual connection;

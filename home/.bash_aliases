@@ -28,6 +28,7 @@ alias fmac='format_mac_address' #re-format MAC address in readable way
 alias speakertest="speaker-test -t wav -c 2" # test left and right stereo channels
 alias therecanbeonlyone="xrandr --output VGA1 --off" # disconnect external monitor
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias laptop-suspend='dbus-send --system --print-reply --dest="org.freedesktop.UPower" /org/freedesktop/UPower org.freedesktop.UPower.Suspend'
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
