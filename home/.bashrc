@@ -25,6 +25,7 @@ export PATH="/opt/AWS-ElasticBeanstalk-CLI-2.6.1/eb/linux/python2.7:$PATH"
 export SRILM="/opt/srilm"
 export PATH="$SRILM/bin:$PATH"
 export PATH="$SRILM/bin/i686-ubuntu:$PATH"
+export PATH="/opt/packer:$PATH"
 export PATH=$PATH:/home/conor/Documents/Coding/Cute\ names\ for\ scripts
 export heimchen="$HOME/Valhalla/Media/Heimchen"
 export PATH=$PATH:$HOME/.bin
