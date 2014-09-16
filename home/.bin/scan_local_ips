@@ -10,26 +10,29 @@ scan_results = scanner.scan(hosts='10.0.0.*', arguments='-sP')
 active_hosts = scan_results['nmap']['scanstats']['uphosts']
 print("Found {0} active hosts on network.".format(active_hosts))
 
-iface = 'wlan0'
-
 try:
-# No idea how portable this is
-
     # Example traceback:
     #    Traceback (most recent call last):
     #      File "/home/conor/.bin/scan_local_ips", line 13, in <module>
     #        local_ip = netifaces.ifaddresses('wlan0')[2][0]['addr']
     #    KeyError: 2
 
-    local_ip = netifaces.ifaddresses(iface)[2][0]['addr']
+    # So, we'll just loop through all the interfaces and take the 
+    # first one that returns an IP address!
+    for iface in netifaces.interfaces():
+        local_ip = netifaces.ifaddresses(iface)[2][0]['addr']
+        if local_ip:
+            continue
 except KeyError as e:
-    print("Network device {0} not connected.".format(iface))
-    sys.exit(1)
-
+    pass
+except:
+    raise Exception("Couldn't find an IP address. Check internet connection.")
+    #print("Network device {0} not connected.".format(iface))
 
 def get_host_info():
     for ip_address, metadata in scan_results['scan'].items():
-        info = ip_address
+        info = ''
+        info += ip_address
         hostname = metadata['hostname']
         if hostname:
             info += " ({0})".format(hostname)
@@ -39,5 +42,4 @@ def get_host_info():
 
 for i in sorted(get_host_info()):
     print(i)
-
 
