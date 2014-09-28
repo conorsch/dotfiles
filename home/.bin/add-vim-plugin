@@ -2,13 +2,10 @@
 """
 add-vim-plugin
 
-Add vim plugins via pathogen in a git-managed dotfiles repo. 
-on `cd` and `git submodule add`. Accepts multiple repos. Error-checking is minimal, 
-but script manages to fail gracefully on most errors. 
+Add vim plugins via pathogen in a git-managed dotfiles repo. Assumes 
+homesick is used to managed the dotfiles, and bundle is used for vim plugins.
 
-This script assumes that the dotfiles repo to which the submodule should be added 
-lives at ~/gits/dotfiles. If this is not the case, make sure to specify the correct 
-repository location on your system with the --destination option.
+This script requires Python2.7 (rather than 3.x) due to the GitPython dependency.
 
 Usage:
     add-vim-plugin [options] <repository>...
@@ -19,18 +16,16 @@ Examples:
     add-vim-plugin --help
 
 Supported options:
-
     -d, --destination    # specify dotfiles repo for adding submodule 
                          [default: ~/.homesick/repos/dotfiles/home/.vim/bundle/<plugin_name>]
     -h, --help           # show this usage information
     -v, --verbose        # enable chatty output
 """
-
-from docopt import docopt
-
 import os
 import sys
 import git
+
+from docopt import docopt
 
 
 def parse_repo_url(url):
