@@ -39,36 +39,29 @@ def parse_repo_url(url):
         print("Specified remote git repository {} doesn't look right.".format(url)) 
         sys.exit(1)
 
-
-    plugin_name = r.split("/")[-1]
-    print("Plugin name: {}".format(plugin_name))
+    plugin_name = url.split("/")[-1]
     return (url, plugin_name)
     
+def get_dotfiles():
+    """Returns a Git object of the git repository where dotfiles are tracked."""
+    dotfiles = os.path.join(os.environ['HOME'], '.homesick', 'repos', 'dotfiles')
+    if not os.path.isdir(dotfiles):
+        print("Dotfiles directory not found: {}".format(dotfiles))
+        sys.exit(1)
+    return git.Git(dotfiles)
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='add-vim-plugin v0.1')
     repo = args['<repository>']
 
-    for r in repo:
-        url, plugin_name = parse_repo_url(r)
-
+    for repo in args['<repository>']:
+        url, plugin_name = parse_repo_url(repo)
         destination = args['--destination']
 
         if not destination:
+            # Concatenate path based on standard homesick dir structure.
             destination = os.path.join('home', '.vim', 'bundle', plugin_name)
 
-        print(destination)
-
-        dotfiles = os.path.join(os.environ['HOME'], '.homesick', 'repos', 'dotfiles')
-        if not os.path.isdir(dotfiles):
-            print("Dotfiles directory not found: {}".format(dotfiles))
-            sys.exit(1)
-        print("Dotfiles: {}".format(dotfiles))
-
-
-        git_dir = git.Git(dotfiles)
-        git_dir.execute(['git', 'submodule', 'add', r, destination])
-
-
-
+        g = get_dotfiles()
+        g.execute(['git', 'submodule', 'add', url, destination])
 
