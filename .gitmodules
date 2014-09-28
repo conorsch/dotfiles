@@ -1,6 +1,3 @@
-[submodule "/home/conor/gits/dotfiles/vim/bundle/vim-prose"]
-	path = /home/conor/gits/dotfiles/vim/bundle/vim-prose
-	url = git://github.com/nother/vim-prose.git
 [submodule "home/.vim/bundle/jedi-vim"]
 	path = home/.vim/bundle/jedi-vim
 	url = git@github.com:davidhalter/jedi-vim.git
@@ -10,3 +7,9 @@
 [submodule "home/.vim/bundle/vim-fugitive"]
 	path = home/.vim/bundle/vim-fugitive
 	url = https://github.com/tpope/vim-fugitive
+[submodule "home/.vim/bundle/vim-yankstack"]
+	path = home/.vim/bundle/vim-yankstack
+	url = https://github.com/maxbrunsfeld/vim-yankstack
+[submodule "home/.vim/bundle/vim-prose"]
+	path = home/.vim/bundle/vim-prose
+	url = git://github.com/nother/vim-prose.git
