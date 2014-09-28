@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
+from __future__ import print_function
 """
-addvimplugin
+add-vim-plugin
 
 Add vim plugins via pathogen in a git-managed dotfiles repo. Essentially a wrapper 
 on `cd` and `git submodule add`. Accepts multiple repos. Error-checking is minimal, 
@@ -10,17 +11,59 @@ This script assumes that the dotfiles repo to which the submodule should be adde
 lives at ~/gits/dotfiles. If this is not the case, make sure to specify the correct 
 repository location on your system with the --destination option.
 
-Usage: 
-    addvimplugin https://github.com/nother/vim-prose                # installs vim-prose plugin as submodule
-    addvimplugin -d ~/.vim https://github.com/nother/vim-prose      # installs vim-prose plugin as submodule
-    addvimplugin --help                                             # show this usage information
+Usage:
+    add-vim-plugin [options] <repository>...
+
+Examples:
+    add-vim-plugin https://github.com/nother/vim-prose
+    add-vim-plugin -d ~/.vim https://github.com/nother/vim-prose
+    add-vim-plugin --help
 
 Supported options:
 
-    -d, --destination    # specify dotfiles repo for adding submodule (default is ~/gits/dotfiles)
+    -d, --destination    # specify dotfiles repo for adding submodule [default: ~/gits/dotfiles]
     -h, --help           # show this usage information
     -v, --verbose        # enable chatty output
 """
 
 from docopt import docopt
+
+import os
+import sys
+import git
+
+
+if __name__ == '__main__':
+    args = docopt(__doc__, version='add-vim-plugin v0.1')
+    repo = args['<repository>']
+
+
+
+
+
+
+    for r in repo:
+        if "github.com" not in r:
+            print("Specified remote git repository {} doesn't look right.".format(r)) 
+            sys.exit(1)
+
+        plugin_name = r.split("/")[-1]
+        print(r)
+        print("Plugin name: {}".format(plugin_name))
+        dest = args['--destination']
+        if not dest:
+            base_dir = os.path.join(os.environ['HOME'], '.vim', 'bundle')
+            if not os.path.isdir(base_dir):
+                raise Exception("Could not find dest: {}".format(base_dir))
+            dest = os.path.join(base_dir, plugin_name
+
+        print(dest)
+        sys.exit(0)
+        git_dir = git.Git(dest)
+        git_dir.execute('submodule', 'add', r, dest)
+
+
+
+
+
 
