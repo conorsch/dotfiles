@@ -2,7 +2,7 @@
 """
 add-vim-plugin
 
-Add vim plugins via pathogen in a git-managed dotfiles repo. Essentially a wrapper 
+Add vim plugins via pathogen in a git-managed dotfiles repo. 
 on `cd` and `git submodule add`. Accepts multiple repos. Error-checking is minimal, 
 but script manages to fail gracefully on most errors. 
 
@@ -20,7 +20,8 @@ Examples:
 
 Supported options:
 
-    -d, --destination    # specify dotfiles repo for adding submodule [default: ~/gits/dotfiles]
+    -d, --destination    # specify dotfiles repo for adding submodule 
+                         [default: ~/.homesick/repos/dotfiles/home/.vim/bundle/<plugin_name>]
     -h, --help           # show this usage information
     -v, --verbose        # enable chatty output
 """
