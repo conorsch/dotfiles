@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-from __future__ import print_function
+#!/usr/bin/env python3
 """
 add-vim-plugin
 
@@ -33,36 +32,36 @@ import sys
 import git
 
 
+def parse_repo_url(url):
+    """Validates URL, returns tuple of original URL and name of plugin."""
+
+    if "github.com" not in url:
+        print("Specified remote git repository {} doesn't look right.".format(url)) 
+        sys.exit(1)
+
+
+    plugin_name = r.split("/")[-1]
+    print("Plugin name: {}".format(plugin_name))
+    return (url, plugin_name)
+
 if __name__ == '__main__':
     args = docopt(__doc__, version='add-vim-plugin v0.1')
     repo = args['<repository>']
 
-
-
-
-
-
     for r in repo:
-        if "github.com" not in r:
-            print("Specified remote git repository {} doesn't look right.".format(r)) 
-            sys.exit(1)
+        url, plugin_name = parse_repo_url(r)
 
-        plugin_name = r.split("/")[-1]
-        print(r)
-        print("Plugin name: {}".format(plugin_name))
         dest = args['--destination']
+
         if not dest:
             base_dir = os.path.join(os.environ['HOME'], '.vim', 'bundle')
             if not os.path.isdir(base_dir):
                 raise Exception("Could not find dest: {}".format(base_dir))
-            dest = os.path.join(base_dir, plugin_name
+            dest = os.path.join(base_dir, plugin_name)
 
         print(dest)
-        sys.exit(0)
         git_dir = git.Git(dest)
         git_dir.execute('submodule', 'add', r, dest)
-
-
 
 
 
