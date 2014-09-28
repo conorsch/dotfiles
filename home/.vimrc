@@ -15,7 +15,9 @@ set expandtab
 " Disable warning about files changing on disk.
 " This happens all the time when branching in git...
 autocmd FileChangedShell * echon ""
-
+" Above fix doesn't work, so manually option below is a workaround.
+" Re-opens all tabs in current window; mnemonic is 'git edit'.
+map <Leader>ge :windo e!<CR>
 
 colorscheme acidcupcake
 
