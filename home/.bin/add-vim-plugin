@@ -15,7 +15,7 @@ Usage:
 
 Examples:
     add-vim-plugin https://github.com/nother/vim-prose
-    add-vim-plugin -d ~/.vim https://github.com/nother/vim-prose
+    add-vim-plugin -d ~/.vim/bundle/vim-prose https://github.com/nother/vim-prose
     add-vim-plugin --help
 
 Supported options:
