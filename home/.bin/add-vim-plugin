@@ -36,6 +36,9 @@ def parse_repo_url(url):
         sys.exit(1)
 
     plugin_name = url.split("/")[-1]
+    plugin_name = plugin_name.rstrip('/')
+    plugin_name = plugin_name.rstrip('.git')
+
     return (url, plugin_name)
     
 def get_dotfiles():
