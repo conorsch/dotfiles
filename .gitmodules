@@ -10,3 +10,6 @@
 [submodule "home/.vim/bundle/vim-yankstack"]
 	path = home/.vim/bundle/vim-yankstack
 	url = https://github.com/maxbrunsfeld/vim-yankstack
+[submodule "home/.vim/bundle/vim-prose"]
+	path = home/.vim/bundle/vim-prose
+	url = git://github.com/nother/vim-prose.git

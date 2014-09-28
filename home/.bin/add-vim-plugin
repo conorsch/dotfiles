@@ -62,5 +62,5 @@ if __name__ == '__main__':
             destination = os.path.join('home', '.vim', 'bundle', plugin_name)
 
         g = get_dotfiles()
-        g.execute(['git', 'submodule', 'add', url, destination])
+        g.execute(['git', 'submodule', 'add', '--force', url, destination])
 
