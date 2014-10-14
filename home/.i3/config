@@ -155,8 +155,6 @@ bar {
 
 # restore nitrogen (desktop background) settings
 exec --no-starup-id nitrogen --restore
-# start xscreensaver daemon
-exec --no-startup-id xscreensaver -no-splash
 # start xcompmgr (for terminal transparency, e.g. in Konsole)
 exec --no-startup-id xcompmgr
 # start nm-applet (NetworkManager) 
@@ -165,6 +163,10 @@ exec --no-startup-id nm-applet
 exec --no-startup-id ~/.kestrel_monitor_setup
 # configure custom X keybindings
 exec --no-startup-id setxkbmap -layout us -option caps:escape -option compose:ralt
+
+# make Assignments windows floating
+for_window [title="Assignments"] floating enable
+for_window [class="Toplevel"] floating enable
 
 # Start these things when I log in, on specific workspaces
 #exec --no-startup-id sh ~/.fehbg
