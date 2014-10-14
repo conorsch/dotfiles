@@ -5,6 +5,7 @@ call pathogen#infect()
 autocmd FileType php set omnifunc=phpcomplete#CompletePHP
 autocmd BufNewFile,BufRead *.html set syntax=html
 autocmd Filetype html setlocal ts=2 sts=2 sw=2
+autocmd Filetype css setlocal ts=2 sts=2 sw=2
 autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
 autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
 autocmd Filetype python setlocal ts=4 sts=4 sw=4
@@ -15,7 +16,9 @@ set expandtab
 " Disable warning about files changing on disk.
 " This happens all the time when branching in git...
 autocmd FileChangedShell * echon ""
-
+" Above fix doesn't work, so manually option below is a workaround.
+" Re-opens all tabs in current window; mnemonic is 'git edit'.
+map <Leader>ge :windo e!<CR>
 
 colorscheme acidcupcake
 
