@@ -29,9 +29,10 @@ export heimchen="/mnt/Valhalla/Media/Heimchen"
 export PATH=$PATH:$HOME/.bin
 export NLTK_DATA=$HOME/.nltk_data
 export BROWSER="firefox"
-export TERMINAL="urxvt"
 
+source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 # enable liquidprompt for PS1, from https://github.com/nojhan/liquidprompt
-source ~/gits/liquidprompt/liquidprompt
 source ~/.liquidpromptrc
+source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
+
 
