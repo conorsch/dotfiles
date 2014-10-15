@@ -8,3 +8,5 @@
 	diff = auto
 	status = auto
 
+[push]
+	default = matching
