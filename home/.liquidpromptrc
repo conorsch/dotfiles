@@ -49,7 +49,7 @@ LP_PERCENTS_ALWAYS=1
 
 # Do you want to use the permissions feature ?
 # Recommended value is 1
-LP_ENABLE_PERM=0
+LP_ENABLE_PERM=1
 
 # Do you want to use the shorten path feature ?
 # Recommended value is 1
@@ -71,7 +71,7 @@ LP_ENABLE_LOAD=0
 # Recommended value is 1
 LP_ENABLE_BATT=0
 # check for 'acpi' package before looking up battery usage
-[[ `which acpi 2> /dev/null > /dev/null` ]] && LP_ENABLE_BATT=1 ;
+#[[ `which acpi 2> /dev/null > /dev/null` ]] && LP_ENABLE_BATT=1 ;
 
 # Do you want to use vcs features with root account
 # Recommended value is 0
