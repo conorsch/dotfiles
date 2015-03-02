@@ -1,4 +1,24 @@
 #!/bin/bash
+git() {
+   # Credit: http://unix.stackexchange.com/a/97958/16485
+   local tmp=$(mktemp)
+   local repo_name
+
+   if [ "$1" = clone ] ; then
+     /usr/bin/git "$@" | tee $tmp
+     repo_name=$(awk -F\' '/Cloning into/ {print $2}' $tmp)
+     rm $tmp
+     printf "changing to directory %s\n" "$repo_name"
+     cd "$repo_name"
+   else
+     /usr/bin/git "$@"
+   fi
+}
+vagrant-all() { # pass cmd to all vagrant boxes
+     for vm in $(vagrant status | cut -d' ' -f 1 | grep -Poz '(?s)\s{2}^(.*)\s{2}' | sed '/^$/d'); do
+         vagrant $@ $vm
+     done
+}
 editall() { # edit all files by file extension
      find . -type f -iname '*.'"$1" -and -not -iname '__init__*' -exec vim -p {} +
 }
