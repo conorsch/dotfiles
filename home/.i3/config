@@ -13,12 +13,11 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below. ISO 10646 = Unicode
-font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # The font above is very space-efficient, that is, it looks good, sharp and
 # clear in small sizes. However, if you need a lot of unicode glyphs or
 # right-to-left text rendering, you should instead use pango for rendering and
 # chose a FreeType font, such as:
-# font pango:DejaVu Sans Mono 10
+font pango:Ubuntu Sans Mono 15
 
 # Disable all window titles, via: https://faq.i3wm.org/question/1238/is-it-possible-to-hide-window-title-for-all-windows/
 for_window [class="^.*"] border pixel 1
@@ -154,7 +153,7 @@ bar {
 }
 
 # restore nitrogen (desktop background) settings
-exec --no-starup-id nitrogen --restore
+exec --no-startup-id nitrogen --restore
 # start xcompmgr (for terminal transparency, e.g. in Konsole)
 exec --no-startup-id xcompmgr
 # start nm-applet (NetworkManager) 
