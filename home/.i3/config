@@ -141,6 +141,10 @@ bindsym XF86AudioRaiseVolume exec amixer -q set Master 10%+ unmute
 bindsym XF86AudioLowerVolume exec amixer -q set Master 10%- unmute
 bindsym XF86AudioMute exec amixer -q set Master toggle
 
+# support function buttons for backlight on X1 Carbon third-gen
+bindcode 232 exec xbacklight -dec 20
+bindcode 233 exec xbacklight -inc 20
+
 # audio/volume controls using arrow keys (nice on desktop)
 bindsym $mod+Up exec amixer -q set Master 10%+ unmute
 bindsym $mod+Down exec amixer -q set Master 10%- unmute
