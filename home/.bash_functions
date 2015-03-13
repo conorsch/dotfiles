@@ -6,7 +6,8 @@ git() {
 
    if [ "$1" = clone ] ; then
      /usr/bin/git "$@" | tee $tmp
-     repo_name=$(awk -F\' '/Cloning into/ {print $2}' $tmp)
+#     repo_name=$(awk -F\' '/Cloning into/ {print $2}' $tmp)
+     repo_name=$(perl -nE 'm/Cloning into '\''(\w+)\'\''.{3}$/; say $1 if $1;' $tmp)
      rm $tmp
      printf "changing to directory %s\n" "$repo_name"
      cd "$repo_name"
