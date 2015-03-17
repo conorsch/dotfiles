@@ -23,6 +23,19 @@ elif [[ $(hostname) == 'Petrichor' ]]; then
        xrandr --output $EXTERNAL_MONITOR --left-of $INTERNAL_MONITOR --rotate left
    fi
 
+elif [[ $(hostname) == 'Way' ]]; then
+   # another laptop (I really need to refactor this script)
+   EXTERNAL_MONITOR='HDMI2'
+   INTERNAL_MONITOR='eDP1'
+   xrandr --auto
+   xrandr --output $EXTERNAL_MONITOR
+   xrandr --output $INTERNAL_MONITOR --primary
+   if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
+       xrandr --output $EXTERNAL_MONITOR --left-of $INTERNAL_MONITOR --rotate normal
+   else
+       xrandr --output $EXTERNAL_MONITOR --left-of $INTERNAL_MONITOR --rotate left
+   fi
+
 elif [[ $# -ne 0 && "$3" == "projector" ]] ; then
    # laptop hooked up to a projector. identify and configure that
    # project.
