@@ -8,17 +8,12 @@ alias ga='git add'
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --"
 alias gla="git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --"
 alias gits='git status'
-alias gh='github_browse'
+alias gh='hub browse'
 
 alias ipy='ipython --no-banner --no-confirm-exit -i'
 alias vssh='vagrant ssh'
 
 alias ack='ack-standalone'
-alias externalip='curl ifconfig.me'
-alias internalip='hostname -I'
-alias whereami='externalip | iploc'
-alias whoshere='scan_local_ips' # alias to a Perl script in path, uses nmap;
-#alias imdb='imdb_lookup' # broken IMDB lookups
 alias refresh='source ~/.bash_profile' # re-source ENV easily (~/.bash_profile calls ~/.bashrc)
 alias fmac='format_mac_address' #re-format MAC address in readable way
 alias speakertest="speaker-test -t wav -c 2" # test left and right stereo channels

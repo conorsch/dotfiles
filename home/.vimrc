@@ -1,17 +1,17 @@
 call pathogen#infect()
 "call pathogen#helptags()
 
-" Configure indent and whitespace preferences for languages
-autocmd FileType php set omnifunc=phpcomplete#CompletePHP
-autocmd BufNewFile,BufRead *.html set syntax=html
-autocmd Filetype html setlocal ts=2 sts=2 sw=2
-autocmd Filetype css setlocal ts=2 sts=2 sw=2
-autocmd Filetype ruby setlocal ts=2 sts=2 sw=2
-autocmd Filetype javascript setlocal ts=2 sts=2 sw=2
-autocmd Filetype python setlocal ts=4 sts=4 sw=4
-autocmd Filetype perl setlocal ts=4 sts=4 sw=4
-autocmd Filetype python setlocal ts=4 sts=4 sw=4
+set number
+set titlestring=%f
+set title
+set cindent
+set autoindent
+set smartindent
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 set expandtab
+set nowrap
 
 " Disable warning about files changing on disk.
 " This happens all the time when branching in git...
@@ -19,23 +19,16 @@ autocmd FileChangedShell * echon ""
 " Above fix doesn't work, so manually option below is a workaround.
 " Re-opens all tabs in current window; mnemonic is 'git edit'.
 map <Leader>ge :windo e!<CR>
+" Disable annoying temp file recovery
+set nobackup
+set noswapfile
+set nocompatible
 
 colorscheme acidcupcake
 
 set formatoptions=tcroqw
 filetype indent on
 
-set nocompatible
-set nobackup
-set noswapfile
-
-set number
-set titlestring=%f
-set title
-set cindent
-set autoindent
-set smartindent
-set nowrap
 set clipboard=unnamed
 
 set wildmode=longest,list,full
