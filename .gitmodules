@@ -19,3 +19,6 @@
 [submodule "home/.vim/bundle/syntastic"]
 	path = home/.vim/bundle/syntastic
 	url = https://github.com/scrooloose/syntastic
+[submodule "home/.vim/bundle/vim-ansible-yaml"]
+	path = home/.vim/bundle/vim-ansible-yaml
+	url = https://github.com/chase/vim-ansible-yaml
