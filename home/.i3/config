@@ -145,10 +145,10 @@ bindsym XF86AudioMute exec amixer -q set Master toggle
 bindcode 232 exec xbacklight -dec 20
 bindcode 233 exec xbacklight -inc 20
 
-# audio/volume controls using arrow keys (nice on desktop)
-bindsym $mod+Up exec amixer -q set Master 10%+ unmute
-bindsym $mod+Down exec amixer -q set Master 10%- unmute
-bindsym $mod+m exec amixer -q set Master toggle
+# audio/volume controls using arrow keys
+bindsym $mod+Up exec amixer -q -D pulse set Master 10%+ unmute
+bindsym $mod+Down exec amixer -q -D pulse set Master 10%- unmute
+bindsym $mod+m exec amixer -q -D pulse set Master toggle
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
@@ -162,8 +162,6 @@ exec --no-startup-id nitrogen --restore
 exec --no-startup-id xcompmgr
 # start nm-applet (NetworkManager) 
 exec --no-startup-id nm-applet
-# set up multihead monitors (work desktop only)
-exec --no-startup-id ~/.kestrel_monitor_setup
 # configure custom X keybindings
 exec --no-startup-id setxkbmap -layout us -option caps:escape -option compose:ralt
 

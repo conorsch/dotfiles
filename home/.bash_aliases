@@ -1,9 +1,6 @@
 # Alias definitions.
 alias l='ls -lsh'
 alias ll='ls -lsh'
-alias la='ls -lash'
-alias lash='ls -lashR'
-alias bi='beet import'
 
 alias gc='git commit'
 alias gd='git diff'
@@ -12,11 +9,9 @@ alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %
 alias gla="git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --"
 alias gits='git status'
 alias gh='github_browse'
-alias pushall='git_push_all'
 
 alias ipy='ipython --no-banner --no-confirm-exit -i'
 alias vssh='vagrant ssh'
-alias ebssh='ssh -i ~/.ssh/beanstalk-dev.pem -l ec2-user' # ssh into elastic beanstalk instances with just a hostname
 
 alias ack='ack-standalone'
 alias externalip='curl ifconfig.me'
@@ -28,7 +23,7 @@ alias refresh='source ~/.bash_profile' # re-source ENV easily (~/.bash_profile c
 alias fmac='format_mac_address' #re-format MAC address in readable way
 alias speakertest="speaker-test -t wav -c 2" # test left and right stereo channels
 alias therecanbeonlyone="xrandr --output VGA1 --off" # disconnect external monitor
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias letmeknow='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 alias laptop-suspend='dbus-send --system --print-reply --dest="org.freedesktop.UPower" /org/freedesktop/UPower org.freedesktop.UPower.Suspend'
 
 # enable color support of ls and also add handy aliases

@@ -43,5 +43,7 @@ fi
 
 # export tmuxinator projects for tab-completion of session names
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
+# source virtualenv wrappers, e.g. "workon"
+which virtualenvwrapper.sh > /dev/null && source $(which virtualenvwrapper.sh)
 
 

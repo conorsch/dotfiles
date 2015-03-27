@@ -47,6 +47,7 @@ formyeyes() { # enable redshift at this geographic location (IP-based);
     redshift -l `latlong` > /dev/null & # feed current location data into redshift;
 }
 touchpad() {
+    # this works on X220, but not on X1 Carbon 3rd-gen
     trackpad_id=`xinput list | grep TouchPad | perl -ne 'm/id=(\d+)/g; print $1'`
 
     case "$1" in
@@ -94,18 +95,12 @@ ugrep() { #look up Unicode characters by name
     egrep -i "^[0-9a-f]{4,} .*$*" $(locate CharName.pm) | while read h d; do /usr/bin/printf "\U$(printf "%08x" 0x$h)\tU+%s\t%s\n" $h "$d"; done
 }
 
-scan_host() { #use nmap to find open ports on a given IP address;
-    sudo nmap -sS -P0 -sV -O $@
-}
 canhaz() {
     sudo aptitude -y install $@
 }
 getem() {
     sudo aptitude update
     sudo aptitude -y safe-upgrade
-}
-journal() {
-    lowriter ~/Documents/Journal.odt
 }
 slg() {
     tail -f -n 25 /var/log/syslog
@@ -115,28 +110,8 @@ newestfiles() {
     #Date statement could be cleaner, though; gets ugly on long filenames
     find "$@" -not -iwholename '*.svn*' -not -iwholename '*.git*' -type f -print0 | xargs -0 ls -l --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6 | tail -n 10
 }
-explodeavi() {
-    ffmpeg -i "$@" -f image2 image-%03d.jpg
-}
-resetconnection() {
-    sudo nmcli nm wifi off
-    sleep 5
-    sudo nmcli nm wifi on
-}
-giveroot() {
-    sudo usermod -aG sudo $@
-}
-toritup() {
-    ssh -f -2 -N -L 127.0.0.1:9049:127.0.0.1:9050 w 
-}
-rsyncssh() {
-    rsync -e "ssh" -avPh $@
-}
-cdl() {
-    builtin cd "$@" && ls -lsh
-}
 muzik() {
-    if [ -d /home/conor/Valhalla/Media/Heimchen ]; then
+    if [ -d "$heimchen" ]; then
         mocp
     else 
         gjallar
@@ -145,25 +120,6 @@ muzik() {
 }
 f() { #Abbreviated find command. Assumes cwd as target, and ignores version control files.
     find . -not -iwholename '*.svn*' -not -iwholename '*.git*' -iname "*$@*"
-}
-tssh() { #Connect to many machines via SSH by invoking tmux;
-    declare -a HOSTS=$@ #Necessary to rename array due to quoting quirks
-    tmux new "ssh-everywhere.sh $HOSTS" #Open new tmux session by calling script;
-}
-afterdownload() { #complete action after a download or transfer completes
-    while [ -e $1 ] #$1 should be (hidden) partial file for download
-        do sleep 1 #wait, check again
-    done
-    "$2" #perform designated action, supplied as second argument
-}
-pbar() { #run pianobar (Pandora.com client) on home desktop, connected to stereo
-    ssh -t s "cd ~/gits/pianobar && ./pianobar"
-}
-stereo() { #plays audio file on computer connected to stereo;
-    cat "$@" | ssh s "mplayer -cache 10000 -cache-min 1 - "
-}
-speaks() { #open mocp on home computer
-    ssh -t 10.0.0.14 mocp
 }
 strlength() { #print length of given string
     echo "$@" | awk '{ print length }'
@@ -184,19 +140,3 @@ atb() {
         tar xf $1 -C ${1%.t(ar.gz||ar.bz2||gz||bz||ar)};
     fi;
 }
-#### SILLY ####
-matrix() {
-    for t in "Wake up" "The Matrix has you" "Follow the white rabbit" "Knock, knock"
-        do pv -qL10 <<<$'\e[2J'$'\e[32m'$t$'\e[37m'
-        sleep 5
-    done
-    reset
-}
-starwars() {
-    telnet towel.blinkenlights.nl
-}
-nyancat() {
-    telnet miku.acm.uiuc.edu
-}
-#### SILLY ####
-
