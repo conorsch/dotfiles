@@ -19,6 +19,11 @@ vagrant-all() { # pass cmd to all vagrant boxes
          vagrant $@ $vm
      done
 }
+latlong() { # return latitude and longitude,colon-separated }
+    curl http://ipinfodb.com 2>/dev/null | perl -0777 -nE \
+        'm/Latitude : (-?\d+\.\d+).+?Longitude : (-?\d+\.\d+)/ms; \
+        say "$1:$2" if $1 and $2'
+}
 editall() { # edit all files by file extension
      find . -type f -iname '*.'"$1" -and -not -iname '__init__*' -exec vim -p {} +
 }
