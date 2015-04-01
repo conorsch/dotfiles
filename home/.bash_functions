@@ -32,8 +32,18 @@ noscrob() { # disable lastfm scrobbling while practicing music
      muzik &&\
      sudo service lastfmsubmitd start
 }
-genpw() { # generate random 30-character password
-    strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
+genpw() { # generate a diceware passphrase, failover to random str
+    if hash diceware 2>/dev/null; then
+        local wordcount
+        wordcount=9
+        if hash xclip 2>/dev/null; then
+            diceware "$@" -n $wordcount | tee >(xclip -selection clipboard)
+        else
+            diceware "$@" -n $wordcount
+        fi
+    else # generate random 30-character password
+        strings /dev/urandom | grep -o '[[:alnum:]]' | head -n 30 | tr -d '\n'; echo
+    fi
 }
 ackr() { # for all files matching regex1, perform in-place substition with regex2
     ack-grep $1 -l | xargs perl -pi -E "$2"
