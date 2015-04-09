@@ -115,3 +115,7 @@ burniso() { # burn ISO to DVD
     ISONAME=$@
     growisofs -dvd-compat -Z /dev/sr0="$ISONAME"
 }
+gb() { # ultra git-blame
+    git ls-tree -r -z --name-only HEAD -- $1 | xargs -0 -n1 git blame \
+         --line-porcelain HEAD |grep  "^author "|sort|uniq -c|sort -nr
+}
