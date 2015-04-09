@@ -1,6 +1,6 @@
 # taken from https://gist.githubusercontent.com/fd0/9876490/raw/1c1ad2c23b6b888f1442c2b68661cac72ccdd4f4/dunstrc
 [global]
-    font = Terminus 8
+    font = Terminus 12
 
     # allow a small subset of html markup:
     # <b>bold</b>
@@ -152,7 +152,7 @@
     # Otherwise the '#' and following  would be interpreted as a comment.
     background = "#222222"
     foreground = "#888888"
-    timeout = 10
+    timeout = 3
 
 [urgency_normal]
     background = "#285577"
