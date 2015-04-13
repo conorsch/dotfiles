@@ -8,6 +8,7 @@ secondary_monitor=$(xrandr | perl -nE '/^(\w+) connected (?!primary)/ && say $1'
 secondary_side="left"
 
 xrandr --output $primary_monitor --primary
+xrandr --auto
 
 if [[ $(hostname) == 'Petrichor' ]]; then
    # laptop, usually just the one screen, sometimes a VGA connected externally 
@@ -28,7 +29,6 @@ elif [[ $(hostname) == 'Way' ]]; then
    else
        xrandr --output $secondary_monitor --left-of $primary_monitor --rotate left
    fi
-   xrandr --output $primary_monitor --primary --rotate normal
 fi
 # redraw desktop (fixes both orientation and tiling issues)
 nitrogen --restore > /dev/null 2>&1
