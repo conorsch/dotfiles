@@ -26,6 +26,8 @@ elif [[ $(hostname) == 'Way' ]]; then
    # another laptop (I really need to refactor this script)
    if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
        xrandr --output $secondary_monitor --left-of $primary_monitor --rotate normal
+   elif [[ $# -ne 0 && "$1" == "solo" ]] ; then
+       xrandr --output $secondary_monitor --off
    else
        xrandr --output $secondary_monitor --left-of $primary_monitor --rotate left
    fi
