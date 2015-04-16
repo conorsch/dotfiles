@@ -1,14 +1,13 @@
 #!/bin/bash
 # dual-monitor configs for various machines
 # add configs by hostname
+set -e
 
 # set up some default vars shared across hosts
 primary_monitor=$(xrandr | perl -nE '/^(\w+) connected primary / && say $1')
 secondary_monitor=$(xrandr | perl -nE '/^(\w+) connected (?!primary)/ && say $1')
 secondary_side="left"
 
-xrandr --output $primary_monitor --primary
-xrandr --auto
 
 if [[ $(hostname) == 'Petrichor' ]]; then
    # laptop, usually just the one screen, sometimes a VGA connected externally 
@@ -24,6 +23,9 @@ if [[ $(hostname) == 'Petrichor' ]]; then
 
 elif [[ $(hostname) == 'Way' ]]; then
    # another laptop (I really need to refactor this script)
+   xrandr --auto
+   primary_monitor="eDP1"
+   xrandr --output $primary_monitor --primary
    if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
        xrandr --output $secondary_monitor --left-of $primary_monitor --rotate normal
    elif [[ $# -ne 0 && "$1" == "solo" ]] ; then
