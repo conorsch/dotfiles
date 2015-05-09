@@ -2,7 +2,7 @@
 #script to convert magnet URIs to torrents
 #from: http://wiki.rtorrent.org/MagnetUri
 
-REMOTE_DIR='t:Valhalla/Tortron' #set location magnet file should be copied to
+REMOTE_DIR='do:Tortron' #set location magnet file should be copied to
 cd /tmp || exit #save magnet file locally to tmp, because it will be converted
 [[ "$1" =~ xt=urn:btih:([^&/]+) ]] || exit
 hashh=${BASH_REMATCH[1]}
