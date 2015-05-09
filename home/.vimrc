@@ -13,6 +13,16 @@ set shiftwidth=4
 set expandtab
 set nowrap
 
+" automatically strip trailing whitespace on save
+" via: http://stackoverflow.com/a/1618401/140800
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+autocmd FileType c,cpp,java,php,ruby,python,yaml,bash,markdown autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+
 " Disable warning about files changing on disk.
 " This happens all the time when branching in git...
 autocmd FileChangedShell * echon ""
