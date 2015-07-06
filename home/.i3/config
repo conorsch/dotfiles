@@ -164,12 +164,16 @@ exec --no-startup-id xcompmgr
 exec --no-startup-id nm-applet
 # configure custom X keybindings
 exec --no-startup-id setxkbmap -layout us -option caps:escape -option compose:ralt
+# enable redshift for color temperature adjustment
+exec --no-startup-id redshift
 
-# make Assignments windows floating
-for_window [title="Assignments"] floating enable
+# make pop-up dialogs floating
 for_window [class="Toplevel"] floating enable
 
 # Start these things when I log in, on specific workspaces
-#exec --no-startup-id sh ~/.fehbg
 exec --no-startup-id i3-msg 'workspace 1; exec konsole'
-exec --no-startup-id i3-msg 'workspace 2; exec firefox'
+exec --no-startup-id i3-msg 'workspace 2; exec firefox -no-remote -p personal'
+exec --no-startup-id i3-msg 'workspace 3; exec firefox -no-remote -p securedrop'
+exec --no-startup-id i3-msg 'workspace 4; exec thunderbird'
+exec --no-startup-id i3-msg 'workspace 4; exec thunderbird'
+
