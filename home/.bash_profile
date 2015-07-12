@@ -8,6 +8,11 @@ if which ruby >/dev/null && which gem >/dev/null; then
     export GEM_HOME="$(ruby -rubygems -e 'puts Gem.user_dir')"
 fi
 
+# configure rvm support
+# commented out so it's not always on
+# export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+# [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
 # source bash_aliases file if it exists
 [ -f ~/.bash_aliases ] && source ~/.bash_aliases
 
@@ -45,5 +50,3 @@ fi
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 # source virtualenv wrappers, e.g. "workon"
 which virtualenvwrapper.sh > /dev/null && source $(which virtualenvwrapper.sh)
-
-
