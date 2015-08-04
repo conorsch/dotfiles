@@ -16,6 +16,8 @@ set nowrap
 " set tabstop of 2 for certain languages
 autocmd FileType ruby set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType javascript set tabstop=2|set softtabstop=2|set shiftwidth=2
+autocmd FileType yaml set tabstop=2|set softtabstop=2|set shiftwidth=2
+autocmd FileType yml set tabstop=2|set softtabstop=2|set shiftwidth=2
 
 " automatically strip trailing whitespace on save
 " via: http://stackoverflow.com/a/1618401/140800
