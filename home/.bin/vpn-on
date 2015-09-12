@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+set -o pipefail
+
+
+# Set name of VPN connection in network manager.
+# Will be grepped for, so substring matching OK.
+vpn_connection_name="VPN"
+
+# Check for existing VPN connection, since
+# trying to connect after connection exists will
+# throw error and disconnect the VPN.
+if ! nmcli -t -f vpn con status | grep yes > /dev/null ; then
+    vpn_uuid=$(nmcli -t -f name,uuid con list | grep "${vpn_connection_name}" | cut -d: -f2)
+    nmcli con up uuid "${vpn_uuid}"
+fi
+
