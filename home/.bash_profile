@@ -1,4 +1,5 @@
 source ~/.bashrc
+source ~/.bin/ssh-agent-wrapper
 
 [[ -f ~/.bash_env_secure ]] && source ~/.bash_env_secure
 
