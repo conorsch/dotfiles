@@ -25,6 +25,7 @@ case "$1" in
         fi
         ;;
     off)
+        # Only disable the VPN if it's currently enabled.
         if vpn_enabled ; then
             nmcli con down uuid "${vpn_uuid}"
         fi
