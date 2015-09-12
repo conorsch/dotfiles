@@ -108,7 +108,8 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 # lock the screen
-bindsym $mod+z exec "i3lock -c 000000 > /dev/null || xscreensaver-command --lock"
+bindsym $mod+z exec "~/.bin/fuzzy_lock"
+
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -168,6 +169,8 @@ exec --no-startup-id setxkbmap -layout us -option caps:escape -option compose:ra
 exec --no-startup-id xbacklight -set 50
 # enable redshift for color temperature adjustment
 exec --no-startup-id redshift
+# lock screen when idle
+exec --no-startup-id xautolock -time 15 -locker "~/.bin/fuzzy_lock"
 
 # make pop-up dialogs floating
 for_window [class="Toplevel"] floating enable
