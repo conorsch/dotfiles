@@ -43,6 +43,7 @@ set nobackup
 set noswapfile
 set nocompatible
 
+" theme
 colorscheme acidcupcake
 
 set formatoptions=tcroqw
