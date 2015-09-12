@@ -29,5 +29,12 @@ case "$1" in
             nmcli con down uuid "${vpn_uuid}"
         fi
         ;;
+    status)
+        if vpn_enabled ; then
+            echo "VPN status: enabled."
+        else
+            echo "VPN status: disabled"
+        fi
+        ;;
 esac
 
