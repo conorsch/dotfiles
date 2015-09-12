@@ -19,6 +19,11 @@ autocmd FileType javascript set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType yaml set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType yml set tabstop=2|set softtabstop=2|set shiftwidth=2
 
+" Remove default functionality for spacebar in normal mode,
+" then set spacebar as leader key for custom shortcuts.
+nnoremap <Space> <nop>
+map <Space> <Leader>
+
 " automatically strip trailing whitespace on save
 " via: http://stackoverflow.com/a/1618401/140800
 fun! <SID>StripTrailingWhitespaces()
