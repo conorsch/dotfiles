@@ -1,15 +1,17 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# Bash history config, so command history is shared across
-# multiple terminal windows, via http://unix.stackexchange.com/a/48113/16485
-export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+# Madness. Utter madness. Leaving disabled by default.
+if [ -n "$ONE_BASH_HISTORY_TO_RULE_THEM_ALL" ] ; then
+    # Bash history config, so command history is shared across
+    # multiple terminal windows, via http://unix.stackexchange.com/a/48113/16485
+    export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+    # Save and reload the history after each command finishes
+    export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+fi
+
 export HISTSIZE=100000                   # big big history
 export HISTFILESIZE=100000               # big big history
-shopt -s histappend                      # append to history, don't overwrite it
-# Save and reload the history after each command finishes
-export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-
 shopt -s histappend # append to the history file, don't overwrite it
 shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
 shopt -s cdspell # correct typos when spelling out paths.
