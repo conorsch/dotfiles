@@ -1,4 +1,4 @@
-call pathogen#infect()
+"call pathogen#infect()
 "call pathogen#helptags()
 
 set number
@@ -19,6 +19,10 @@ autocmd FileType javascript set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType yaml set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType yml set tabstop=2|set softtabstop=2|set shiftwidth=2
 
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'chase/vim-ansible-yaml'
+
 " Remove default functionality for spacebar in normal mode,
 " then set spacebar as leader key for custom shortcuts.
 nnoremap <Space> <nop>
@@ -32,7 +36,7 @@ fun! <SID>StripTrailingWhitespaces()
     %s/\s\+$//e
     call cursor(l, c)
 endfun
-autocmd FileType c,cpp,java,php,ruby,python,yaml,bash,markdown autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+autocmd FileType c,cpp,java,php,ruby,python,yaml,bash autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
 " manually strip trailing whitespace throughout file
 map <Leader>w :%s/\s\+$//e
