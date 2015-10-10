@@ -1,9 +1,9 @@
 #!/bin/bash
-#script to convert magnet URIs to torrents
-#from: http://wiki.rtorrent.org/MagnetUri
+# script to convert magnet URIs to torrents
+# from: http://wiki.rtorrent.org/MagnetUri
 
-REMOTE_DIR='do:Tortron' #set location magnet file should be copied to
-cd /tmp || exit #save magnet file locally to tmp, because it will be converted
+remote_directory='do-general:torrents/' # set location magnet file should be copied to
+cd /tmp || exit # save magnet file locally to tmp, because it will be converted
 [[ "$1" =~ xt=urn:btih:([^&/]+) ]] || exit
 hashh=${BASH_REMATCH[1]}
 if [[ "$1" =~ dn=([^&/]+) ]];then
@@ -11,7 +11,7 @@ if [[ "$1" =~ dn=([^&/]+) ]];then
 else
     filename=$hashh
 fi
-echo "d10:magnet-uri${#1}:${1}e" > "meta-$filename.torrent" # create torrent file
-torrentname="meta-$filename.torrent"
-scp $torrentname "$REMOTE_DIR/$torrentname" #move torrent file to remote watching directory;
+torrent_name="meta-${filename}.torrent"
+echo "d10:magnet-uri${#1}:${1}e" > "${torrent_name}" # create torrent file
+scp "${torrent_name}" "${remote_directory}/${torrentname}" # move torrent file to remote watching directory;
 
