@@ -19,12 +19,11 @@ autocmd FileType javascript set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType yaml set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType yml set tabstop=2|set softtabstop=2|set shiftwidth=2
 
-" Vundle config
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'gmarik/vundle'
-Plugin 'pearofducks/ansible-vim'
-Plugin 'scrooloose/nerdtree.git'
+" Vimplug config
+call plug#begin()
+Plug 'tpope/vim-sensible'
+Plug 'pearofducks/ansible-vim'
+call plug#end()
 
 " Remove default functionality for spacebar in normal mode,
 " then set spacebar as leader key for custom shortcuts.
