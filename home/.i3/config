@@ -177,4 +177,5 @@ exec --no-startup-id i3-msg 'workspace 1; exec konsole'
 exec --no-startup-id i3-msg 'workspace 2; exec firefox -no-remote -p personal'
 exec --no-startup-id i3-msg 'workspace 3; exec firefox -no-remote -p securedrop'
 exec --no-startup-id i3-msg 'workspace 4; exec thunderbird'
+exec --no-startup-id i3-msg 'workspace 8; exec /usr/bin/chromium-browser --profile-directory=Default --app-id=bikioccmkafdpakkkcpdbppfkghcmihk'
 
