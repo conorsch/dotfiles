@@ -14,7 +14,7 @@
 
 # Maximal value under which the battery level is displayed
 # Recommended value is 75
-LP_BATTERY_THRESHOLD=75
+# LP_BATTERY_THRESHOLD=75
 
 # Minimal value after which the load average is displayed
 # Recommended value is 60
