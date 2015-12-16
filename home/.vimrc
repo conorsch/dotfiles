@@ -23,6 +23,7 @@ autocmd FileType yml set tabstop=2|set softtabstop=2|set shiftwidth=2
 call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'pearofducks/ansible-vim'
+Plug 'othree/eregex.vim'
 call plug#end()
 
 " Remove default functionality for spacebar in normal mode,
