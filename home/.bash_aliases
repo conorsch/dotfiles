@@ -2,6 +2,8 @@
 alias l='ls -lsh'
 alias ll='ls -lsh'
 
+alias do-vpn="nmcli connection up id 'DigitalOcean VPN'"
+
 # global git aliases
 alias gc='git commit'
 alias gd='git diff'
