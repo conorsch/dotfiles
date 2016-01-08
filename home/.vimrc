@@ -12,6 +12,7 @@ set softtabstop=4
 set shiftwidth=4
 set expandtab
 set nowrap
+set list
 
 " set tabstop of 2 for certain languages
 autocmd FileType ruby set tabstop=2|set softtabstop=2|set shiftwidth=2
@@ -24,6 +25,7 @@ call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'pearofducks/ansible-vim'
 Plug 'othree/eregex.vim'
+Plug 'davidhalter/jedi-vim'
 call plug#end()
 
 " Remove default functionality for spacebar in normal mode,
@@ -39,7 +41,7 @@ fun! <SID>StripTrailingWhitespaces()
     %s/\s\+$//e
     call cursor(l, c)
 endfun
-autocmd FileType c,cpp,java,php,ruby,python,yaml,bash autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
+"autocmd FileType c,cpp,java,php,ruby,python,yaml,bash autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
 " manually strip trailing whitespace throughout file
 map <Leader>w :%s/\s\+$//e
