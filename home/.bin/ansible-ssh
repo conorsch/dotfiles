@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+set -u
+set -o pipefail
+
+
+target_host="$1"
+shift 1
+
+
+
+ip_address=$(ansible -m debug \
+    -a msg="{{ hostvars['${target_host}']['ansible_ssh_host']}}" "${target_host}" \
+    | head -n -2 \
+    | tail -n 1 \
+    | perl -F -lanE '/^\s+"msg": "([^"]+)"$/ and say $1')
+
+ssh "${ip_address}"
