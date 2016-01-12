@@ -44,7 +44,7 @@ endfun
 "autocmd FileType c,cpp,java,php,ruby,python,yaml,bash autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
 " manually strip trailing whitespace throughout file
-map <Leader>w :%s/\s\+$//e
+map <Leader>w :%s/\s\+$//e<CR>
 
 " Disable warning about files changing on disk.
 " This happens all the time when branching in git...
