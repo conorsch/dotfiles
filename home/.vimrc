@@ -26,6 +26,7 @@ Plug 'tpope/vim-sensible'
 Plug 'pearofducks/ansible-vim'
 Plug 'othree/eregex.vim'
 Plug 'davidhalter/jedi-vim'
+Plug 'godlygeek/tabular'
 call plug#end()
 
 " Remove default functionality for spacebar in normal mode,
@@ -45,6 +46,8 @@ endfun
 
 " manually strip trailing whitespace throughout file
 map <Leader>w :%s/\s\+$//e<CR>
+
+map <Leader>t :Tabularize /
 
 " Disable warning about files changing on disk.
 " This happens all the time when branching in git...
@@ -67,9 +70,6 @@ set clipboard=unnamed
 
 set wildmode=longest,list,full
 set wildmenu
-
-" reformat file using perltidy
-noremap <Leader>t :%!perltidy -q<CR> 
 
 " disable Ex mode (default binding 'Q')
 nnoremap Q <nop>
