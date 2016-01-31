@@ -62,6 +62,7 @@ set nocompatible
 
 " theme
 colorscheme acidcupcake
+colorscheme alduin
 
 set formatoptions=tcroqw
 filetype indent on
