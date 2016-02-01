@@ -61,8 +61,8 @@ set noswapfile
 set nocompatible
 
 " theme
-colorscheme acidcupcake
 colorscheme alduin
+colorscheme acidcupcake
 
 set formatoptions=tcroqw
 filetype indent on
