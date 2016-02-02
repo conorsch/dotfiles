@@ -1,4 +1,5 @@
 #!/bin/bash
+# Run a single task list against a target host via Ansible.
 set -e
 set -u
 
@@ -13,7 +14,7 @@ shift 2
 
 echo "Applying '${task}' to ${hosts}..."
 
-tmpfile=$(mktemp -p "$PWD")
+tmpfile=$(mktemp --tmpdir="$PWD" --suffix="-temporary-ansible-task")
 cat > $tmpfile <<PLAYBOOK
 ---
 - hosts: $hosts
@@ -21,5 +22,6 @@ cat > $tmpfile <<PLAYBOOK
   - include: $task
 PLAYBOOK
 
+trap "rm '${tmpfile}'" EXIT
+
 ansible-playbook "${tmpfile}" "$@"
-rm "${tmpfile}"

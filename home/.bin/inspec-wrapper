@@ -23,6 +23,9 @@ if [[ -z "$ip_address" ]] ; then
     exit 1
 fi
 
+# Due to intense debugging output, using a pipe at the end of the command
+# to filter the output. Not sure how to disable the debugging output.
+# Perhaps I'm the only one seeing it? I am not mad.
 inspec exec \
   --backend ssh \
   -i ~/.ssh/id_rsa \
