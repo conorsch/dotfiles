@@ -1,0 +1,19 @@
+#!/bin/bash
+role=$1
+hosts=$2
+shift 2
+
+echo "Applying '${role}' to ${hosts}..."
+
+
+tmpfile=$(mktemp --tmpdir="$PWD" --suffix="-temporary-ansible-playbook")
+cat > $tmpfile <<PLAYBOOK
+---
+- hosts: $hosts
+  roles:
+  - $role
+PLAYBOOK
+
+trap "rm '${tmpfile}'" EXIT
+
+ansible-playbook "${tmpfile}" "$@"

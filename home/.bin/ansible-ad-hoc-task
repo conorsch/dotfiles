@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e
+set -u
+
+if [[ $# < 2 ]] ; then
+    echo "Usage: $0 <task> <host>"
+    exit 1
+fi
+
+task=$1
+hosts=$2
+shift 2
+
+echo "Applying '${task}' to ${hosts}..."
+
+tmpfile=$(mktemp -p "$PWD")
+cat > $tmpfile <<PLAYBOOK
+---
+- hosts: $hosts
+  tasks:
+  - include: $task
+PLAYBOOK
+
+ansible-playbook "${tmpfile}" "$@"
+rm "${tmpfile}"

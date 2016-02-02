@@ -1,0 +1,12 @@
+#!/bin/bash
+# via http://plankenau.com/blog/post/gaussian-blur-lock-screen-i3lock/
+
+set -e
+
+raw="$(mktemp --suffix .png)"
+blurred="$(mktemp --suffix .png)"
+
+scrot "$raw"
+convert "$raw" -blur 0x5 "$blurred"
+
+i3lock -i "$blurred"

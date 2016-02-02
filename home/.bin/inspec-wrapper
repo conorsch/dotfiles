@@ -1,0 +1,32 @@
+#!/bin/bash
+# Wrapper to run inspec ad-hoc on profiles or individual spec files.
+# For some reason inspec has insanely verbose debugging output,
+# and it's difficult to disable, so this script greps it out.
+set -e
+set -u
+set -o pipefail
+
+if [[ "$#" -lt 1 ]]; then
+    echo "Usage: $0 <ansible-host> <path/to/profile>"
+    exit 1
+fi
+
+target_host="$1"
+shift 1
+
+ip_address=$(ansible -m debug \
+    -a msg="{{ hostvars['${target_host}']['ansible_ssh_host']}}" "${target_host}" \
+    | perl -nE '/^\s+"msg":\s+"([\d.]+)/ and say $1')
+
+if [[ -z "$ip_address" ]] ; then
+    printf "Could not find IP address for host '%s'\n." "${target_host}"
+    exit 1
+fi
+
+inspec exec \
+  --backend ssh \
+  -i ~/.ssh/id_rsa \
+  -t "ssh://${USER}@${target_host}:22" \
+  --format documentation \
+  "$@" \
+  | grep -Pv '^D, '

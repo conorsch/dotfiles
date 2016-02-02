@@ -1,0 +1,7 @@
+#!/bin/bash
+# Super sweet wrapper script for configuring ssh-agent. Courtesy of:
+# http://stackoverflow.com/questions/18880024/start-ssh-agent-on-login
+
+GPG_TTY=$(tty)
+export GPG_TTY
+eval $(gpg-agent --daemon --quiet > /dev/null &2>1)
