@@ -106,7 +106,9 @@ LP_ENABLE_TIME=0
 LP_ENABLE_VIRTUALENV=1
 
 # Show average system temperature
-LP_ENABLE_TEMP=1
+# Disabling because grsecurity warns about lack of ACPI support on every PS1:
+#   No ACPI support in kernel, or incorrect acpi_path ("/sys/class").
+LP_ENABLE_TEMP=0
 
 # When showing time, use an analog clock instead of numeric values.
 # The analog clock is "accurate" to the nearest half hour.
