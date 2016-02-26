@@ -21,3 +21,7 @@
     fsckobjects = true
 [receive]
     fsckObjects = true
+[status]
+	submoduleSummary = true
+[diff]
+	submodule = log
