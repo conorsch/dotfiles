@@ -32,6 +32,8 @@ export BROWSER="firefox"
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 # enable liquidprompt for PS1, from https://github.com/nojhan/liquidprompt
 source ~/.liquidpromptrc
+export LP_PS1_FILE="$HOME/.homesick/repos/liquidprompt/liquid_multiline.ps1"
+
 source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
 
 #source /home/conor/gits/cets/ansible-fork/hacking/env-setup >/dev/null
