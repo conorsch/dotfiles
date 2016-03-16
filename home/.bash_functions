@@ -119,3 +119,7 @@ gb() { # ultra git-blame
     git ls-tree -r -z --name-only HEAD -- $1 | xargs -0 -n1 git blame \
          --line-porcelain HEAD |grep  "^author "|sort|uniq -c|sort -nr
 }
+# Signal Chrome webapp.
+signal_ows() {
+    /usr/bin/chromium-browser --profile-directory=Default --app-id=bikioccmkafdpakkkcpdbppfkghcmihk "$@" &
+}
