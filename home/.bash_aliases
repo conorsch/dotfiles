@@ -38,3 +38,5 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+alias parallel='parallel --no-notice'
+alias lmk='notify-send "jawn done"'
