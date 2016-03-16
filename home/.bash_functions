@@ -121,5 +121,6 @@ gb() { # ultra git-blame
 }
 # Signal Chrome webapp.
 signal_ows() {
-    /usr/bin/chromium-browser --profile-directory=Default --app-id=bikioccmkafdpakkkcpdbppfkghcmihk "$@" &
+    local signal_app_id="bikioccmkafdpakkkcpdbppfkghcmihk"
+    nohup /usr/bin/chromium-browser --profile-directory=Default --app-id="${signal_app_id}" "$@" &
 }
