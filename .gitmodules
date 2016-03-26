@@ -13,9 +13,6 @@
 [submodule "home/.vim/bundle/vim-prose"]
 	path = home/.vim/bundle/vim-prose
 	url = https://github.com/nother/vim-prose
-[submodule "home/.vim/bundle/auto-pairs"]
-	path = home/.vim/bundle/auto-pairs
-	url = https://github.com/jiangmiao/auto-pairs
 [submodule "home/.vim/bundle/syntastic"]
 	path = home/.vim/bundle/syntastic
 	url = https://github.com/scrooloose/syntastic
