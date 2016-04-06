@@ -1,8 +1,0 @@
-*.swp
-Session.vim
-test.sh
-.gitignore
-.gitconfig
-.nfs*
-*.pyc
-.vagrant
