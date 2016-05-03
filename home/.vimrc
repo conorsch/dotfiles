@@ -62,6 +62,8 @@ set nocompatible
 
 " theme
 colorscheme alduin
+colorscheme mustang
+colorscheme kalisi
 colorscheme acidcupcake
 
 set formatoptions=tcroqw
