@@ -16,31 +16,15 @@ fi
 
 secondary_side="left"
 
-
-if [[ $(hostname) == 'Petrichor' ]]; then
-   # laptop, usually just the one screen, sometimes a VGA connected externally 
-   # if no external screen is plugged in, this won't do anything (which is good)
-   xrandr --auto
-   xrandr --output "${secondary_monitor}"
-   xrandr --output "${primary_monitor}" --primary
-   if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
-       xrandr --output "${secondary_monitor}" --left-of "${primary_monitor}" --rotate normal
-   else
-       xrandr --output "${secondary_monitor}" --left-of "${primary_monitor}" --rotate left
-   fi
-
-elif [[ $(hostname) == 'Way' ]]; then
-   # another laptop (I really need to refactor this script)
-   xrandr --auto
-   primary_monitor="eDP1"
-   xrandr --output "${primary_monitor}" --primary
-   if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
-       xrandr --output "${secondary_monitor}" --left-of "${primary_monitor}" --rotate normal
-   elif [[ $# -ne 0 && "$1" == "solo" ]] ; then
-       xrandr --output "${secondary_monitor}" --off
-   else
-       xrandr --output "${secondary_monitor}" --left-of "${primary_monitor}" --rotate left
-   fi
+xrandr --auto
+primary_monitor="eDP1"
+xrandr --output "${primary_monitor}" --primary
+if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
+   xrandr --output "${secondary_monitor}" --left-of "${primary_monitor}" --rotate normal
+elif [[ $# -ne 0 && "$1" == "solo" ]] ; then
+   xrandr --output "${secondary_monitor}" --off
+else
+   xrandr --output "${secondary_monitor}" --left-of "${primary_monitor}" --rotate left
 fi
 # redraw desktop (fixes both orientation and tiling issues)
 nitrogen --restore > /dev/null 2>&1
