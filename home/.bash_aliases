@@ -17,6 +17,8 @@ alias glp="git log --graph --pretty=format:'%h -%d %s (%cr) <%an>' --abbrev-comm
 alias gla="git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --"
 alias gits='git status'
 alias gh='hub browse'
+alias gmru="git for-each-ref --count=10 --sort=-committerdate refs/heads/ --format='%(committerdate:relative) %09 %(objectname:short) %09 %(refname:short) %09 %(authorname)'"
+alias ghist="git log --graph --topo-order --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset %C(cyan)<%an>%Creset' --abbrev-commit --date=relative"
 
 alias ipy='ipython --no-banner --no-confirm-exit -i'
 alias vssh='vagrant ssh'
