@@ -20,11 +20,11 @@ xrandr --auto
 primary_monitor="eDP1"
 xrandr --output "${primary_monitor}" --primary
 if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
-   xrandr --output "${secondary_monitor}" --left-of "${primary_monitor}" --rotate normal
+   xrandr --output "${secondary_monitor}" "--${secondary_side}-of" "${primary_monitor}" --rotate normal
 elif [[ $# -ne 0 && "$1" == "solo" ]] ; then
    xrandr --output "${secondary_monitor}" --off
 else
-   xrandr --output "${secondary_monitor}" --left-of "${primary_monitor}" --rotate left
+   xrandr --output "${secondary_monitor}" "--${secondary_side}-of" "${primary_monitor}" --rotate left
 fi
 # redraw desktop (fixes both orientation and tiling issues)
 nitrogen --restore > /dev/null 2>&1
