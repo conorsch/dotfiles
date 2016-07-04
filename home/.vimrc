@@ -27,6 +27,7 @@ Plug 'pearofducks/ansible-vim'
 Plug 'othree/eregex.vim'
 Plug 'davidhalter/jedi-vim'
 Plug 'godlygeek/tabular'
+Plug 'airblade/vim-gitgutter'
 call plug#end()
 
 " Remove default functionality for spacebar in normal mode,
