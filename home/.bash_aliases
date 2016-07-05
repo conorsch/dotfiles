@@ -2,6 +2,7 @@
 alias l='ls -lsh'
 alias ll='ls -lsh'
 
+alias apb="ansible-playbook --diff -vv"
 alias do-vpn="nmcli connection up id 'DigitalOcean VPN'"
 alias work-wifi="nmcli connection up id 'SFTechCenter 5GHz'"
 
