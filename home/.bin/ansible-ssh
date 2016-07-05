@@ -22,7 +22,7 @@ shift 1
 
 # Monstrous Jinja template string for outputting all the host info
 # we'll need. No support yet for common SSH args, e.g. ControlPersist files.
-host_info_format="{{ hostvars['elk']['ansible_ssh_host']+' -p '+hostvars['elk']['ansible_ssh_port']|default('22')+' '+ansible_ssh_common_args|default('') }}"
+host_info_format="{{ hostvars['${target_host}']['ansible_ssh_host']+' -p '+hostvars['${target_host}']['ansible_ssh_port']|default('22')+' '+ansible_ssh_common_args|default('') }}"
 
 # Find just the 'msg' line and extract it.
 ssh_host_info=$(ansible -m debug \
