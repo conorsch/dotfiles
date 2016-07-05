@@ -61,7 +61,6 @@
 # Show file titles (title, author, album) instead of file names.
 ReadTags		= yes
 
-OnSongChange = "/home/conor/.moc/moc_submit_lastfm.bin --artist %a --title %t --length %d --album %r"
 # Directory in which you store music files. If you specify it you will be able
 # to quickly go to this directory with the '-m' parameter or the 'm' command.
 # This can also point to a playlist.
