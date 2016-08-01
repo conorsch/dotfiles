@@ -54,23 +54,6 @@ gethtmlformfields() { # spit out list of HTML form field "name"s
 formyeyes() { # enable redshift at this geographic location (IP-based);
     redshift -l $(latlong) > /dev/null & # feed current location data into redshift;
 }
-touchpad() {
-    # this works on X220, but not on X1 Carbon 3rd-gen
-    trackpad_id=$(xinput list | grep TouchPad | perl -ne 'm/id=(\d+)/g; print $1')
-    case "$1" in
-        "")
-           echo "Usage: touchpad [on|off]"
-           RETVAL=1
-           ;;
-        on)
-           trackpad_state=0
-           ;;
-        off)
-           trackpad_state=1
-           ;;
-    esac
-    xinput --set-prop $trackpad_id "Synaptics Off" $trackpad_state
-}
 top10() {
     # most commonly used shell commands
     history | awk '{a[$2]++}END{for(i in a){print a[i] " " i}}' | sort -rn | head
