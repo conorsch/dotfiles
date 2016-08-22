@@ -1,0 +1,28 @@
+#!/bin/bash
+# Displays list of timezones from hardcoded list, sorted
+# in ascending order by localtime.
+set -e
+set -o pipefail
+
+
+# Declare constants.
+# The date format string uses %N for the nanosecond field,
+# which allows sorting all timezones relative to each other.
+date_format="%a %b %T %Z %Y %N"
+declare -a watched_timezones
+watched_timezones=(
+  America/Los_Angeles
+  America/New_York
+  Asia/Singapore
+)
+
+# Loop over desired timezones for output, sort by nanosecond
+# field for sane ordering, then trim the nanosecond field,
+# and finally format as a readable table.
+for tz in "${watched_timezones[@]}"; do
+  printf "${tz}: "
+  echo $(TZ="${tz}" date +"${date_format}")
+  done \
+      | sort -k 6 \
+      | perl -lane '$,=" "; pop(@F); print(@F)' \
+      | column -t
