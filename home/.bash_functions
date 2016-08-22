@@ -65,8 +65,9 @@ canhaz() {
     sudo aptitude -y install $@
 }
 getem() {
-    sudo aptitude update
-    sudo aptitude -y safe-upgrade
+    sudo apt update \
+        && sudo apt upgrade -y \
+        && sudo apt autoremove -y
 }
 slg() {
     tail -f -n 25 /var/log/syslog
