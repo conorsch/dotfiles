@@ -15,7 +15,7 @@ vpn_connection_name="vpn"
 
 # Ensure VPN connection is enabled.
 case "$1" in
-	on)
+	up|on)
         # Check for existing VPN connection, since
         # trying to connect after connection exists will
         # throw error and disconnect the VPN.
@@ -23,7 +23,7 @@ case "$1" in
             nmcli con up id "${vpn_connection_name}"
         fi
         ;;
-    off)
+    down|off)
         # Only disable the VPN if it's currently enabled.
         if vpn_enabled ; then
             nmcli con down id "${vpn_connection_name}"
@@ -36,5 +36,8 @@ case "$1" in
             echo "VPN status: disabled"
         fi
         ;;
+    **)
+        echo "Usage: $(basename $0) <up|down|status>"
+        exit 1
 esac
 
