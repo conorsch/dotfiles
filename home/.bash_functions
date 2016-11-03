@@ -21,6 +21,8 @@ vagrant-all() { # pass cmd to all vagrant boxes
 }
 
 vagrant-update-all-boxes() {
+# Update all hosted boxes. Omit boxes with version ', 0', since that
+# likely indicates a manually added box, that can't be polled for updates.
     vagrant box list | grep -vP ', 0\)$' \
         | perl -lane 'print $F[0]' \
         | sort | uniq \
