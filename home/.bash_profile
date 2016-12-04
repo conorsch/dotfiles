@@ -4,10 +4,10 @@ source ~/.bin/ssh-agent-wrapper
 [[ -f ~/.bash_env_secure ]] && source ~/.bash_env_secure
 
 # configure local Ruby gem support
-if which ruby >/dev/null && which gem >/dev/null; then
-    export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
-    export GEM_HOME="$(ruby -rubygems -e 'puts Gem.user_dir')"
-fi
+#if which ruby >/dev/null && which gem >/dev/null; then
+#    export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
+#    export GEM_HOME="$(ruby -rubygems -e 'puts Gem.user_dir')"
+#fi
 
 # configure rvm support
 # commented out so it's not always on
