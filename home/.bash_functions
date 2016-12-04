@@ -1,4 +1,11 @@
 #!/bin/bash
+mute-commercial() {
+   amixer -q -D pulse set Master toggle
+   # Support custom sleep time via $1.
+   sleep "${1:-30}"
+   amixer -q -D pulse set Master toggle
+}
+
 git() {
    # Credit: http://unix.stackexchange.com/a/97958/16485
    local tmp=$(mktemp)
