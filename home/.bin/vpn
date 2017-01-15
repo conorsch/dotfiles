@@ -3,7 +3,17 @@ set -e
 set -o pipefail
 
 
-[ $# -eq 0 ] && { echo "Usage: $0 <on|off|status>"; exit 1; }
+function vpn-usage {
+    echo "Usage: $0 <on|off|status> [connection_name]"
+    exit 1
+}
+
+# Display usage info if no args
+[ $# -eq 0 ] && vpn-usage
+
+# Set args
+vpn_state="$1"
+vpn_connection_name="${2:vpn}"
 
 vpn_enabled() {
    nmcli -t -f name,type,active con | grep -q -P '^\w+:vpn:yes'
@@ -14,7 +24,7 @@ vpn_enabled() {
 vpn_connection_name="vpn"
 
 # Ensure VPN connection is enabled.
-case "$1" in
+case "${vpn_state}" in
 	up|on)
         # Check for existing VPN connection, since
         # trying to connect after connection exists will
@@ -37,7 +47,5 @@ case "$1" in
         fi
         ;;
     **)
-        echo "Usage: $(basename $0) <up|down|status>"
-        exit 1
+        vpn-usage
 esac
-
