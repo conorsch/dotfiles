@@ -82,8 +82,7 @@ canhaz() {
 }
 getem() {
     sudo apt update \
-        && sudo apt upgrade -y \
-        && sudo apt autoremove -y
+        && sudo apt dist-upgrade -y --auto-remove --purge
 }
 slg() {
     tail -f -n 25 /var/log/syslog
