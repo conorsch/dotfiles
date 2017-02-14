@@ -27,6 +27,11 @@ vagrant-all() { # pass cmd to all vagrant boxes
      done
 }
 
+set-desktop-background() { # assumes GNOME
+    local img=$(readlink --canonicalize-existing "$1")
+    gsettings set org.gnome.desktop.background picture-uri "file://${img}"
+}
+
 vagrant-update-all-boxes() {
 # Update all hosted boxes. Omit boxes with version ', 0', since that
 # likely indicates a manually added box, that can't be polled for updates.
