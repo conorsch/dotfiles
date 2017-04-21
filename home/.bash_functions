@@ -21,6 +21,14 @@ git() {
      /usr/bin/git "$@"
    fi
 }
+
+gmru() {
+    # List all recently used branches within a git repo.
+    # Mnemonic: "git most recently used"
+    git for-each-ref --count="${1:-10}" \
+        --sort=-committerdate refs/heads/ \
+        --format='%(committerdate:relative) %09 %(objectname:short) %09 %(refname:short) %09 %(authorname)'
+}
 vagrant-all() { # pass cmd to all vagrant boxes
      for vm in $(vagrant status | cut -d' ' -f 1 | grep -Poz '(?s)\s{2}^(.*)\s{2}' | sed '/^$/d'); do
          vagrant $@ $vm
