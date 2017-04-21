@@ -28,6 +28,7 @@ Plug 'othree/eregex.vim'
 Plug 'davidhalter/jedi-vim'
 Plug 'godlygeek/tabular'
 Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/rainbow_parentheses.vim'
 call plug#end()
 
 " Remove default functionality for spacebar in normal mode,
@@ -96,6 +97,12 @@ set foldlevel=3 "this is just what i use
 au BufRead,BufNewFile bash-fc-* set filetype=sh "useful for using vi mode in Bash 
 set splitbelow "Ensure that vertical splits add the new window on the bottom
 set splitright "Ensure that horizontal splits add the new frame on the right
+
+" Activate RainbowParentheses for Lisps and Clojure.
+augroup rainbow_lisp
+  autocmd!
+  autocmd FileType lisp,clojure,scheme RainbowParentheses
+augroup END
 
 "comment out lines with #
 map <Leader># :s:^:#:<CR>:nohl<CR> 
