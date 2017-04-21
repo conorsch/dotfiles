@@ -17,6 +17,7 @@ watched_timezones=(
   Asia/Riyadh
   Europe/Berlin
   Europe/Brussels
+  Europe/Moscow
 )
 
 # Loop over desired timezones for output, sort by nanosecond
