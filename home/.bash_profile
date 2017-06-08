@@ -51,3 +51,8 @@ fi
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
 # source virtualenv wrappers, e.g. "workon"
 which virtualenvwrapper.sh > /dev/null && source $(which virtualenvwrapper.sh)
+
+# Set a single directory for storing ISOs used with Packer. Otherwise,
+# the ISOs will always be pulled into a subdirectory of PWD, which can
+# make for a lot of duplication.
+export PACKER_CACHE_DIR="$HOME/.packer.d/cache"
