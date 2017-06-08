@@ -6,6 +6,18 @@ mute-commercial() {
    amixer -q -D pulse set Master toggle
 }
 
+current-wifi-network() {
+  nmcli --terse --fields SSID,ACTIVE dev wifi | perl -F: -lanE 'say $F[0] if $F[1] eq "yes"'
+}
+
+bounce-network() {
+  local wait_time="${1:-5}"
+  local current_ssid="$(current-wifi-network)"
+  nmcli con down id "${current_ssid}" && \
+      sleep "${wait_time}" && \
+      nmcli con up id "${current_ssid}"
+}
+
 git() {
    # Credit: http://unix.stackexchange.com/a/97958/16485
    local tmp=$(mktemp)
