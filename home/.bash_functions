@@ -58,7 +58,7 @@ vagrant-update-all-boxes() {
     vagrant box list | grep -vP ', 0\)$' \
         | perl -lane 'print $F[0]' \
         | sort | uniq \
-        | xargs -n1 vagrant box update --box
+        | xargs -n1 vagrant box update --provider libvirt --box
 }
 latlong() { # return latitude and longitude,colon-separated }
     curl http://ipinfodb.com 2>/dev/null | perl -0777 -nE \
