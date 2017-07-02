@@ -18,6 +18,18 @@ bounce-network() {
       nmcli con up id "${current_ssid}"
 }
 
+dockerpocalypse() {
+    # Take off and nuke the entire site from orbit.
+    # It's the only way to be sure.
+    echo "Stopping all containers..."
+    docker container ls --all --quiet \
+        | xargs --no-run-if-empty docker container stop
+    echo "Removing all containers..."
+    docker container prune --force
+    echo "Removing system prune..."
+    docker system prune --force
+}
+
 git() {
    # Credit: http://unix.stackexchange.com/a/97958/16485
    local tmp=$(mktemp)
