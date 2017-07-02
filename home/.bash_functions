@@ -46,6 +46,15 @@ git() {
    fi
 }
 
+libvirt-share() {
+    local libvirt_share_dir
+    libvirt_share_dir="${1:-$PWD}"
+    sudo chown "${USER}:libvirt-qemu" -R "${libvirt_share_dir}"
+    # Don't want to mess with dir permissions by default, e.g. Debian packages
+    # will fail if control dirs are not 755.
+    #find "${libvirt_share_dir}" -type d -exec chmod g=rwx {} +
+}
+
 gmru() {
     # List all recently used branches within a git repo.
     # Mnemonic: "git most recently used"
