@@ -2,12 +2,12 @@
 # dual-monitor configs for various machines
 # add configs by hostname
 set -e
+set -u
 set -o pipefail
 
-set -x
 # set up some default vars shared across hosts
-primary_monitor=$(xrandr | perl -nE '/^(\w+) connected primary / && say $1')
-secondary_monitor=$(xrandr | perl -nE '/^(\w+) connected (?!primary)/ && say $1')
+primary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected primary / && say $1')
+secondary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected (?!primary)/ && say $1')
 
 if [[ -z "${secondary_monitor}" ]] && [[ "$1" -ne "solo" ]] ; then
     echo "No secondary monitor found."
@@ -17,7 +17,7 @@ fi
 secondary_side="left"
 
 xrandr --auto
-primary_monitor="eDP1"
+primary_monitor="eDP-1"
 xrandr --output "${primary_monitor}" --primary
 if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
    xrandr --output "${secondary_monitor}" "--${secondary_side}-of" "${primary_monitor}" --rotate normal
