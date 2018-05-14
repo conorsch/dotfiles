@@ -35,3 +35,4 @@ source ~/.liquidpromptrc
 source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
 # Make liquidprompt PS1 multiline
 export LP_PS1_POSTFIX="\n $ "
+export GOPATH="$HOME/go"
