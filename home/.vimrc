@@ -26,7 +26,6 @@ call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'pearofducks/ansible-vim'
 Plug 'othree/eregex.vim'
-Plug 'davidhalter/jedi-vim'
 Plug 'godlygeek/tabular'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/rainbow_parentheses.vim'
