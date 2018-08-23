@@ -24,13 +24,11 @@ if ! hash homeshick > /dev/null 2>&1 ; then
     source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fi
 
-# Make liquidprompt PS1 multiline
-if [[ -z "$LP_PS1_FILE" ]] ; then
-    export LP_PS1_FILE="$HOME/.homesick/repos/liquidprompt/liquid_multiline.ps1"
-    export LP_PS1_POSTFIX="\n $ "
-    source ~/.liquidpromptrc
-    source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
-fi
+# Make liquidprompt PS1 multiline.
+export LP_PS1_FILE="$HOME/.homesick/repos/liquidprompt/liquid_multiline.ps1"
+export LP_PS1_POSTFIX="\n $ "
+source ~/.liquidpromptrc
+source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
 
 [[ -z "SSH_CLIENT" ]] && source ~/.bin/ssh-agent-wrapper
 
