@@ -1,21 +1,8 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# Madness. Utter madness. Leaving disabled by default.
-if [ -n "$ONE_BASH_HISTORY_TO_RULE_THEM_ALL" ] ; then
-    # Bash history config, so command history is shared across
-    # multiple terminal windows, via http://unix.stackexchange.com/a/48113/16485
-    export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
-    # Save and reload the history after each command finishes
-    export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-fi
-
-export HISTSIZE=100000                   # big big history
-export HISTFILESIZE=100000               # big big history
-shopt -s histappend # append to the history file, don't overwrite it
 shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
 shopt -s cdspell # correct typos when spelling out paths.
-shopt -s autocd # change directories with just a pathname
 shopt -s cmdhist # multi-line commands are still entered into history
 shopt -s histreedit # re-edit history substitution if command fails
 
@@ -24,15 +11,35 @@ shopt -s histreedit # re-edit history substitution if command fails
 
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.bin"
-export NLTK_DATA=$HOME/.nltk_data
-export heimchen="/mnt/Valhalla/Media/Heimchen"
 export EDITOR="vim"
 export BROWSER="firefox"
-
-source "$HOME/.homesick/repos/homeshick/homeshick.sh"
-# enable liquidprompt for PS1, from https://github.com/nojhan/liquidprompt
-source ~/.liquidpromptrc
-source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
-# Make liquidprompt PS1 multiline
-export LP_PS1_POSTFIX="\n $ "
 export GOPATH="$HOME/go"
+# Set a single directory for storing ISOs used with Packer. Otherwise,
+# the ISOs will always be pulled into a subdirectory of PWD, which can
+# make for a lot of duplication.
+export PACKER_CACHE_DIR="$HOME/.packer.d/cache"
+
+# Dotfiles and PS1 config
+if ! hash homeshick > /dev/null 2>&1 ; then
+    source "$HOME/.homesick/repos/homeshick/homeshick.sh"
+fi
+
+# Make liquidprompt PS1 multiline
+if [[ -n "$LP_PS1_FILE" ]] ; then
+    export LP_PS1_FILE="$HOME/.homesick/repos/liquidprompt/liquid_multiline.ps1"
+    export LP_PS1_POSTFIX="\n $ "
+    source ~/.liquidpromptrc
+    source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
+fi
+
+[[ -z "SSH_CLIENT" ]] && source ~/.bin/ssh-agent-wrapper
+
+# Source alias/function files only if they haven't been loaded already,
+# by checking whether a custom alias is found.
+if ! type refresh > /dev/null 2>&1 ; then
+    [ -f ~/.bash_aliases ] && source ~/.bash_aliases
+    [ -f ~/.bash_functions ] && . ~/.bash_functions
+fi
+
+# source virtualenv wrappers, e.g. "workon"
+[[ -z "$VIRTUALENVWRAPPER_SCRIPT" ]] && source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
