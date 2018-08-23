@@ -25,7 +25,7 @@ if ! hash homeshick > /dev/null 2>&1 ; then
 fi
 
 # Make liquidprompt PS1 multiline
-if [[ -n "$LP_PS1_FILE" ]] ; then
+if [[ -z "$LP_PS1_FILE" ]] ; then
     export LP_PS1_FILE="$HOME/.homesick/repos/liquidprompt/liquid_multiline.ps1"
     export LP_PS1_POSTFIX="\n $ "
     source ~/.liquidpromptrc
