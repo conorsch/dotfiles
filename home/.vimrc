@@ -13,13 +13,14 @@ set shiftwidth=4
 set expandtab
 set nowrap
 set list
+set termguicolors
 
 " set tabstop of 2 for certain languages
 autocmd FileType ruby set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType javascript set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType yaml set tabstop=2|set softtabstop=2|set shiftwidth=2
 autocmd FileType yml set tabstop=2|set softtabstop=2|set shiftwidth=2
-autocmd FileType go set tabstop=4|set noexpandtab
+autocmd FileType go set tabstop=4|set noexpandtab|set listchars=tab:\|\ ,trail:-,extends:>,precedes:<,nbsp:+|highlight SpecialKey guifg=#333333 guibg=#111111
 
 " Vimplug config
 call plug#begin()
