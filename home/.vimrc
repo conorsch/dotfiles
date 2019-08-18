@@ -30,6 +30,7 @@ Plug 'othree/eregex.vim'
 Plug 'godlygeek/tabular'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'rust-lang/rust.vim'
 call plug#end()
 
 " Remove default functionality for spacebar in normal mode,
