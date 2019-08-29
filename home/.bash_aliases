@@ -2,7 +2,7 @@
 alias l='ls -lsh'
 alias ll='ls -lsh'
 
-alias apb="ansible-playbook --diff -vv"
+alias apb="ansible-playbook --diff"
 
 # global git aliases
 alias gc='git commit'
