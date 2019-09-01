@@ -1,0 +1,81 @@
+#!/bin/bash
+# Determine whether we're running with HiDPI displays
+
+set -e
+set -u
+set -o pipefail
+
+
+# If horizontal resolution is 2000 pix, it's HiDPI.
+HIGH_DPI_START="2000"
+
+
+function get_highest_horizontal_res() {
+    xrandr -q \
+        | perl -lanE '$F[1] eq "connected" and say $_' \
+        | grep -P '\b[\dx+]{2,}\b' -o \
+        | perl -Fx -lanE 'say $F[0]' \
+        | sort -n \
+        | tail -n 1
+}
+
+
+function is_highdpi() {
+    high_res="$(get_highest_horizontal_res)"
+    if (( "$high_res" > "$HIGH_DPI_START" )); then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function set_gnome_terminal_highdpi() {
+    dconf reset -f /org/gnome/terminal/
+    local fontsize
+    fontsize="12"
+    if is_highdpi; then
+        fontsize="16"
+    fi
+    # N.B. In order to set gnome-terminal dark mode, ran:
+    # gsettings set org.gnome.Terminal.Legacy.Settings theme-variant 'dark'
+    cat <<EOF | dconf load /org/gnome/terminal/
+[legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(0,0,0)'
+login-shell=false
+palette=['rgb(0,0,0)', 'rgb(170,0,0)', 'rgb(0,170,0)', 'rgb(170,85,0)', 'rgb(0,0,170)', 'rgb(170,0,170)', 'rgb(0,170,170)', 'rgb(170,170,170)', 'rgb(85,85,85)', 'rgb(255,85,85)', 'rgb(85,255,85)', 'rgb(255,255,85)', 'rgb(85,85,255)', 'rgb(255,85,255)', 'rgb(85,255,255)', 'rgb(255,255,255)']
+foreground-color='rgb(255,255,255)'
+use-system-font=false
+font='Monospace ${fontsize}'
+use-theme-colors=false
+
+[legacy]
+schema-version=uint32 3
+theme-variant='dark'
+EOF
+}
+
+function get_firefox_profile_path() {
+    find ~/.mozilla/firefox/ -maxdepth 1 -type d \
+        -and -name '*.default' \
+        | tail -n 1
+}
+
+function write_firefox_user_prefs() {
+    local prefs_file
+    local devppp
+    prefs_file="$(get_firefox_profile_path)/prefs.js"
+    devppp="-1"
+    if is_highdpi; then
+        devppp="2"
+    fi
+    touch "$prefs_file"
+    sed -i '/"layout.css.devPixelsPerPx"/d' "$prefs_file"
+    cat <<EOF > "$prefs_file"
+user_pref("layout.css.devPixelsPerPx", "${devppp}");
+user_pref("browser.urlbar.placeholderName", "DuckDuckGo");
+EOF
+}
+
+
+set_gnome_terminal_highdpi
+write_firefox_user_prefs
