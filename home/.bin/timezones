@@ -13,8 +13,11 @@ declare -a watched_timezones
 watched_timezones=(
   America/Los_Angeles
   America/New_York
-  Asia/Singapore
+  Asia/India
   Asia/Riyadh
+  Asia/Singapore
+  Asia/Tokyo
+  Asia/Sydney
   Europe/Berlin
   Europe/Brussels
   Europe/Moscow
