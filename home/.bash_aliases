@@ -31,3 +31,7 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
+# YAML/JSON helpers
+alias yaml2json="python3 -c 'import sys, yaml, json; y=yaml.load(sys.stdin.read()); print(json.dumps(y, indent=2))'"
+alias yamlfix="python3 -c 'import sys, yaml; y=yaml.load(sys.stdin.read()); print(yaml.dump(y, indent=2))'"
