@@ -46,3 +46,13 @@ fi
 export GOPATH="$HOME/go"
 export GOBIN="$GOPATH/bin"
 export PATH="$PATH:$GOBIN:/usr/local/go/bin"
+
+[[ -e /etc/profile.d/bash_completion.sh ]] && source /etc/profile.d/bash_completion.sh
+
+# kubectl
+source <(kubectl completion bash)
+
+# direnv
+if hash direnv 2>&1 > /dev/null; then
+    eval "$(direnv hook bash)"
+fi
