@@ -20,20 +20,12 @@ fi
 target_host="$1"
 shift 1
 
-# Monstrous Jinja template string for outputting all the host info
-# we'll need. No support yet for common SSH args, e.g. ControlPersist files.
-host_info_format="{{ hostvars['${target_host}']['ansible_ssh_host']+' -p '+hostvars['${target_host}']['ansible_ssh_port']|default('22')+' '+ansible_ssh_common_args|default('') }}"
+host_addr="$(ansible-inventory --host "$target_host" | yq .ansible_host)"
 
-# Find just the 'msg' line and extract it.
-ssh_host_info=$(ansible -m debug \
-    -a msg="${host_info_format}" "${target_host}" \
-    | grep -P '^\s+"msg":' \
-    | perl -npe 's/^\s+"msg": "(.*)"$/$1/')
-
-if [[ -z "$ssh_host_info" ]] ; then
-    printf "Could not find IP address for host '%s'\n." "${target_host}"
+if [[ -z "$host_addr" ]] ; then
+    printf 'Could not find IP address for host: %s\n.' "${target_host}"
     exit 1
 fi
 
 # Pass extra options to SSH command, e.g. `-l <user>` to change user
-bash -c "ssh ${ssh_host_info} $@"
+bash -c "ssh ${host_addr} $@"
