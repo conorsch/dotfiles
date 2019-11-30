@@ -53,6 +53,6 @@ export PATH="$PATH:$GOBIN:/usr/local/go/bin"
 source <(kubectl completion bash)
 
 # direnv
-if hash direnv 2>&1 > /dev/null; then
+if hash direnv > /dev/null 2>&1; then
     eval "$(direnv hook bash)"
 fi
