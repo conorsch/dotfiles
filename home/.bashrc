@@ -50,7 +50,7 @@ export PATH="$PATH:$GOBIN:/usr/local/go/bin"
 [[ -e /etc/profile.d/bash_completion.sh ]] && source /etc/profile.d/bash_completion.sh
 
 # kubectl
-source <(kubectl completion bash)
+#source <(kubectl completion bash)
 
 # direnv
 if hash direnv > /dev/null 2>&1; then
