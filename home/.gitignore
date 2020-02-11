@@ -1,0 +1,22 @@
+# vim
+*.swp
+Session.vim
+
+# Packages
+# *.deb
+# *.rpm
+# *.tar.gz
+
+# Python / virtualenv
+*.pyc
+__pycache__
+.pytest_cache
+venv
+.venv
+
+# Node
+node_modules
+
+# General
+*.so
+*.sqlite3*

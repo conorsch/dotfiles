@@ -2,6 +2,7 @@
 # Displays list of timezones from hardcoded list, sorted
 # in ascending order by localtime.
 set -e
+set -u
 set -o pipefail
 
 

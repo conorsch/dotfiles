@@ -8,15 +8,15 @@ alias apb="ansible-playbook --diff"
 alias gc='git commit'
 alias gd='git diff'
 alias ga='git add'
+alias gits='git status'
+
 # pretty git logs
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --"
 # same as the above, but "plain" (better for redirecting STDOUT)
 alias glp="git log --graph --pretty=format:'%h -%d %s (%cr) <%an>' --abbrev-commit --"
 # same as the above, but all branches
 alias gla="git log --graph --all --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --"
-alias gits='git status'
 alias gh='hub browse'
-alias git-review='git log --patch --reverse master..HEAD'
 
 alias ipy='ipython --no-banner --no-confirm-exit -i'
 

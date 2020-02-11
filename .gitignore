@@ -4,4 +4,5 @@ home/.moc/cache
 home/.moc/last_directory
 home/.moc/pid
 home/.bash_env_secure
+home/.bash_env_extra
 home/.vim/bundle/

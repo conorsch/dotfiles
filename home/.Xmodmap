@@ -1,5 +1,0 @@
-remove Lock = Caps_Lock
-keysym Caps_Lock = Escape
-add Lock = Caps_Lock
-keycode 34 = Multi_key
-keycode 66 = Escape

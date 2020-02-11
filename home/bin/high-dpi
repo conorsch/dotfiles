@@ -1,13 +1,17 @@
 #!/bin/bash
-# Determine whether we're running with HiDPI displays
-
+# Determine whether we're running with HiDPI displays,
+# and bump up the display sizes if so.
 set -e
 set -u
 set -o pipefail
 
 
 # If horizontal resolution is 2000 pix, it's HiDPI.
-HIGH_DPI_START="2000"
+high_dpi_start="2000"
+
+# Where Firefox profile is stored; config will be skipped
+# if directory is absent.
+ff_path="$HOME/.mozilla/firefox"
 
 
 function get_highest_horizontal_res() {
@@ -21,8 +25,9 @@ function get_highest_horizontal_res() {
 
 
 function is_highdpi() {
+    local high_res
     high_res="$(get_highest_horizontal_res)"
-    if (( "$high_res" > "$HIGH_DPI_START" )); then
+    if (( "$high_res" > "$high_dpi_start" )); then
         return 0
     else
         return 1
@@ -54,8 +59,9 @@ theme-variant='dark'
 EOF
 }
 
+
 function get_firefox_profile_path() {
-    find ~/.mozilla/firefox/ -maxdepth 1 -type d \
+    find "$ff_path" -maxdepth 1 -type d \
         -and -name '*.default' \
         | tail -n 1
 }
@@ -78,4 +84,6 @@ EOF
 
 
 set_gnome_terminal_highdpi
-write_firefox_user_prefs
+if [[ -d "$ff_path" ]]; then
+    write_firefox_user_prefs
+fi
