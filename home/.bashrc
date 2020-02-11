@@ -7,7 +7,7 @@ shopt -s cmdhist # multi-line commands are still entered into history
 shopt -s histreedit # re-edit history substitution if command fails
 
 export PATH="$PATH:$HOME/.local/bin"
-export PATH="$PATH:$HOME/.bin"
+export PATH="$PATH:$HOME/bin"
 export EDITOR="vim"
 export BROWSER="firefox"
 
