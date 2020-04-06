@@ -40,8 +40,10 @@ if ! type refresh > /dev/null 2>&1 ; then
 fi
 
 # source virtualenv wrappers, e.g. "workon"
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 if [[ -z "$VIRTUALENVWRAPPER_SCRIPT" ]] ; then
-    venv_script="/usr/share/virtualenvwrapper/virtualenvwrapper.sh"
+    # Prefer home dir path, more often up to date
+    venv_script="$HOME/.local/bin/virtualenvwrapper.sh"
     if [[ -f "$venv_script" ]]; then
         source "$venv_script"
     fi

@@ -39,7 +39,7 @@ function set_gnome_terminal_highdpi() {
     local fontsize
     fontsize="12"
     if is_highdpi; then
-        fontsize="16"
+        fontsize="18"
     fi
     # N.B. In order to set gnome-terminal dark mode, ran:
     # gsettings set org.gnome.Terminal.Legacy.Settings theme-variant 'dark'
