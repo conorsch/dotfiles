@@ -8,8 +8,10 @@ git() {
      /usr/bin/git "$@" 2>&1 | tee $tmp
      repo_name=$(perl -nE $'m/Cloning into \'([\w_-]+)\'.{3}$/ and print $1;' $tmp)
      rm $tmp
-     printf "changing to directory %s\n" "$repo_name"
-     cd "$repo_name"
+     if [[ -n "$repo_name" ]]; then
+         printf "changing to directory %s\n" "$repo_name"
+         cd "$repo_name"
+     fi
    else
      /usr/bin/git "$@"
    fi
