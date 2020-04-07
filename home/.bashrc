@@ -61,3 +61,10 @@ export PATH="$PATH:$GOBIN:/usr/local/go/bin"
 if hash direnv > /dev/null 2>&1; then
     eval "$(direnv hook bash)"
 fi
+
+# Default byobu config screws up vim colors, override.
+if [[ -n "$BYOBU_TERM" ]]; then
+    export BYOBU_TERM=xterm-256color
+    export TERM=$BYOBU_TERM
+    export BYOBU_PYTHON=python3
+fi
