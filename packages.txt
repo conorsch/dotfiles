@@ -1,4 +1,5 @@
 byobu
+curl
 golang
 htop
 ipython3
