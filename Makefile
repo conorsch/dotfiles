@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := bootstrap
 
 .PHONY: all
-all: bootstrap packages
+all: packages bootstrap
 
 .PHONY: bootstrap
 bootstrap:
