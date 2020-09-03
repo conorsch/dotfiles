@@ -5,7 +5,7 @@ set -e
 set -u
 set -o pipefail
 
-debian_version="$(lsb_release -sc 2> /dev/null || echo '')"
+debian_version="$(grep '^NAME=Debian' /etc/os-release 2> /dev/null || echo '')"
 fedora_version="$(grep '^NAME=Fedora' /etc/os-release 2> /dev/null || echo '')"
 pkg_manager="apt"
 if [[ -n "$debian_version" ]]; then
@@ -13,8 +13,7 @@ if [[ -n "$debian_version" ]]; then
 elif [[ -n "$fedora_version" ]]; then
     pkg_manager="dnf"
 else
-    echo "ERROR: Unknown platform"
-    exit 1
+    echo "WARNING: Unknown platform"
 fi
 
 time_since_last_update="$(date -d "now - $(date -r packages.txt +%s) seconds" +%s)"
