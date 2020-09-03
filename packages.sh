@@ -7,13 +7,13 @@ set -o pipefail
 
 debian_version="$(grep '^NAME=Debian' /etc/os-release 2> /dev/null || echo '')"
 fedora_version="$(grep '^NAME=Fedora' /etc/os-release 2> /dev/null || echo '')"
-pkg_manager="apt"
 if [[ -n "$debian_version" ]]; then
-    pkg_manager="apt"
+    pkg_manager="apt-get"
 elif [[ -n "$fedora_version" ]]; then
     pkg_manager="dnf"
 else
     echo "WARNING: Unknown platform"
+    pkg_manager="apt-get"
 fi
 
 time_since_last_update="$(date -d "now - $(date -r packages.txt +%s) seconds" +%s)"
