@@ -93,3 +93,7 @@ f() {
 strlength() {
     echo "$@" | awk '{ print length }'
 }
+
+mkvenv() {
+    mkvirtualenv -a $PWD "$(basename "$PWD")" -p "$(which python3)"
+}
