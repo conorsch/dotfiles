@@ -53,6 +53,10 @@ fi
 export GOPATH="$HOME/go"
 export GOBIN="$GOPATH/bin"
 export PATH="$PATH:$GOBIN:/usr/local/go/bin"
+export GO111MODULE=on
+
+# rustlang dev config
+export PATH="$HOME/.cargo/bin:$PATH"
 
 # kubectl
 #source <(kubectl completion bash)
@@ -68,3 +72,7 @@ if [[ -n "$BYOBU_TERM" ]]; then
     export TERM=$BYOBU_TERM
     export BYOBU_PYTHON=python3
 fi
+
+# Experimental new docker build system, prettier and slightly faster
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
