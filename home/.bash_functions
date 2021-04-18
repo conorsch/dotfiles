@@ -79,8 +79,8 @@ slg() {
 newestfiles() {
     local num_files
     num_files="${1:-10}"
-    find "$@" -not -iwholename '*.svn*' -not -iwholename '*.git*' -type f \
-        | xargs -0 ls -lsh --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 6 | tail -n "$num_files"
+    find "$@" -not -iwholename '*.svn*' -not -iwholename '*.git*' -type f -print0 \
+        | xargs -0 ls -lsh --time-style='+%Y-%m-%d_%H:%M:%S' | sort -k 7 | tail -n "$num_files"
 
 }
 
