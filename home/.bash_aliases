@@ -10,6 +10,8 @@ alias gd='git diff'
 alias ga='git add'
 alias gits='git status'
 
+alias dcd="doctl compute droplet"
+
 # pretty git logs
 alias gl="git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --"
 # same as the above, but "plain" (better for redirecting STDOUT)
