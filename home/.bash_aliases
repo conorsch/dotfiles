@@ -37,3 +37,7 @@ fi
 # YAML/JSON helpers
 alias yaml2json="python3 -c 'import sys, yaml, json; y=yaml.load(sys.stdin.read()); print(json.dumps(y, indent=2))'"
 alias yamlfix="python3 -c 'import sys, yaml; y=yaml.load(sys.stdin.read()); print(yaml.dump(y, indent=2))'"
+
+# bootstrap dev langs
+# https://rustup.rs/
+alias get-rust="curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
