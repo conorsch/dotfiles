@@ -5,6 +5,11 @@ set -e
 set -u
 set -o pipefail
 
+# Default to dark mode, but permit overriding in bright environments
+THEME_MODE="dark"
+if [[ $# > 0 && ${1:-} = "light" ]]; then
+    THEME_MODE="light"
+fi
 
 # If horizontal resolution is 2000 pix, it's HiDPI.
 high_dpi_start="2000"
@@ -34,7 +39,7 @@ function is_highdpi() {
     fi
 }
 
-function set_gnome_terminal_highdpi() {
+function configure_gnome_terminal() {
     dconf reset -f /org/gnome/terminal/
     local fontsize
     fontsize="12"
@@ -43,7 +48,7 @@ function set_gnome_terminal_highdpi() {
     fi
     # N.B. In order to set gnome-terminal dark mode, ran:
     # gsettings set org.gnome.Terminal.Legacy.Settings theme-variant 'dark'
-    cat <<EOF | dconf load /org/gnome/terminal/
+    darkmode_profile="
 [legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
 background-color='rgb(0,0,0)'
 login-shell=false
@@ -56,7 +61,30 @@ use-theme-colors=false
 [legacy]
 schema-version=uint32 3
 theme-variant='dark'
-EOF
+"
+    lightmode_profile="
+[legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9]
+background-color='rgb(253,246,227)'
+login-shell=false
+palette=['rgb(0,0,0)', 'rgb(170,0,0)', 'rgb(0,170,0)', 'rgb(170,85,0)', 'rgb(0,0,170)', 'rgb(170,0,170)', 'rgb(0,170,170)', 'rgb(170,170,170)', 'rgb(85,85,85)', 'rgb(255,85,85)', 'rgb(85,255,85)', 'rgb(255,255,85)', 'rgb(85,85,255)', 'rgb(255,85,255)', 'rgb(85,255,255)', 'rgb(255,255,255)']
+use-system-font=false
+font='Monospace ${fontsize}'
+use-theme-colors=false
+
+[legacy]
+schema-version=uint32 3
+theme-variant='dark'
+"
+    if [[ "$THEME_MODE" = "light" ]]; then
+        profile_config="$lightmode_profile"
+        sed -i 's/^colorscheme.*/colorscheme PaperColor/' ~/.vimrc
+        sed -i 's/^set background.*/set background=light/' ~/.vimrc
+    else
+        profile_config="$darkmode_profile"
+        sed -i 's/^colorscheme.*/colorscheme acidcupcake/' ~/.vimrc
+        sed -i 's/^set background.*/set background=dark/' ~/.vimrc
+    fi
+    echo "$profile_config" | dconf load /org/gnome/terminal/
 }
 
 
@@ -83,7 +111,7 @@ EOF
 }
 
 
-set_gnome_terminal_highdpi
+configure_gnome_terminal
 if [[ -d "$ff_path" ]]; then
     write_firefox_user_prefs
 fi

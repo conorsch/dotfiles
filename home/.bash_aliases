@@ -41,3 +41,6 @@ alias yamlfix="python3 -c 'import sys, yaml; y=yaml.load(sys.stdin.read()); prin
 # bootstrap dev langs
 # https://rustup.rs/
 alias get-rust="curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
+
+alias dark-mode="high-dpi"
+alias light-mode="high-dpi light"

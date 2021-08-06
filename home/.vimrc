@@ -31,6 +31,7 @@ Plug 'godlygeek/tabular'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'rust-lang/rust.vim'
+Plug 'NLKNguyen/papercolor-theme'
 call plug#end()
 
 " Remove default functionality for spacebar in normal mode,
@@ -58,6 +59,9 @@ set nocompatible
 " colorscheme alduin
 " colorscheme mustang
 " colorscheme kalisi
+" colorscheme PaperColor
+" colorscheme acidcupcake
+set background=dark
 colorscheme acidcupcake
 
 set formatoptions=tcroqw
