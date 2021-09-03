@@ -6,16 +6,17 @@ set -o pipefail
 
 github_username="${GITHUB_USERNAME:-conorsch}"
 git_name="${GIT_NAME:-Conor Schaefer}"
-git_email="${GIT_EMAIL:-conor.schaefer@gmail.com}"
+git_email="${GIT_EMAIL:-conor@ruin.dev}"
 homeshick_dir="$HOME/.homesick/repos/homeshick"
 
+printf 'Updating homeshick...'
 if [[ ! -d "$homeshick_dir" ]]; then
     mkdir -p "$(dirname "$homeshick_dir")"
     git clone https://github.com/andsens/homeshick "$homeshick_dir"
-    git -C "$homeshick_dir" reset --hard
-    git -C "$homeshick_dir" checkout master
-    git -C "$homeshick_dir" pull origin master
 fi
+git -C "$homeshick_dir" reset --hard --quiet
+git -C "$homeshick_dir" checkout --quiet master
+git -C "$homeshick_dir" pull --quiet origin master
 
 source "$homeshick_dir/homeshick.sh"
 
@@ -27,10 +28,10 @@ function fetch_dotfiles_repo() {
     repo_path="$(dirname "$homeshick_dir")/${repo_name}"
     if [[ ! -d $repo_path ]]; then
         # Assume the current dir, where we cloned from,
-        # is what we want as the master dotfiles repo
+        # is what we want as the canonical dotfiles repo
         if [[ $repo_name = "dotfiles" ]]; then
             # We can't be sure we'll have rsync
-            cp -r ${PWD}/ ${repo_path}/
+            cp -r "${PWD}"/ "${repo_path}"/
             if [[ ! $PWD =~ ^/tmp/|/dev/shm/ ]]; then
                 echo "Current dotfiles repo not in temporary directory."
                 echo "Dotfiles stored in $repo_path, delete $PWD"
@@ -42,14 +43,16 @@ function fetch_dotfiles_repo() {
 }
 
 # homeshick config
-fetch_dotfiles_repo "https://github.com/${github_username}/dotfiles"
-fetch_dotfiles_repo "https://github.com/nojhan/liquidprompt"
+fetch_dotfiles_repo "https://github.com/${github_username}/dotfiles" &
+fetch_dotfiles_repo "https://github.com/nojhan/liquidprompt" &
+wait
+printf ' OK\n'
 homeshick symlink --force dotfiles
 
 # vim config
 printf "Syncing vim plugins... "
-curl -s -o home/.vim/autoload/plug.vim \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+# curl -s -o home/.vim/autoload/plug.vim \
+#    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 vim +PlugInstall +qall > /dev/null 2>&1
 printf 'OK\n'
