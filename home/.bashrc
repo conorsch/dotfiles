@@ -23,13 +23,19 @@ if hash setxkbmap > /dev/null 2>&1 ; then
     setxkbmap -option compose:ralt
 fi
 
-# Configure Liquidprompt, only on interactive shells
+# Configure PS1, only on interactive shells
 if [[ $- = *i* ]] ; then
-    # Make liquidprompt PS1 multiline.
-    export LP_PS1_FILE="$HOME/.homesick/repos/liquidprompt/liquid_multiline.ps1"
-    export LP_PS1_POSTFIX="\n $ "
-    source ~/.liquidpromptrc
-    source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
+    # Starship shell prompt
+    if hash starship > /dev/null 2>&1 ; then
+        eval "$(starship init bash)"
+    else
+        # Otherwise, fall back to liquidprompt
+        # Make liquidprompt PS1 multiline.
+        export LP_PS1_FILE="$HOME/.homesick/repos/liquidprompt/liquid_multiline.ps1"
+        export LP_PS1_POSTFIX="\n $ "
+        source ~/.liquidpromptrc
+        source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
+    fi
 fi
 
 # Source alias/function files only if they haven't been loaded already,
