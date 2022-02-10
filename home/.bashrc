@@ -82,3 +82,8 @@ fi
 # Experimental new docker build system, prettier and slightly faster
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
+
+SSH_VAULT_VM="vault"
+if [ "$SSH_VAULT_VM" != "" ]; then
+    export SSH_AUTH_SOCK="/home/user/.SSH_AGENT_$SSH_VAULT_VM"
+fi
