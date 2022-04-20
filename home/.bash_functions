@@ -39,19 +39,6 @@ git-contributors() {
         | sort | uniq -c | sort -nr
 }
 
-# Purges all docker containers
-dockerpocalypse() {
-    # Take off and nuke the entire site from orbit.
-    # It's the only way to be sure.
-    echo "Stopping all containers..."
-    docker container ls --all --quiet \
-        | xargs --no-run-if-empty docker container stop
-    echo "Removing all containers..."
-    docker container prune --force
-    echo "Removing system prune..."
-    docker system prune --force
-}
-
 # Open all files by extension
 editall() {
     local file_ext
@@ -60,19 +47,6 @@ editall() {
     find . -type f -iname '*.'"$file_ext" \
         -and -not -iname '__init__*' \
         -exec vim -p {} +
-}
-
-# Updates all system packages
-getem() {
-    if lsb_release -sc > /dev/null 2>&1 ; then
-        sudo apt update && \
-            sudo apt dist-upgrade -y --auto-remove --purge
-    else
-        sudo dnf upgrade -y
-    fi
-}
-slg() {
-    tail -f -n 25 /var/log/syslog
 }
 
 # Lists newest files by timestamp
@@ -96,4 +70,14 @@ strlength() {
 
 mkvenv() {
     mkvirtualenv -a $PWD "$(basename "$PWD")" -p "$(which python3)"
+}
+
+# Verify that emojis can display in terminal.
+# Taken from starship docs:
+# https://starship.rs/faq/#why-don-t-i-see-a-glyph-symbol-in-my-prompt
+emoji-test() {
+    printf "Snake icon: "
+    echo -e "\xf0\x9f\x90\x8d"
+    printf "Powerline branch: "
+    echo -e "\xee\x82\xa0"
 }

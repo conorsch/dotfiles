@@ -28,13 +28,6 @@ if [[ $- = *i* ]] ; then
     # Starship shell prompt
     if hash starship > /dev/null 2>&1 ; then
         eval "$(starship init bash)"
-    else
-        # Otherwise, fall back to liquidprompt
-        # Make liquidprompt PS1 multiline.
-        export LP_PS1_FILE="$HOME/.homesick/repos/liquidprompt/liquid_multiline.ps1"
-        export LP_PS1_POSTFIX="\n $ "
-        source ~/.liquidpromptrc
-        source "$HOME/.homesick/repos/liquidprompt/liquidprompt"
     fi
 fi
 
@@ -47,13 +40,6 @@ fi
 
 # source virtualenv wrappers, e.g. "workon"
 export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-if [[ -z "$VIRTUALENVWRAPPER_SCRIPT" ]] ; then
-    # Prefer home dir path, more often up to date
-    venv_script="$HOME/.local/bin/virtualenvwrapper.sh"
-    if [[ -f "$venv_script" ]]; then
-        source "$venv_script"
-    fi
-fi
 
 # golang dev config
 export GOPATH="$HOME/go"
@@ -63,14 +49,6 @@ export GO111MODULE=on
 
 # rustlang dev config
 export PATH="$HOME/.cargo/bin:$PATH"
-
-# kubectl
-#source <(kubectl completion bash)
-
-# direnv
-if hash direnv > /dev/null 2>&1; then
-    eval "$(direnv hook bash)"
-fi
 
 # Default byobu config screws up vim colors, override.
 if [[ -n "$BYOBU_TERM" ]]; then
@@ -82,3 +60,6 @@ fi
 # Experimental new docker build system, prettier and slightly faster
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
+
+export LANG=en_US.UTF-8
+export LC_ALL="$LANG"

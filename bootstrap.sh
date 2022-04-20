@@ -44,7 +44,6 @@ function fetch_dotfiles_repo() {
 
 # homeshick config
 fetch_dotfiles_repo "https://github.com/${github_username}/dotfiles" &
-fetch_dotfiles_repo "https://github.com/nojhan/liquidprompt" &
 wait
 printf ' OK\n'
 homeshick symlink --force dotfiles
@@ -59,22 +58,27 @@ printf 'OK\n'
 
 # git config
 printf "Configuring git... "
-function git_config() {
-    local k
-    local v
-    k="$1"
-    v="$2"
-    git config --global "$k" "$v"
-}
-
-git_config user.name "$git_name"
-git_config user.mail "$git_email"
-git_config pull.rebase 'true'
+git config --global user.name "$git_name"
+git config --global user.mail "$git_email"
+git config --global pull.rebase 'true'
 # Perform integrity checks by default; see:
 # https://groups.google.com/forum/#!topic/binary-transparency/f-BI4o
-git_config transfer.fsckobjects 'true'
-git_config fetch.fsckobjects 'true'
-git_config receive.fsckobjects 'true'
-git_config status.submodulesummary 'true'
-git_config diff.submodule 'log'
+git config --global transfer.fsckobjects 'true'
+git config --global fetch.fsckobjects 'true'
+git config --global receive.fsckobjects 'true'
+git config --global status.submodulesummary 'true'
+git config --global diff.submodule 'log'
+git config --global init.defaultBranch main
 printf 'OK\n'
+
+# font config (for starship emojis)
+font_dir="${HOME}/.local/share/fonts"
+font_path="${font_dir}/DejaVu Sans Mono Nerd Font Complete Mono.ttf"
+font_url="https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete%20Mono.ttf?raw=true"
+if [[ ! -s "$font_path" ]]; then
+    printf "Grabbing nerd fonts... "
+    mkdir -p "$font_dir"
+    curl -q -sSfL -o "$font_path" "$font_url"
+    fc-cache -f
+    printf 'OK\n'
+fi
