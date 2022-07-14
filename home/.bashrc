@@ -29,6 +29,9 @@ if [[ $- = *i* ]] ; then
     if hash starship > /dev/null 2>&1 ; then
         eval "$(starship init bash)"
     fi
+else
+    # Don't continue if shell is non-interactive
+    return
 fi
 
 # Source alias/function files only if they haven't been loaded already,
@@ -36,6 +39,7 @@ fi
 if ! type refresh > /dev/null 2>&1 ; then
     [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
     [[ -f ~/.bash_functions ]] && source ~/.bash_functions
+    [[ -f ~/.bash_profile ]] && source ~/.bash_profile
 fi
 
 # source virtualenv wrappers, e.g. "workon"
@@ -50,6 +54,10 @@ export GO111MODULE=on
 # rustlang dev config
 export PATH="$HOME/.cargo/bin:$PATH"
 
+# Experimental new docker build system, prettier and slightly faster
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+
 # Default byobu config screws up vim colors, override.
 if [[ -n "$BYOBU_TERM" ]]; then
     export BYOBU_TERM=xterm-256color
@@ -57,9 +65,6 @@ if [[ -n "$BYOBU_TERM" ]]; then
     export BYOBU_PYTHON=python3
 fi
 
-# Experimental new docker build system, prettier and slightly faster
-export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
-
-export LANG=en_US.UTF-8
-export LC_ALL="$LANG"
+# Forcing terminal setting, because vim colorscheme fails with "TERM=alacritty".
+# Might need to switch to neovim finally.
+export TERM=xterm-256color
