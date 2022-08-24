@@ -23,10 +23,8 @@ fi
 [[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
 
 # virtualenv
-if [[ -z "$VIRTUALENVWRAPPER_SCRIPT" ]] ; then
-    # Prefer home dir path, more often up to date
-    venv_script="$HOME/.local/bin/virtualenvwrapper.sh"
-    if [[ -f "$venv_script" ]]; then
-        source "$venv_script"
-    fi
+# Prefer home dir path, more often up to date
+venv_script="$HOME/.local/bin/virtualenvwrapper.sh"
+if [[ -f "$venv_script" ]]; then
+    source "$venv_script"
 fi
