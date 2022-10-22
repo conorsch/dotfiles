@@ -1,0 +1,13 @@
+bison
+build-essential
+byobu
+clang
+curl
+git
+htop
+ipython3
+libsqlite3-dev
+libssl-dev
+python3
+tree
+vim

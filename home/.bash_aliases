@@ -27,6 +27,9 @@ alias yamlfix="python3 -c 'import sys, yaml; y=yaml.load(sys.stdin.read()); prin
 # https://rustup.rs/
 alias get-rust="curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y"
 
+# https://github.com/moovweb/gvm
+alias get-gvm="bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)"
+
 alias dark-mode="terminal-config"
 alias light-mode="terminal-config light"
 

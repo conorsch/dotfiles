@@ -51,9 +51,6 @@ export GOBIN="$GOPATH/bin"
 export PATH="$PATH:$GOBIN:/usr/local/go/bin"
 export GO111MODULE=on
 
-# rustlang dev config
-export PATH="$HOME/.cargo/bin:$PATH"
-
 # Experimental new docker build system, prettier and slightly faster
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
@@ -68,3 +65,6 @@ fi
 # Forcing terminal setting, because vim colorscheme fails with "TERM=alacritty".
 # Might need to switch to neovim finally.
 export TERM=xterm-256color
+
+# rustlang dev config
+. "$HOME/.cargo/env"

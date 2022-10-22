@@ -1,17 +1,13 @@
-#!/bin/sh -e
+#!/bin/bash
+# Blur screen prior to locking
 # via https://faq.i3wm.org/question/83/how-to-run-i3lock-after-computer-inactivity/
+set -euo pipefail
 
 
-# Create temp file
-screen_locked="$(mktemp --suffix '.png')"
-# Take a screenshot
-scrot "${screen_locked}"
-
-# Pixellate it 10x
-mogrify -scale 10% -scale 1000% "${screen_locked}"
-
-# Lock screen displaying this image.
-i3lock -i "${screen_locked}"
-
-# Turn the screen off after a delay.
-# sleep 60; pgrep i3lock && xset dpms force off
+# Create tempfile for desktop screenshot
+f="$(mktemp --suffix '.png')"
+trap "rm -f '$f'" EXIT
+scrot --file "$f"
+# See docs on arg format https://imagemagick.org/Usage/blur/
+convert "$f" -blur 45,15 "$f"
+i3lock -i "$f"

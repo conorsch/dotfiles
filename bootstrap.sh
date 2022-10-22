@@ -59,7 +59,7 @@ printf 'OK\n'
 # git config
 printf "Configuring git... "
 git config --global user.name "$git_name"
-git config --global user.mail "$git_email"
+git config --global user.email "$git_email"
 git config --global pull.rebase 'true'
 # Perform integrity checks by default; see:
 # https://groups.google.com/forum/#!topic/binary-transparency/f-BI4o
