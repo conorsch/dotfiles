@@ -5,7 +5,7 @@ set -e
 set -u
 set -o pipefail
 
-debian_version="$(lsb_release -sc 2> /dev/null || echo '')"
+debian_version="$(grep -i '^NAME="Debian' /etc/os-release 2> /dev/null || echo '')"
 fedora_version="$(grep -i '^NAME="Fedora' /etc/os-release 2> /dev/null || echo '')"
 pkg_manager="apt"
 if [[ -n "$debian_version" ]]; then

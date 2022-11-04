@@ -22,7 +22,8 @@ fi
 # golang/gvm
 if [[ -s "$HOME/.gvm/scripts/gvm" ]] ; then
     source "$HOME/.gvm/scripts/gvm"
-    gvm use $(gvm listall | grep -P '^\s*go\d' | sort -V | tail -n 1 ) -B
+    # gvm use $(gvm listall | grep -P '^\s*go\d' | sort -V | tail -n 1 ) -B
+    # gvm use "go1.19.2" -B
 fi
 
 # virtualenv
