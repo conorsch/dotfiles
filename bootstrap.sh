@@ -5,6 +5,7 @@ set -u
 set -o pipefail
 
 github_username="${GITHUB_USERNAME:-conorsch}"
+dotfiles_repo="https://git.ruin.dev/conor/dotfiles"
 git_name="${GIT_NAME:-Conor Schaefer}"
 git_email="${GIT_EMAIL:-conor@ruin.dev}"
 homeshick_dir="$HOME/.homesick/repos/homeshick"
@@ -43,8 +44,7 @@ function fetch_dotfiles_repo() {
 }
 
 # homeshick config
-fetch_dotfiles_repo "https://github.com/${github_username}/dotfiles" &
-wait
+fetch_dotfiles_repo "$dotfiles_repo"
 printf ' OK\n'
 homeshick symlink --force dotfiles
 
@@ -69,6 +69,8 @@ git config --global receive.fsckobjects 'true'
 git config --global status.submodulesummary 'true'
 git config --global diff.submodule 'log'
 git config --global init.defaultBranch main
+git config --global core.excludesFile '~/.gitignore'
+git config --global advice.addEmptyPathspec false
 printf 'OK\n'
 
 # font config (for starship emojis)
