@@ -1,0 +1,6 @@
+packages/
+bin/chezmoi
+bootstrap.sh
+dom0/
+Makefile
+README.md

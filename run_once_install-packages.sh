@@ -17,20 +17,21 @@ else
     exit 1
 fi
 
-pkgs_txt="packages/${pkg_manager}.txt"
 
-time_since_last_update="$(date -d "now - $(date -r "$pkgs_txt" +%s) seconds" +%s)"
-# An hour's plenty
-time_allowed_between_updates=3600
-
-if (( $time_since_last_update > $time_since_last_update )); then
-    echo "Updating repo lists..."
-    sudo "$pkg_manager" update
-    touch "$pkgs_txt"
+chezmoi_src_dir="$HOME/.local/share/chezmoi"
+pkgs_txt="${chezmoi_src_dir}/packages/${pkg_manager}.txt"
+if [[ ! -e "$pkgs_txt" ]]; then
+    echo "ERROR: cannot find '$pkgs_txt'"
+    echo "PWD is: $PWD"
+    exit 1
 fi
 
-# Wonderful that the packages share same name...
-cat "$pkgs_txt" | xargs -d '\n' \
+echo "Updating repo lists..."
+sudo "$pkg_manager" update
+
+cat "$pkgs_txt" \
+    | grep -vP '^#' \
+    | xargs -d '\n' \
     sudo "$pkg_manager" install -y
 
 sudo "$pkg_manager" autoremove -y

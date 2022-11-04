@@ -1,10 +1,11 @@
 # dotfiles
 
-This repo is a [homeshick] castle, for sychronizing dotfiles across multiple computers.
+This repo is a [chezmoi] dotfiles repo, for sychronizing dotfiles across multiple computers.
 
 ## Requirements
 
  - git
+ - curl
 
 ## Installation
 
@@ -19,7 +20,6 @@ That's it.
 Override these to customize git identity:
 
 ```
-GITHUB_USERNAME
 GIT_EMAIL
 GIT_NAME
 ```
@@ -27,5 +27,4 @@ GIT_NAME
 Additional env vars can be set in `~/.bash_env_extra`,
 which is NOT version controlled.
 
-[homeshick]:https://github.com/andsens/homeshick
-
+[chezmoi]:https://www.chezmoi.io

@@ -20,7 +20,10 @@ if hash direnv > /dev/null 2>&1; then
 fi
 
 # golang/gvm
-[[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"
+if [[ -s "$HOME/.gvm/scripts/gvm" ]] ; then
+    source "$HOME/.gvm/scripts/gvm"
+    gvm use $(gvm listall | grep -P '^\s*go\d' | sort -V | tail -n 1 ) -B
+fi
 
 # virtualenv
 # Prefer home dir path, more often up to date
