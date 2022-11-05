@@ -4,6 +4,7 @@ age
 bison
 byobu
 clang-devel
+compton
 curl
 fd-find
 git
