@@ -26,6 +26,11 @@ if [[ -s "$HOME/.gvm/scripts/gvm" ]] ; then
     # gvm use "go1.19.2" -B
 fi
 
+# asdf, meta package manager
+if [[ -s "$HOME/.asdf/asdf.sh" ]] ; then
+    source "$HOME/.asdf/asdf.sh"
+fi
+
 # virtualenv
 # Prefer home dir path, more often up to date
 venv_script="$HOME/.local/bin/virtualenvwrapper.sh"
