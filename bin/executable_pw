@@ -1,0 +1,144 @@
+#!/bin/bash
+# CLI password utility based on sops and age.
+# The goal is a very minimal cli app with support for encryption
+# to multiple keys, to aid in managing passwords across multiple
+# machines. Assumes the creds repo ~/.local/share/pw is version controlled.
+set -euo pipefail
+
+
+# readable name for help/usage
+pw_script="$(basename "$0")"
+
+# user-friendly help
+function usage() {
+    >&2 echo "Usage: $pw_script [subcommand]"
+    >&2 printf 'Subcommands:\n'
+    >&2 printf '\tinit\n'
+    >&2 printf '\tcd\n'
+    >&2 printf '\tadd <service>\n'
+    >&2 printf '\tshow <service>\n'
+    >&2 printf '\tedit <service>\n'
+    >&2 printf '\tlist\n'
+    >&2 printf 'Examples:\n'
+    >&2 printf '\tinit\n'
+    >&2 printf '\tcd\n'
+    >&2 printf '\t%s add discord\n' "$pw_script"
+    >&2 printf '\t%s show discord\n' "$pw_script"
+    >&2 printf '\t%s edit discord\n' "$pw_script"
+    >&2 printf '\t%s list\n' "$pw_script"
+
+}
+
+# configure data dirs
+PW_DATA_DIR="${PW_DATA_DIR:-$HOME/.local/share/pw}"
+PW_CREDS_FILE="${PW_CREDS_FILE:-${PW_DATA_DIR}/creds.sops.json}"
+PW_SOPS_FILE="${PW_SOPS_FILE:-${PW_DATA_DIR}/.sops.yaml}"
+mkdir -p "$PW_DATA_DIR"
+chmod 700 "$PW_DATA_DIR"
+
+# first-run creation
+function init_pw_store() {
+    age_keyfile="$HOME/.age/key.txt"
+    if [[ ! -e "$age_keyfile" ]] ; then
+        >&2 echo "No age privkey found at '$age_keyfile', generating..."
+        mkdir -p ~/.age
+        age-keygen -o ~/.age/key.txt
+    else
+        >&2 echo "Found age privkey at '$age_keyfile'"
+    fi
+    age_pubkey="$(grep '^# public key: ' ~/.age/key.txt | head -n1 | cut -d: -f2)"
+    if [[ ! -e "$PW_SOPS_FILE" ]]; then
+        >&2 echo "No sops config found at '$PW_SOPS_FILE', generating..."
+        cat <<SOPS_CONFIG > "$PW_SOPS_FILE"
+---
+creation_rules:
+  - age: >-
+      $age_pubkey
+SOPS_CONFIG
+    else
+        >&2 echo "Found sops config at '$PW_SOPS_FILE'"
+    fi
+    if [[ ! -e "$PW_CREDS_FILE" ]]; then
+        >&2 echo "No creds store found at '$PW_CREDS_FILE', generating..."
+        echo '{}' > "$PW_CREDS_FILE"
+        sops --config "$PW_SOPS_FILE" --encrypt --in-place "$PW_CREDS_FILE"
+    else
+        >&2 echo "Found creds store at '$PW_CREDS_FILE'"
+    fi
+
+    # check for dependencies
+    for cli_bin in age age-keygen sops; do
+        if ! hash "$cli_bin" >/dev/null 2>&1 ; then
+            echo "ERROR: $cli_bin not found"
+        fi
+    done
+}
+
+first_arg="${1:-}"
+# parse args
+case "$first_arg" in
+    init)
+        >&2 echo "Initializing pw store"
+        init_pw_store
+        >&2 echo "All set!"
+        ;;
+    list)
+        >&2 echo "Stored credentials:"
+        sops --config "$PW_SOPS_FILE" -d "$PW_CREDS_FILE" | jq 'keys' -r
+        ;;
+    add)
+        t="$2"
+        shift 2
+        if sops --config "$PW_SOPS_FILE" -d "$PW_CREDS_FILE" | jq 'keys' -r | grep -qP "\"$t\"" ; then
+            >&2 echo "ERROR: entry '$t' already exists, not overwriting."
+            >&2 echo "Try using '$pw_script edit $t' to update in place"
+            exit 4
+        fi
+        >&2 echo "Updating credentials:"
+        read -r -s -p "Enter password for '$t': " new_cred
+        echo ""
+        sops --config "$PW_SOPS_FILE" --set "[\"$t\"] \"$new_cred\"" "$PW_CREDS_FILE"
+        >&2 echo "Saved credentials for '$t'"
+        ;;
+    edit)
+        t="$2"
+        shift 2
+        if ! sops --config "$PW_SOPS_FILE" -d "$PW_CREDS_FILE" | jq 'keys' -r | grep -qP "\"$t\"" ; then
+            >&2 echo "ERROR: entry '$t' does not exist, cannot edit."
+            >&2 echo "Try using '$pw_script add $t' to create new entry"
+            exit 4
+        fi
+        >&2 echo "Updating credentials:"
+        read -r -s -p "Enter password for '$t': " new_cred
+        echo ""
+        sops --config "$PW_SOPS_FILE" --set "[\"$t\"] \"$new_cred\"" "$PW_CREDS_FILE"
+        >&2 echo "Saved credentials for '$t'"
+        ;;
+    show)
+        t="$2"
+        sops --config "$PW_SOPS_FILE" -d --extract "['$t']" "$PW_CREDS_FILE"
+        ;;
+    cd)
+        >&2 echo "Switching to '$PW_DATA_DIR'."
+        >&2 echo "Exit shell (e.g. via ctrl+d) to return to original directory"
+        cd "$PW_DATA_DIR" || exit 5 && exec ${SHELL:-bash}
+        ;;
+    help)
+        usage
+        exit 0
+        ;;
+    -h)
+        usage
+        exit 0
+        ;;
+    '')
+        echo >&2 "ERROR: No subcommand given"
+        usage
+        exit 3
+        ;;
+    *)
+        echo >&2 "ERROR: Unsupported command '$first_arg'"
+        usage
+        exit 3
+        ;;
+esac
