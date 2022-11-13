@@ -4,12 +4,13 @@
 set -euo pipefail
 
 # sanity check
-if ! grep '^ID=fedora' /etc/os-release ; then
+if ! grep -q '^ID=fedora' /etc/os-release ; then
     echo "ERROR: not a fedora system, exiting..."
     exit 1
 fi
 
-# DRY version updates
+# DRY version updates, don't want to bump this script
+# every six months when a new Fedora comes out.
 fedora_version="$(perl -nE '/^VERSION_ID=(\d+)/ and say $1' /etc/os-release)"
 if [[ -z "$fedora_version" ]] ; then
     echo "ERROR: could not find fedora version"
@@ -20,4 +21,4 @@ sudo dnf install -y "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-re
 sudo dnf config-manager --set-enabled rpmfusion-free
 sudo dnf config-manager --set-enabled rpmfusion-free-updates
 sudo dnf upgrade --refresh -y
-sudo dnf install -y ffmpeg
+sudo dnf install -y ffmpeg --allowerasing
