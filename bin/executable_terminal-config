@@ -19,12 +19,14 @@ ff_path="$HOME/.mozilla/firefox"
 
 
 function get_highest_horizontal_res() {
+    # xrandr may not be installed, so return '0' if error,
+    # effectively defaulting to non-highdpi
     xrandr -q \
         | perl -lanE '$F[1] eq "connected" and say $_' \
         | grep -P '\b[\dx+]{2,}\b' -o \
         | perl -Fx -lanE 'say $F[0]' \
         | sort -n \
-        | tail -n 1
+        | tail -n 1 || echo 0
 }
 
 
@@ -75,6 +77,8 @@ font='Monospace ${fontsize}'
 use-theme-colors=false
 
 [legacy]
+default-show-menubar=false
+menu-accelerator-enabled=false
 schema-version=uint32 3
 theme-variant='dark'
 "
