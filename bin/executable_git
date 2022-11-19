@@ -1,0 +1,21 @@
+#!/bin/bash
+# wrapper script for 'git' so cloning automatically cds
+# Using separate script instead of bash function
+# because we're reusing 'git' on PATH
+# Credit: http://unix.stackexchange.com/a/97958/16485
+set -euo pipefail
+
+
+tmpfile="$(mktemp)"
+
+if [[ "${1:-}" = clone ]] ; then
+    /usr/bin/git "$@" 2>&1 | tee "$tmpfile"
+    repo_name="$(perl -nE $'m/Cloning into \'(.+)\'.{3}$/ and print $1;' "$tmpfile")"
+    rm "$tmpfile"
+    if [[ -n "$repo_name" ]]; then
+        printf "changing to directory %s\n" "$repo_name"
+        cd "$repo_name" || exit 1
+    fi
+else
+    exec /usr/bin/git "$@"
+fi

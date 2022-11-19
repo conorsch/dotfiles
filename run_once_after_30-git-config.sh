@@ -17,7 +17,7 @@ git config --global receive.fsckobjects 'true'
 git config --global status.submodulesummary 'true'
 git config --global diff.submodule 'log'
 git config --global init.defaultBranch main
-git config --global core.excludesFile '~/.gitignore'
+git config --global core.excludesFile "$HOME/.gitignore"
 git config --global advice.addEmptyPathspec false
 
 printf 'OK\n'

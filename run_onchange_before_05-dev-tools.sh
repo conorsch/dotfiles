@@ -11,8 +11,9 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 if [[ ! -e ~/.gvm/scripts/gvm ]] ; then
     echo "Getting gvm..."
     bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+    # shellcheck source=/dev/null
     source ~/.gvm/scripts/gvm
-    gvm install $(gvm listall | grep -P '^\s*go\d' | sort -V | tail -n 1 ) -B
+    gvm install "$(gvm listall | grep -P '^\s*go\d' | sort -V | tail -n 1 )" -B
 fi
 
 # get asdf

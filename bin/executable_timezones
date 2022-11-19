@@ -28,8 +28,8 @@ watched_timezones=(
 # field for sane ordering, then trim the nanosecond field,
 # and finally format as a readable table.
 for tz in "${watched_timezones[@]}"; do
-  printf "${tz}: "
-  echo $(TZ="${tz}" date +"${date_format}")
+  printf "%s: " "$tz"
+  TZ="${tz}" date +"${date_format}"
   done \
       | sort -k 6 \
       | perl -lane '$,=" "; pop(@F); print(@F)' \

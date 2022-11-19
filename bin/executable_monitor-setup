@@ -1,15 +1,12 @@
 #!/bin/bash
 # dual-monitor configs for various machines
-# add configs by hostname
-set -e
-set -u
-set -o pipefail
+set -euo pipefail
 
 # set up some default vars shared across hosts
 primary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected primary / && say $1')
 secondary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected (?!primary)/ && say $1')
 
-if [[ -z "${secondary_monitor}" ]] && [[ "$1" -ne "solo" ]] ; then
+if [[ -z "${secondary_monitor}" ]] && [[ "${1:-}" != "solo" ]] ; then
     echo "No secondary monitor found."
     exit 1
 fi

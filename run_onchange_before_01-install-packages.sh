@@ -29,8 +29,7 @@ fi
 echo "Updating repo lists..."
 sudo "$pkg_manager" update
 
-cat "$pkgs_txt" \
-    | grep -vP '^#' \
+grep -vP '^#' < "$pkgs_txt" \
     | xargs -d '\n' \
     sudo "$pkg_manager" install -y
 
