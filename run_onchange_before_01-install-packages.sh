@@ -27,7 +27,7 @@ if [[ ! -e "$pkgs_txt" ]]; then
 fi
 
 echo "Updating repo lists..."
-sudo "$pkg_manager" update
+sudo "$pkg_manager" update -y
 
 grep -vP '^#' < "$pkgs_txt" \
     | xargs -d '\n' \
