@@ -1,6 +1,7 @@
-packages/
+Makefile
+README.md
 bin/chezmoi
 bootstrap.sh
 dom0/
-Makefile
-README.md
+justfile
+packages/
