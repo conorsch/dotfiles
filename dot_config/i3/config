@@ -182,4 +182,8 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
         status_command i3status
+        # Disable scroll wheel when hovering over bar. Prevents inadvertent workspace switching.
+        # See docs at https://i3wm.org/docs/userguide.html#_mouse_button_commands
+        bindsym button4 nop
+        bindsym button5 nop
 }
