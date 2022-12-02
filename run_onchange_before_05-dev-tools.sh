@@ -1,19 +1,28 @@
 #!/bin/bash
+# Install common dev utils.
 set -euo pipefail
 
 
 # bootstrap dev langs
 # https://rustup.rs/
-echo "Getting rust..."
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+if [[ ! -e ~/.cargo ]] ; then
+    echo "Getting rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+fi
 
 # https://github.com/moovweb/gvm
-if [[ ! -e ~/.gvm/scripts/gvm ]] ; then
+if [[ ! -e ~/.gvm ]] ; then
     echo "Getting gvm..."
     bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer)
+    echo "Sourcing gvm config..."
     # shellcheck source=/dev/null
     source ~/.gvm/scripts/gvm
-    gvm install "$(gvm listall | grep -P '^\s*go\d' | sort -V | tail -n 1 )" -B
+    latest_go="$(gvm listall | sed 's/ //g' | grep -P '^\s*go[\d.]+$' | sort -V | tail -n 1 )"
+    if [[ -z "$latest_go" ]]; then
+        >&2 echo "ERROR: Could not find latest go version"
+        exit 1
+    fi
+    gvm install "$latest_go" -B
 fi
 
 # get asdf

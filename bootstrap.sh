@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # config
-dotfiles_repo="https://git.ruin.dev/conor/dotfiles"
-dotfiles_branch="main"
+dotfiles_repo="${DOTFILES_URL:-https://git.ruin.dev/conor/dotfiles}"
+dotfiles_branch="${DOTFILES_BRANCH:-main}"
 
 # install to ~/.local/bin, because ~/bin is managed by chezmoi
 mkdir -p "$HOME/.local/bin"
