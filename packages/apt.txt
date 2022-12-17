@@ -3,11 +3,13 @@ build-essential
 byobu
 clang
 curl
+exa
 git
 htop
 ipython3
 libsqlite3-dev
 libssl-dev
+pkg-config
 python3
 tree
 vim

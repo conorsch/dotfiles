@@ -30,3 +30,7 @@ if [[ ! -d "$HOME/.asdf" ]] ; then
     git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
     # asdf install | rg 'plugin is not installed' | perl -lanE 'print $F[0]' | xargs -r -n1 asdf plugin add
 fi
+
+# install starship terminal prompt
+# https://starship.rs/guide/#%F0%9F%9A%80-installation
+sh -s -- -b ~/bin -y < <(curl -sSfL https://starship.rs/install.sh)

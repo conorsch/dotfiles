@@ -6,6 +6,7 @@ byobu
 clang-devel
 compton
 curl
+exa
 fd-find
 git
 i3
