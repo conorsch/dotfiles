@@ -1,35 +1,33 @@
 #!/bin/bash
-# Displays list of timezones from hardcoded list, sorted
-# in ascending order by localtime.
-set -e
-set -u
-set -o pipefail
+# Displays timezones from a hardcoded list, sorted
+# in ascending order by localtime in that tz.
+set -euo pipefail
 
 
-# Declare constants.
-# The date format string uses %N for the nanosecond field,
-# which allows sorting all timezones relative to each other.
-date_format="%a %b %T %Z %Y %N"
+# To list all valid timezones, run `timedatectl list-timezones`.
 declare -a watched_timezones
 watched_timezones=(
   America/Los_Angeles
   America/New_York
-  Asia/India
-  Asia/Riyadh
+  Asia/Tehran
   Asia/Singapore
   Asia/Tokyo
-  Asia/Sydney
+  Asia/Shanghai
+  Asia/Kolkata
   Europe/Berlin
-  Europe/Brussels
+  Europe/Paris
   Europe/Moscow
 )
 
-# Loop over desired timezones for output, sort by nanosecond
-# field for sane ordering, then trim the nanosecond field,
+# The date format string uses a concatenated datestimp as the final field,
+# which allows sorting all timezones relative to each other.
+date_format="%a %b%d %T %Y +%Y%m%d%H%M"
+# Loop over desired timezones for output, sort by concatenated timestamp
+# field for sane ordering, then trim the concatenated field,
 # and finally format as a readable table.
 for tz in "${watched_timezones[@]}"; do
-  printf "%s: " "$tz"
-  TZ="${tz}" date +"${date_format}"
+  timestamp="$(TZ="${tz}" date +"${date_format}")"
+  printf '%s: %s\n' "$tz" "$timestamp"
   done \
       | sort -k 6 \
       | perl -lane '$,=" "; pop(@F); print(@F)' \
