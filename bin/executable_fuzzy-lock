@@ -15,7 +15,8 @@ _fuzzy_lock() {
     # It's not ideal to have a known path here, but on single-user systems
     # it's acceptable.
     f="/tmp/scrot.png"
-    # trap 'rm -f "$f"' EXIT
+    rm -f "$f"
+    trap 'rm -f "$f"' EXIT
     scrot --file "$f"
     # See docs on arg format https://imagemagick.org/Usage/blur/
     convert "$f" -blur 45,15 "$f"
