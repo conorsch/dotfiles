@@ -33,4 +33,7 @@ fi
 
 # install starship terminal prompt
 # https://starship.rs/guide/#%F0%9F%9A%80-installation
-sh -s -- -b ~/bin -y < <(curl -sSfL https://starship.rs/install.sh)
+source ~/.bashrc
+if ! hash starship > /dev/null 2>&1 ; then
+    sh -s -- -b ~/bin -y < <(curl -sSfL https://starship.rs/install.sh)
+fi
