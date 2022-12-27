@@ -35,5 +35,6 @@ fi
 # https://starship.rs/guide/#%F0%9F%9A%80-installation
 source ~/.bashrc
 if ! hash starship > /dev/null 2>&1 ; then
+    mkdir -p ~/bin
     sh -s -- -b ~/bin -y < <(curl -sSfL https://starship.rs/install.sh)
 fi
