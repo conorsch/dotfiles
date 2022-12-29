@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euo pipefail
+set -eo pipefail
 
 git_name="${GIT_NAME:-Conor Schaefer}"
 git_email="${GIT_EMAIL:-conor@ruin.dev}"

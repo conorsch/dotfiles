@@ -1,9 +1,7 @@
 #!/bin/bash
 # Installs common packages. Supports recent
 # Debian & Fedora.
-set -e
-set -u
-set -o pipefail
+set -eo pipefail
 
 debian_version="$(grep -i '^NAME="Debian' /etc/os-release 2> /dev/null || echo '')"
 fedora_version="$(grep -i '^NAME="Fedora' /etc/os-release 2> /dev/null || echo '')"

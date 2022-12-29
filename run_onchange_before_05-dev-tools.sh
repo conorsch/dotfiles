@@ -1,6 +1,6 @@
 #!/bin/bash
 # Install common dev utils.
-set -euo pipefail
+set -eo pipefail
 
 
 # bootstrap dev langs

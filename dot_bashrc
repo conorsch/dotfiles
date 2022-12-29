@@ -1,5 +1,5 @@
 # If not running interactively, don't do anything
-[[ -z "$PS1" ]] && return
+[[ -z "${PS1:-}" ]] && return
 
 shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
 shopt -s cdspell # correct typos when spelling out paths.
