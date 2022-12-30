@@ -12,7 +12,9 @@ export EDITOR="vim"
 export BROWSER="firefox"
 
 # Set caps lock to Escape
-if hash setxkbmap > /dev/null 2>&1 && test -n "$DISPLAY"; then
+if hash setxkbmap > /dev/null 2>&1 \
+       && test -n "$DISPLAY" \
+       && [[ "$DESKTOP_SESSION" != "sway" ]] ; then
     setxkbmap -option caps:escape
     setxkbmap -option ralt:compose
     setxkbmap -option compose:ralt
