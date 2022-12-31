@@ -1,0 +1,27 @@
+#!/bin/bash
+set -euo pipefail
+
+
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak install -y flathub org.signal.Signal
+
+# 1password, via https://support.1password.com/install-linux/#flatpak
+flatpak install -y --or-update https://downloads.1password.com/linux/flatpak/1Password.flatpakref || true
+
+# helpful symlinks
+
+function get_app_name() {
+    local flatpak_bin
+    flatpak_bin="${1:-}"
+    shift
+    perl -F'\.' -lanE 'say $F[-1]' <<< "$flatpak_bin" | tr '[:upper:]' '[:lower:]'
+}
+>&2 echo "Setting up convenient symlinks for flatpaks in PATH..."
+while read -r flatpak_bin ; do
+    app_name="$(get_app_name "$flatpak_bin")"
+    # echo "Would link '$flatpak_bin' -> '/usr/local/bin/${app_name}"
+    sudo ln -v -f -s "$flatpak_bin" "/usr/local/bin/${app_name}"
+done < <(fd -t l . /var/lib/flatpak/exports/bin/)
+if [[ -e /usr/local/bin/signal ]]; then
+    sudo ln -v -f -s /usr/local/bin/signal /usr/local/bin/signal-desktop
+fi
