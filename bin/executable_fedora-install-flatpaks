@@ -3,13 +3,16 @@ set -euo pipefail
 
 
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install -y flathub org.signal.Signal
+sudo flatpak install -y flathub org.signal.Signal
 
 # 1password, via https://support.1password.com/install-linux/#flatpak
-flatpak install -y --or-update https://downloads.1password.com/linux/flatpak/1Password.flatpakref || true
+if ! flatpak list | grep -q ^OnePassword ; then
+    sudo flatpak install -y --or-update https://downloads.1password.com/linux/flatpak/1Password.flatpakref
+fi
+
+sudo flatpak install -y flathub org.signal.Signal
 
 # helpful symlinks
-
 function get_app_name() {
     local flatpak_bin
     flatpak_bin="${1:-}"
