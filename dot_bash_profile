@@ -36,7 +36,10 @@ fi
 venv_script="$HOME/.local/bin/virtualenvwrapper.sh"
 if [[ -f "$venv_script" ]]; then
     source "$venv_script"
+elif [[ -e "/usr/bin/virtualenvwrapper.sh" ]]; then
+    source "/usr/bin/virtualenvwrapper.sh"
 fi
+
 
 # rustlang dev config
 . "$HOME/.cargo/env"
