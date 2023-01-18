@@ -218,3 +218,7 @@ input "type:keyboard" {
 }
 
 bar swaybar_command waybar
+
+# wlsunset is like redshift for swaywm
+# 37,122 is SF
+wlsunset -l 37.4639 -L 122.2459
