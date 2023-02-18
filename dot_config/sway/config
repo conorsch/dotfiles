@@ -217,6 +217,9 @@ input "type:keyboard" {
     xkb_options caps:escape,ralt:compose,compose:ralt
 }
 
+# gammastep for warm light
+exec gammastep
+# pretty status bar
 bar swaybar_command waybar
 
 # wlsunset is like redshift for swaywm

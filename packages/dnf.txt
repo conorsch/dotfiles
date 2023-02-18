@@ -9,6 +9,7 @@ curl
 dunst
 exa
 fd-find
+gammastep
 git
 i3
 ipython3
