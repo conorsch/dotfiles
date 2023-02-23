@@ -1,0 +1,41 @@
+#!/bin/bash
+# Utility script to make a video file from a longer video file.
+# Optionally can render as a gif too.
+set -euo pipefail
+
+
+# Arg parsing
+if [[ $# -lt 3 ]]; then
+    echo "Usage: $0 <vid.mp4> <start_time> <duration>"
+    exit 1
+fi
+target_video="${1:-}"
+start_time="${2:-}"
+duration="${3:-}"
+shift 3
+
+# TODO: file extension is hardcoded; would be nice to have that dynamic.
+dest_video="${target_video/.mp4/-clip.mp4}"
+#dest_video="${target_video/.mkv/-clip.mkv}"
+
+# Blow away target video file, because ffmpeg has no overwrite option.
+rm -f "$dest_video"
+
+printf 'Extracting video clip...'
+# ffmpeg command seems to break on hevc; video file is blank.
+# gifski reports: 'error: The file has no video tracks'
+ffmpeg -i "$target_video" -ss "$start_time" -t "$duration" \
+    -loglevel 0 \
+    -c:v copy -c:a copy "$dest_video" > /dev/null
+
+# Below version of the command doesn't re-encode, so is super fast.
+# Might work better if we're making a GIF.
+#ffmpeg -i "$target_video" -ss "$start_time" -t "$duration" \
+#    "$dest_video"
+printf ' OK\n'
+
+# Exit early, before GIF is made, because usually we just want a clip.
+# TODO: make this logic conditional on a CLI flag.
+exit 0
+echo "Creating gif from video clip..."
+gifski "$dest_video" --output "${dest_video%.mp4}.gif" --height 500 --quality 70
