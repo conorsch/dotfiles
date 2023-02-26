@@ -4,6 +4,6 @@
     refreshPeriod = "168h"
 [".local/bin/k0sctl"]
     type = "file"
-    url = "https://github.com/k0sproject/k0sctl/releases/download/v0.14.0/k0sctl-linux-x64"
+    url = "https://github.com/k0sproject/k0sctl/releases/download/v0.15.0/k0sctl-linux-x64"
     executable = true
     refreshPeriod = "168h"
