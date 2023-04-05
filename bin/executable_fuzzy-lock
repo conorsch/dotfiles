@@ -3,7 +3,6 @@
 # via https://faq.i3wm.org/question/83/how-to-run-i3lock-after-computer-inactivity/
 set -euo pipefail
 
-
 # Wrap core logic in a function, so we can have a failover.
 # Not sure how DISPLAY works here.
 run_fuzzy_lock() {
@@ -18,11 +17,19 @@ run_fuzzy_lock() {
     rm -f "$f"
     # don't clean up; i think i3lock reads it again on screen wake.
     # trap 'rm -f "$f"' EXIT
-    scrot --file "$f"
+    time scrot --file "$f" --quality 100 --silent
     # See docs on arg format https://imagemagick.org/Usage/blur/
-    convert "$f" -blur 45,15 "$f"
-    i3lock -i "$f"
+    # time convert "$f" -blur 45,15 "$f" -quality 5
+    time convert "$f" -blur 50,50 -quality 1 "$f"
+    i3lock --image "$f" \
+        --ignore-empty-password --show-failed-attempts \
+        --no-unlock-indicator
 }
+
+notify-send \
+    --expire-time 1750 \
+    --transient  \
+    "Locking screen..."
 
 if ! run_fuzzy_lock ; then
     >&2 echo "Failed to run fuzzy lock, falling back to simple bg..."
