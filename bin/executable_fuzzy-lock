@@ -6,7 +6,7 @@ set -euo pipefail
 
 # Wrap core logic in a function, so we can have a failover.
 # Not sure how DISPLAY works here.
-_fuzzy_lock() {
+run_fuzzy_lock() {
     # Create tempfile for desktop screenshot
     # Using a tempfile always fails. Guessing it's weird
     # character handling in scrot, but haven't confirmed.
@@ -16,14 +16,15 @@ _fuzzy_lock() {
     # it's acceptable.
     f="/tmp/scrot.png"
     rm -f "$f"
-    trap 'rm -f "$f"' EXIT
+    # don't clean up; i think i3lock reads it again on screen wake.
+    # trap 'rm -f "$f"' EXIT
     scrot --file "$f"
     # See docs on arg format https://imagemagick.org/Usage/blur/
     convert "$f" -blur 45,15 "$f"
     i3lock -i "$f"
 }
 
-if ! _fuzzy_lock ; then
+if ! run_fuzzy_lock ; then
     >&2 echo "Failed to run fuzzy lock, falling back to simple bg..."
     i3lock --color 000000
 fi
