@@ -15,15 +15,14 @@ run_fuzzy_lock() {
     # it's acceptable.
     f="/tmp/scrot.png"
     rm -f "$f"
-    # Don't clean up; i think i3lock reads it again on screen wake.
-    # trap 'rm -f "$f"' EXIT
-    # Set max quality for faster runtime.
+    # don't clean up; i think i3lock reads it again on screen wake.
+    trap 'rm -f "$f"' EXIT
     scrot --file "$f" --quality 100 --silent
     # See docs on arg format https://imagemagick.org/Usage/blur/
+    # time convert "$f" -blur 45,15 "$f" -quality 5
     convert "$f" -blur 50,50 -quality 1 "$f"
     i3lock --image "$f" \
-        --ignore-empty-password --show-failed-attempts \
-        --no-unlock-indicator
+        --ignore-empty-password --show-failed-attempts
 }
 
 notify-send \
