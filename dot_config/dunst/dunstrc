@@ -12,7 +12,8 @@
     #   %I  iconname (without its path)
     #   %p  progress value if set ([  0%] to [100%]) or nothing
     # Markup is allowed
-    format = "%a: <b>%s</b>\n%b"
+    # format = "%a: <b>%s</b>\n%b"
+    format = "<b>%s</b>\n%b"
 
     sort = yes
     indicate_hidden = yes
@@ -55,7 +56,7 @@
 
 [urgency_low]
     background = "#292A2D"
-    foreground = "#292a2d"
+    foreground = "#ffffff"
     timeout = 3
 
 [urgency_normal]
