@@ -30,7 +30,7 @@ exec --no-startup-id compton
 exec --no-startup-id nitrogen --restore
 
 # Warm it up
-exec --no-startup-id redshift
+exec --no-startup-id redshift -O 3700
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
