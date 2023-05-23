@@ -1,5 +1,0 @@
-source $BYOBU_PREFIX/share/byobu/profiles/common
-
-# Disable status bar in bottom-right corner.
-BYOBU_DATE=""
-BYOBU_TIME=""
