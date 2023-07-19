@@ -12,6 +12,8 @@ fi
 # bash-completions
 if [[ -f /etc/bash_completion ]] ; then
     source /etc/bash_completion
+elif [[ -f /usr/share/bash-completion/bash_completion ]] ; then
+    source /usr/share/bash-completion/bash_completion
 fi
 # kubectl
 if hash kubectl > /dev/null 2>&1 ; then
