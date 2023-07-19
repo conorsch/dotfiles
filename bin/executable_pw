@@ -116,7 +116,14 @@ case "$first_arg" in
         ;;
     show)
         t="$2"
+        shift 2
         sops --config "$PW_SOPS_FILE" -d --extract "['$t']" "$PW_CREDS_FILE"
+        ;;
+    get)
+        t="$2"
+        shift 2
+        sops --config "$PW_SOPS_FILE" -d --extract "['$t']" "$PW_CREDS_FILE" \
+            | xclip -selection clipboard
         ;;
     cd)
         >&2 echo "Switching to '$PW_DATA_DIR'."
