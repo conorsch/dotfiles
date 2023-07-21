@@ -29,8 +29,16 @@ exec --no-startup-id compton
 # Restore desktop picture
 exec --no-startup-id nitrogen --restore
 
-# Warm it up
-exec --no-startup-id redshift -O 3700
+# Warm it up, if appropriate
+# exec --no-startup-id redshift -O 3700
+exec --no-startup-id redshift
+
+# Start standard apps
+exec --no-startup-id i3-msg 'workspace 1:terminal; exec /usr/bin/gnome-terminal'
+exec --no-startup-id i3-msg 'workspace 2:work; exec /usr/bin/firefox -p penumbra'
+exec --no-startup-id i3-msg 'workspace 3:personal; exec /usr/bin/firefox -p personal'
+# Not all machines have a Signal Desktop identity, but try anyway
+exec --no-startup-id i3-msg 'workspace 9:comms; exec /usr/local/bin/signal'
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
