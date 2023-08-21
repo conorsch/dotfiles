@@ -30,7 +30,7 @@ wait
 # Unzippify
 echo "Extracting binaries..."
 xz -d ./*.xz
-find -type f -iname '*.tar' . -print0 | xargs -0 -P 5 -r -n1 tar -xf
+find . -type f -iname '*.tar' -print0 | xargs -0 -P 5 -r -n1 tar -xf
 
 # TODO: test for writable dest dir.
 dest_dir="/opt/penumbra/${tag_name}"
