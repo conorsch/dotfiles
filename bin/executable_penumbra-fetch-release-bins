@@ -1,16 +1,13 @@
 #!/bin/bash
 # Download and install binaries for the most recent Penumbra release.
 set -euo pipefail
-set -x
 
 
 # Look up most recent release from GitHub
 f="$(mktemp -p /tmp penumbra-binaries-release-XXXXX)"
 curl -sSfL https://api.github.com/repos/penumbra-zone/penumbra/releases/latest -o "$f"
-echo "Tempfile is: '$f' and its contents are:"
-head "$f"
+# Pilfer tag name so we can use it in messaging
 tag_name="$(jq -r .tag_name "$f")"
-
 
 # Parse GitHub Release JSON and extract platform-specific download URLs.
 function get_asset_urls() {
@@ -33,7 +30,7 @@ wait
 # Unzippify
 echo "Extracting binaries..."
 xz -d ./*.xz
-find -t f -iname '*.tar' . -print0 | xargs -0 -P 5 -r -n1 tar -xf
+find -type f -iname '*.tar' . -print0 | xargs -0 -P 5 -r -n1 tar -xf
 
 # TODO: test for writable dest dir.
 dest_dir="/opt/penumbra/${tag_name}"
