@@ -22,6 +22,7 @@ exit 0
 
 sudo dnf upgrade -y --refresh
 # technically supposed to reboot here
+>&2 echo "Finished running 'sudo dnf upgrade -y --refresh' (consider rebooting)..."
 sudo dnf install -y dnf-plugin-system-upgrade
 sudo dnf system-upgrade download --releasever="$next_fedora_version"
 sudo dnf system-upgrade reboot
