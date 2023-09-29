@@ -23,8 +23,8 @@ font pango:monospace 13
 # https://wiki.archlinux.org/index.php/XDG_Autostart
 exec --no-startup-id dex-autostart --autostart --environment i3
 
-# Start compton, for window transparency
-exec --no-startup-id compton
+# Start picom, for window transparency
+exec --no-startup-id picom
 
 # Restore desktop picture
 exec --no-startup-id nitrogen --restore
