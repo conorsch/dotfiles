@@ -24,9 +24,12 @@ rm -f "$dest_video"
 printf 'Extracting video clip...'
 # ffmpeg command seems to break on hevc; video file is blank.
 # gifski reports: 'error: The file has no video tracks'
+# Consider adding `-c:v copy -c:a copy` for very fast slicing.
+# Stumbles a bit on keyframes, so sometimes there's a judder
+# at the start, but otherwise a timesaver.
 ffmpeg -i "$target_video" -ss "$start_time" -t "$duration" \
     -loglevel 0 \
-    -c:v copy -c:a copy "$dest_video" > /dev/null
+    "$dest_video" > /dev/null
 
 # Below version of the command doesn't re-encode, so is super fast.
 # Might work better if we're making a GIF.
