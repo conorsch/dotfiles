@@ -33,9 +33,12 @@ xz -d ./*.xz
 find . -type f -iname '*.tar' -print0 | xargs -0 -P 5 -r -n1 tar -xf
 
 # TODO: test for writable dest dir.
-dest_dir="/opt/penumbra/${tag_name}"
+target_base_dir="/opt/penumbra"
+dest_dir="${target_base_dir}/${tag_name}"
 echo "Installing binaries to: $dest_dir"
-mkdir -p "$dest_dir"
+sudo mkdir -p "$dest_dir"
+sudo chmod 775 "$dest_dir" "$target_base_dir"
+sudo chown "root:${USER:-}" "$dest_dir" "$target_base_dir"
 # TODO: requires `fd` rather than find.
 fd -t x . -X mv -v -t "$dest_dir"
 
@@ -43,8 +46,9 @@ fd -t x . -X mv -v -t "$dest_dir"
 rm -f /opt/penumbra/latest
 ln -sf "$dest_dir" /opt/penumbra/latest
 
+# Enable binding to low ports as normal user
+echo "Setting net-bind capabilities for pd"
+sudo setcap CAP_NET_BIND_SERVICE,CAP_NET_ADMIN=+ep "${dest_dir}/pd"
+
 echo "Provisioned binaries for Penumbra ${tag_name} in:"
 fd -t x . "$dest_dir"
-
-# Enable binding to low ports as normal user
-sudo setcap CAP_NET_BIND_SERVICE,CAP_NET_ADMIN=+ep "${dest_dir}/pd"
