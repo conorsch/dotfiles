@@ -11,6 +11,9 @@ if ! flatpak list | grep -q ^OnePassword ; then
     sudo flatpak install -y --or-update https://downloads.1password.com/linux/flatpak/1Password.flatpakref
 fi
 
+# Spotify
+sudo flatpak install -y flathub com.spotify.Client
+
 # Look up name of application from the basename of the entrypoint within
 # the Flatpak bin directory.
 function get_app_name() {
