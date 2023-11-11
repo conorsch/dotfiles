@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # config
-dotfiles_repo="${DOTFILES_URL:-https://git.ruin.dev/conor/dotfiles}"
+dotfiles_repo="$(git remote get-url origin)"
 dotfiles_branch="${DOTFILES_BRANCH:-main}"
 
 # install to ~/.local/bin, because ~/bin is managed by chezmoi
