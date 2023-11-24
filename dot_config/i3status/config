@@ -1,0 +1,67 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+        colors = true
+        interval = 5
+}
+
+# order += "ipv6"
+order += "wireless _first_"
+order += "ethernet _first_"
+order += "battery all"
+order += "volume master"
+order += "disk /"
+order += "load"
+order += "memory"
+order += "tztime local"
+
+wireless _first_ {
+        format_up = "W: (%quality at %essid) %ip"
+        # desktops don't use wifi, so hide
+        # format_down = "W: down"
+        format_down = ""
+}
+
+ethernet _first_ {
+        format_up = "E: %ip (%speed)"
+        format_down = "E: down"
+}
+
+# see more ideas for battery display here:
+# https://i3wm.org/i3status/manpage.html#_configuration
+battery all {
+        format = "%status %percentage %remaining"
+        # desktops don't have batteries, so don't display
+        format_down = ""
+}
+
+disk "/" {
+        format = "%avail disk avail"
+}
+
+load {
+        format = "%1min load"
+}
+
+memory {
+        # format = "%used | %available"
+        format = "%available mem avail"
+        threshold_degraded = "1G"
+        format_degraded = "MEMORY < %available"
+}
+
+tztime local {
+        format = "%Y-%m-%d %H:%M:%S %Z"
+}
+
+volume master {
+    format = "♪: %volume"
+    format_muted = "♪: muted (%volume)"
+    device = "default"
+}
