@@ -15,19 +15,17 @@ if [[ -f /etc/bash_completion ]] ; then
 elif [[ -f /usr/share/bash-completion/bash_completion ]] ; then
     source /usr/share/bash-completion/bash_completion
 fi
-# kubectl
-if hash kubectl > /dev/null 2>&1 ; then
-    source <(kubectl completion bash)
-fi
 # direnv
 if hash direnv > /dev/null 2>&1; then
     eval "$(direnv hook bash)"
 fi
 
-# asdf, meta package manager
-if [[ -s "$HOME/.asdf/asdf.sh" ]] ; then
-    source "$HOME/.asdf/asdf.sh"
-fi
+# kubectl
+# haven't figured out how to use shell completion
+# with asdf shims, so disabling kubectl for now. =/
+# if hash kubectl > /dev/null 2>&1 ; then
+#     source <(kubectl completion bash)
+# fi
 
 # virtualenv
 # Prefer home dir path, more often up to date

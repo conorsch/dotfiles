@@ -42,3 +42,14 @@ emoji-test() {
     printf "Powerline branch: "
     echo -e "\xee\x82\xa0"
 }
+
+# Switch to a project directory.
+# Replaces `virtualenvwrappers`'s alias,
+# leveraging the muscle memory but relying on direnv.
+workon() {
+    local project_name
+    project_name="${1:-}"
+    shift 1
+    d="${HOME}/src/$project_name"
+    pushd "$d" || return 1
+}

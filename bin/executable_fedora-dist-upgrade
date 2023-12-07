@@ -1,6 +1,7 @@
 #!/bin/bash
 # Upgrade between major versions of Fedora Workstation.
 # via https://docs.fedoraproject.org/en-US/quick-docs/dnf-system-upgrade/
+# shellcheck disable=SC2317
 set -euo pipefail
 
 # Sanity check: are we running Fedora?

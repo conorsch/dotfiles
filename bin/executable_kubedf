@@ -41,5 +41,5 @@ else
 fi
 
 for node in $(getNodes); do
-  kubectl get --raw $NODESAPI/$node/proxy/stats/summary
+  kubectl get --raw "${NODESAPI}/${node}/proxy/stats/summary"
 done | getPVCs | format

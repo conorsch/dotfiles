@@ -5,8 +5,8 @@ bison
 byobu
 clang-devel
 curl
+direnv
 dunst
-exa
 fd-find
 gammastep
 git
