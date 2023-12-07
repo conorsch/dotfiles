@@ -1,6 +1,7 @@
 byobu
 clang
 curl
+direnv
 exa
 fd-find
 git

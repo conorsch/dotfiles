@@ -1,6 +1,7 @@
 #!/bin/bash
 # Utility script to make a video file from a longer video file.
 # Optionally can render as a gif too.
+# shellcheck disable=SC2317
 set -euo pipefail
 
 

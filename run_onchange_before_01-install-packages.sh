@@ -6,10 +6,14 @@ set -eo pipefail
 debian_version="$(grep -i '^NAME="Debian' /etc/os-release 2> /dev/null || echo '')"
 fedora_version="$(grep -i '^NAME="Fedora' /etc/os-release 2> /dev/null || echo '')"
 pkg_manager="apt"
+admin_group="sudo"
 if [[ -n "$debian_version" ]]; then
     pkg_manager="apt"
+    admin_group="sudo"
+
 elif [[ -n "$fedora_version" ]]; then
     pkg_manager="dnf"
+    admin_group="wheel"
 else
     echo "ERROR: Unknown platform"
     exit 1
@@ -32,3 +36,7 @@ grep -vP '^#' < "$pkgs_txt" \
     sudo "$pkg_manager" install -y
 
 sudo "$pkg_manager" autoremove -y
+
+echo "Permitting writes to /usr/local/bin/ ..."
+sudo chown "root:${admin_group}" /usr/local/bin
+sudo chmod 775 /usr/local/bin
