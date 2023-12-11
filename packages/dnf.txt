@@ -8,7 +8,6 @@ curl
 direnv
 dunst
 fd-find
-gammastep
 git
 i3
 ipython3
@@ -19,9 +18,6 @@ python3
 redshift
 ripgrep
 scrot
-sway
-waybar
-wlsunset
 tokei
 tree
 vim

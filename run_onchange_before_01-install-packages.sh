@@ -40,7 +40,7 @@ sudo "$pkg_manager" update -y
 
 grep -vP '^#' < "$pkgs_txt" \
     | xargs -d '\n' \
-    sudo "$pkg_manager" install "$dnf_opts" -y
+    sudo "$pkg_manager" install -y $dnf_opts
 
 sudo "$pkg_manager" autoremove -y
 
