@@ -2,7 +2,6 @@
 # Install common dev utils.
 set -eo pipefail
 
-
 # bootstrap dev langs
 # https://rustup.rs/
 if [[ ! -e ~/.cargo ]] ; then
@@ -15,7 +14,14 @@ if [[ ! -d "$HOME/.asdf" ]] ; then
     git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.13.1
 fi
 
+# We need to source asdf directly, because bashrc/bash_profile
+# don't support interactive shells. Should they?
 echo "Installing asdf plugins..."
+source ~/.asdf/asdf.sh
+if ! hash asdf > /dev/null 2>&1 ; then
+    >&2 echo "ERROR: asdf not found, but should be."
+    exit 1
+fi
 grep -P '^\w+' ~/.tool-versions | cut -d' ' -f1 | xargs -I{} asdf plugin add {}
 
 echo "Setting up starship..."

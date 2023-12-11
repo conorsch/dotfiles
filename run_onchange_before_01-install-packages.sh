@@ -19,6 +19,13 @@ else
     exit 1
 fi
 
+# Check whether we're running under QubesOS. If so, handle `curl` -> `curl-minimal`
+# conflict via `--allowerasing` arg to dnf.
+dnf_opts=""
+if printenv | grep -q ^QUBES && [[ -n "$fedora_version" ]]; then
+	dnf_opts="--allowerasing"
+fi
+
 
 chezmoi_src_dir="$HOME/.local/share/chezmoi"
 pkgs_txt="${chezmoi_src_dir}/packages/${pkg_manager}.txt"
@@ -33,7 +40,7 @@ sudo "$pkg_manager" update -y
 
 grep -vP '^#' < "$pkgs_txt" \
     | xargs -d '\n' \
-    sudo "$pkg_manager" install -y
+    sudo "$pkg_manager" install "$dnf_opts" -y
 
 sudo "$pkg_manager" autoremove -y
 
