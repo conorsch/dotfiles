@@ -14,6 +14,7 @@ general {
 # order += "ipv6"
 order += "wireless _first_"
 order += "ethernet _first_"
+order += "path_exists ruindev"
 order += "battery all"
 order += "volume master"
 order += "disk /"
@@ -31,6 +32,12 @@ wireless _first_ {
 ethernet _first_ {
         format_up = "E: %ip (%speed)"
         format_down = "E: down"
+}
+
+# innernet wg vpn status
+path_exists ruindev {
+        format = "%title"
+        path = "/proc/sys/net/ipv4/conf/ruindev"
 }
 
 # see more ideas for battery display here:
