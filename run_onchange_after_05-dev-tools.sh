@@ -22,7 +22,9 @@ if ! hash asdf > /dev/null 2>&1 ; then
     >&2 echo "ERROR: asdf not found, but should be."
     exit 1
 fi
-grep -P '^\w+' ~/.tool-versions | cut -d' ' -f1 | xargs -I{} asdf plugin add {}
+# Make sure necessary plugins are installed, with `|| true` because command
+# is not idempotent.
+grep -P '^\w+' ~/.tool-versions | cut -d' ' -f1 | xargs -I{} asdf plugin add {} || true
 
 echo "Setting up starship..."
 # install starship terminal prompt
