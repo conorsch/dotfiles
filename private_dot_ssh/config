@@ -1,0 +1,10 @@
+Host *
+    StrictHostKeyChecking accept-new
+    IdentityFile "~/.ssh/id_ed25519"
+    PasswordAuthentication no
+
+Host wurk
+    Hostname antigonus.ruindev.wg
+
+Host cbox
+    Hostname 165.232.150.88
