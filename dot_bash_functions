@@ -53,3 +53,15 @@ workon() {
     d="${HOME}/src/$project_name"
     pushd "$d" || return 1
 }
+
+# Remove an warm light / darkness customization
+bright() {
+    killall redshift || true > /dev/null 2>&1
+    redshift -x
+}
+
+# Set evening time laptop lighting.
+warm() {
+    bright
+    redshift -o -O 3700 -b "0.8"
+}
