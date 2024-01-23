@@ -1,0 +1,15 @@
+#!/bin/bash
+# Configure custom pw manager repo
+set -euo pipefail
+
+
+if [[ ! -e ~/.local/share/pw ]] ; then
+    git clone git@adolin.ruindev.wg:/mnt/Valhalla/git-repos/creds ~/.local/share/pw
+fi
+
+if [[ ! -e ~/.config/sops/age/keys.txt ]] ; then
+    mkdir -p ~/.config/sops/age
+    chmod 700 ~/.config/sops/age
+    ln -vs ~/.age/key.txt ~/.config/sops/age/keys.txt
+fi
+

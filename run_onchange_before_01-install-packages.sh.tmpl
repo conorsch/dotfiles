@@ -1,10 +1,15 @@
 #!/bin/bash
 # Installs common packages. Supports recent
 # Debian & Fedora.
+# vi: ft=bash
 set -eo pipefail
 
 debian_version="$(grep -i '^NAME="Debian' /etc/os-release 2> /dev/null || echo '')"
 fedora_version="$(grep -i '^NAME="Fedora' /etc/os-release 2> /dev/null || echo '')"
+
+# Include checksums for package files, to trigger a rerun.
+# apt packages hash: {{ include "packages/apt.txt" | sha256sum }}
+# dnf packages hash: {{ include "packages/dnf.txt" | sha256sum }}
 pkg_manager="apt"
 admin_group="sudo"
 if [[ -n "$debian_version" ]]; then
@@ -23,9 +28,8 @@ fi
 # conflict via `--allowerasing` arg to dnf.
 dnf_opts=""
 if printenv | grep -q ^QUBES && [[ -n "$fedora_version" ]]; then
-	dnf_opts="--allowerasing"
+    dnf_opts="--allowerasing"
 fi
-
 
 chezmoi_src_dir="$HOME/.local/share/chezmoi"
 pkgs_txt="${chezmoi_src_dir}/packages/${pkg_manager}.txt"
