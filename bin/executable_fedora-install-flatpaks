@@ -1,4 +1,5 @@
 #!/bin/bash
+# Install common flatpaks for a workstation experience.
 set -euo pipefail
 
 
@@ -14,19 +15,20 @@ fi
 # Spotify
 sudo flatpak install -y flathub com.spotify.Client
 
-# Look up name of application from the basename of the entrypoint within
-# the Flatpak bin directory.
-function get_app_name() {
-    local flatpak_bin
-    flatpak_bin="${1:-}"
-    shift
-    perl -F'\.' -lanE 'say $F[-1]' <<< "$flatpak_bin" | tr '[:upper:]' '[:lower:]'
-}
 >&2 echo "Setting up convenient symlinks for flatpaks in PATH..."
-while read -r flatpak_bin ; do
-    app_name="$(get_app_name "$flatpak_bin")"
-    sudo ln -v -f -s "$flatpak_bin" "/usr/local/bin/${app_name}"
-done < <(fd -t l . /var/lib/flatpak/exports/bin/)
-if [[ -e /usr/local/bin/signal ]]; then
-    sudo ln -v -f -s /usr/local/bin/signal /usr/local/bin/signal-desktop
+function setup_app_symlink() {
+    local flatpak_name cli_name
+    flatpak_name="${1:-}"
+    cli_name="${2:-}"
+    shift 2
+    flatpak_bin_path="/var/lib/flatpak/exports/bin"
+    sudo ln -v -f -s "${flatpak_bin_path}/${flatpak_name}" "/usr/local/bin/${cli_name}"
+}
+# Declare mapping of flatpak name to convenient cli shortcut.
+setup_app_symlink com.spotify.Client spotify
+setup_app_symlink org.signal.Signal signal-desktop
+
+# Clean up old confusing shortcut
+if [[ -L /usr/local/bin/signal ]]; then
+    sudo rm -v /usr/local/bin/signal
 fi
