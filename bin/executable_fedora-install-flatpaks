@@ -27,6 +27,7 @@ function setup_app_symlink() {
 # Declare mapping of flatpak name to convenient cli shortcut.
 setup_app_symlink com.spotify.Client spotify
 setup_app_symlink org.signal.Signal signal-desktop
+setup_app_symlink com.onepassword.OnePassword onepassword
 
 # Clean up old confusing shortcut
 if [[ -L /usr/local/bin/signal ]]; then

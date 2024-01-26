@@ -1,0 +1,43 @@
+#!/bin/bash
+# Documenting new Fedora Workstation (39) setup,
+# particularly the i3 config.
+set -euo pipefail
+
+
+sudo dnf install -y \
+    nitrogen \
+    lightdm \
+
+
+sudo systemctl disable gdm
+sudo systemctl enable lightdm
+
+
+desktoppics_dir="${HOME:?}/src/desktoppics"
+if [[ ! -d "$desktoppics_dir" ]] ; then
+    git clone https://github.com/conorsch/desktoppics "$desktoppics_dir"
+fi
+
+sudo cp -v "${HOME:?}/src/desktoppics/narberth pink flower macro.jpg" \
+    "/usr/share/backgrounds/images/narberth-flower.jpg"
+
+sudo perl -pi -e "s#^\#?background=.*#background=/usr/share/backgrounds/images/narberth-flower.jpg#" /etc/lightdm/slick-greeter.conf
+
+
+cat << EOM | sudo tee /etc/profile.d/ruindev-dark-mode.sh > /dev/null
+# force dark mode for gtk apps under i3
+export GTK_THEME="Adwaita:dark"
+EOM
+
+
+nitrogen_config="${HOME:?}/.config/nitrogen/nitrogen.cfg"
+if [[ ! -e "$nitrogen_config" ]] ; then
+    cat << EOM > "$nitrogen_config"
+[nitrogen]
+view=icon
+recurse=true
+sort=alpha
+icon_caps=false
+dirs=${desktoppics_dir};
+EOM
+fi

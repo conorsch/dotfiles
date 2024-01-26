@@ -1,7 +1,7 @@
 # Config file for dunst, for drawing on-screen pop-up notifications.
 # Adapted from https://gist.githubusercontent.com/fd0/9876490/raw/1c1ad2c23b6b888f1442c2b68661cac72ccdd4f4/dunstrc
 [global]
-    font = Terminus 18
+    font = Terminus 9
     allow_markup = no
 
     # The format of the message. Possible variables are:

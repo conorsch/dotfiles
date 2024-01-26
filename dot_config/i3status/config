@@ -5,10 +5,15 @@
 # The following line should contain a sharp s:
 # ß
 # If the above line is not correctly displayed, fix your editor first!
+#
+# Cribbed some neat icons from:
+#
+#   * https://github.com/andreatta/config/blob/master/i3/i3status.conf
+#   * https://www.amp-what.com/unicode/search/disk
 
 general {
-        colors = true
-        interval = 5
+    colors = true
+    interval = 5
 }
 
 # order += "ipv6"
@@ -23,52 +28,61 @@ order += "memory"
 order += "tztime local"
 
 wireless _first_ {
-        format_up = "W: (%quality at %essid) %ip"
-        # desktops don't use wifi, so hide
-        # format_down = "W: down"
-        format_down = ""
+    # format_up = " (%quality at %essid) %ip"
+    format_up = "%quality %essid %ip"
+    # desktops don't use wifi, so hide
+    # format_down = "W: down"
+    format_down = ""
 }
 
 ethernet _first_ {
-        format_up = "E: %ip (%speed)"
-        format_down = "E: down"
+    format_up = "🖧: %ip (%speed)"
+    format_down = "🖧"
 }
 
 # innernet wg vpn status
 path_exists ruindev {
-        format = "%title"
-        path = "/proc/sys/net/ipv4/conf/ruindev"
+    format = "%title"
+    path = "/proc/sys/net/ipv4/conf/ruindev"
 }
 
 # see more ideas for battery display here:
 # https://i3wm.org/i3status/manpage.html#_configuration
 battery all {
-        format = "%status %percentage %remaining"
-        # desktops don't have batteries, so don't display
-        format_down = ""
+    format = "%status %percentage %remaining"
+    # desktops don't have batteries, so don't display
+    format_down = ""
+    # use neat icons for statuses
+    status_chr = ""
+    status_bat = ""
+    status_unk = ""
+    status_full = ""
 }
 
 disk "/" {
-        format = "%avail disk avail"
+    # format = "💾 %avail"
+    format = " %avail"
 }
 
 load {
-        format = "%1min load"
+    format = " %1min"
 }
 
 memory {
-        # format = "%used | %available"
-        format = "%available mem avail"
-        threshold_degraded = "1G"
-        format_degraded = "MEMORY < %available"
+    # format = "%used | %available"
+    # format = "%available mem avail"
+    # can't figure out a good icon for ram, so fleur-de-lis it is.
+    format = "⚜ %available"
+    threshold_degraded = "1G"
+    format_degraded = "MEMORY < %available"
 }
 
 tztime local {
-        format = "%Y-%m-%d %H:%M:%S %Z"
+    format = " %Y-%m-%d  %H:%M:%S %Z"
 }
 
 volume master {
-    format = "♪: %volume"
-    format_muted = "♪: muted (%volume)"
+    format = "♪ %volume"
+    format_muted = " (%volume)"
     device = "default"
 }

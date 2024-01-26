@@ -13,10 +13,6 @@ fi
 # cf. 1920x1080, 2560x1440, 3840x2160
 high_dpi_start="3000"
 
-# Where Firefox profile is stored; config will be skipped
-# if directory is absent.
-ff_path="$HOME/.mozilla/firefox"
-
 
 function get_highest_horizontal_res() {
     # xrandr may not be installed, so return '0' if error,
@@ -101,31 +97,4 @@ background-transparency-percent=20
     echo "$profile_config" | dconf load /org/gnome/terminal/
 }
 
-
-function get_firefox_profile_path() {
-    find "$ff_path" -maxdepth 1 -type d \
-        -and -name '*.default' \
-        | tail -n 1
-}
-
-function write_firefox_user_prefs() {
-    local prefs_file
-    local devppp
-    prefs_file="$(get_firefox_profile_path)/prefs.js"
-    devppp="-1"
-    if is_highdpi; then
-        devppp="2"
-    fi
-    touch "$prefs_file"
-    sed -i '/"layout.css.devPixelsPerPx"/d' "$prefs_file"
-    cat <<EOF > "$prefs_file"
-user_pref("layout.css.devPixelsPerPx", "${devppp}");
-user_pref("browser.urlbar.placeholderName", "DuckDuckGo");
-EOF
-}
-
-
 configure_gnome_terminal
-if [[ -d "$ff_path" ]]; then
-    write_firefox_user_prefs
-fi
