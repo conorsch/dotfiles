@@ -17,6 +17,7 @@ fi
 # We need to source asdf directly, because bashrc/bash_profile
 # don't support interactive shells. Should they?
 echo "Installing asdf plugins..."
+# shellcheck source=/dev/null
 source ~/.asdf/asdf.sh
 if ! hash asdf > /dev/null 2>&1 ; then
     >&2 echo "ERROR: asdf not found, but should be."
