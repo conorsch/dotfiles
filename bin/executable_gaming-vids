@@ -2,6 +2,7 @@
 # Pull up recent media uploads, to review recorded clips of recent gaming.
 set -euo pipefail
 
+set -x
 # Will be used for both remote and local mount points.
 media_dir="/mnt/Valhalla"
 # Media server identity on innernet.
@@ -14,5 +15,9 @@ ssh "$media_host" ./check-for-new-gaming-vids.sh
 # Use other dotfiles script to ensure media directory is mounted locally.
 media-mount
 
+# Hop into directory
+cd "${media_dir}/Media/incoming/gaming" || exit 1
+
 # Look 'em up. This views *all* video files, which is fine.
-fd -t f -e mp4 . --changed-within "$time_range" -X vlc
+fd -t f -e mp4 . --changed-within "$time_range" \
+    | sort -n | xargs -r -d '\n' vlc
