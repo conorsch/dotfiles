@@ -1,7 +1,7 @@
 #!/bin/bash
-# Install rust binaries for workstation environment
-# Currently using 'run_once' because compiling
-# takes a long time. Might switch to on-change, though.
+# Install rust binaries for workstation environment.
+# Currently running ad-hoc, but might switch to on-change.
+# Maybe only run in headful environments.
 set -euo pipefail
 
 

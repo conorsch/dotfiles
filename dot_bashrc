@@ -70,3 +70,6 @@ export TERM=xterm-256color
 if [[ -s "$HOME/.asdf/asdf.sh" ]] ; then
     source "$HOME/.asdf/asdf.sh"
 fi
+
+# Set alacritty as default terminal, so it's picked up by i3-sensible-terminal
+export TERMINAL="alacritty"
