@@ -1,4 +1,5 @@
 age
+bat
 bison
 brightnessctl
 byobu
@@ -26,3 +27,5 @@ tokei
 tree
 uuid
 vim
+xrandr
+xset
