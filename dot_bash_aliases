@@ -29,3 +29,7 @@ alias ipy='ipython --no-banner --no-confirm-exit -i'
 alias dcd="doctl compute droplet"
 
 alias wurk="ssh wurk"
+
+alias cargo-all="cargo build && cargo build --release && cargo check && cargo check --release"
+
+alias r="rsync -a --info=progress2"
