@@ -4,32 +4,34 @@
 set -euo pipefail
 
 
+# Install GUI/WM packages. The GDM login screen is rather ugly by default,
+# and hard to customize reliably, so we'll use lightdm for the greeter.
 sudo dnf install -y \
     nitrogen \
     lightdm \
 
-
 sudo systemctl disable gdm
 sudo systemctl enable lightdm
 
-
+# Clone desktop pictures directory, for use by both lightdm and nitrogen.
 desktoppics_dir="${HOME:?}/src/desktoppics"
 if [[ ! -d "$desktoppics_dir" ]] ; then
     git clone https://github.com/conorsch/desktoppics "$desktoppics_dir"
 fi
 
+# Copy the lightdm background to a system-readable location.
 sudo cp -v "${HOME:?}/src/desktoppics/narberth pink flower macro.jpg" \
     "/usr/share/backgrounds/images/narberth-flower.jpg"
-
 sudo perl -pi -e "s#^\#?background=.*#background=/usr/share/backgrounds/images/narberth-flower.jpg#" /etc/lightdm/slick-greeter.conf
 
-
+# Set dark mode globally for all GTK apps.
 cat << EOM | sudo tee /etc/profile.d/ruindev-dark-mode.sh > /dev/null
 # force dark mode for gtk apps under i3
 export GTK_THEME="Adwaita:dark"
 EOM
 
-
+# Configure nitrogen for first-run. The config file will have lots of display-specific
+# info, so we won't clobber it, but we'll make sure something's there to get started.
 nitrogen_config="${HOME:?}/.config/nitrogen/nitrogen.cfg"
 if [[ ! -e "$nitrogen_config" ]] ; then
     cat << EOM > "$nitrogen_config"
