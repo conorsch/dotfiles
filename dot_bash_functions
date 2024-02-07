@@ -63,5 +63,11 @@ bright() {
 # Set evening time laptop lighting.
 warm() {
     bright
+    redshift -o -O 3700 -b "1"
+}
+
+# Set night time laptop lighting.
+dark() {
+    bright
     redshift -o -O 3700 -b "0.8"
 }

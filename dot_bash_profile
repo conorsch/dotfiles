@@ -36,6 +36,13 @@ elif [[ -e "/usr/bin/virtualenvwrapper.sh" ]]; then
     source "/usr/bin/virtualenvwrapper.sh"
 fi
 
-
 # rustlang dev config
 . "$HOME/.cargo/env"
+
+# Force dark mode for GTK apps under i3.
+# For reasons I don't understand, this declaration doesn't work
+# if set in e.g. `~/.bash_profile`. Setting it system-wide does work,
+# e.g. in `/etc/profile.d/ruindev-dark-mode.sh`.
+# To test, try `firefox -p` and see how the profile-picker window renders.
+# Including here as comment for easy reference.
+# export GTK_THEME="Adwaita:dark"
