@@ -14,7 +14,7 @@ if [[ ! -s "$font_path" ]]; then
     mkdir -p "$font_dir"
     curl -q -sSfL -o "$font_path" "$font_url"
     if hash fc-cache > /dev/null 2>&1; then
-        fc-cache -f
+        fc-cache --really-force
     fi
     printf 'OK\n'
 else
