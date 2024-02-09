@@ -56,18 +56,18 @@ workon() {
 
 # Remove an warm light / darkness customization
 bright() {
-    killall redshift || true > /dev/null 2>&1
-    redshift -x
+    killall -9 redshift > /dev/null 2>&1 || true
+    redshift -x -r > /dev/null
 }
 
 # Set evening time laptop lighting.
 warm() {
     bright
-    redshift -o -O 3700 -b "1"
+    redshift -orP -O 3700 -b "1" > /dev/null
 }
 
 # Set night time laptop lighting.
 dark() {
     bright
-    redshift -o -O 3700 -b "0.8"
+    redshift -orP -O 3700 -b "0.8" > /dev/null
 }
