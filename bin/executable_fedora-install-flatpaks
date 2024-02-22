@@ -9,6 +9,7 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 sudo flatpak install -y flathub org.signal.Signal
 sudo flatpak install -y flathub com.spotify.Client
 sudo flatpak install -y flathub com.visualstudio.code
+sudo flatpak install -y flathub us.zoom.Zoom
 
 # 1password, via https://support.1password.com/install-linux/#flatpak
 if ! flatpak list | grep -q ^OnePassword ; then
