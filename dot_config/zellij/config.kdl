@@ -225,7 +225,8 @@ plugins {
 //   - true (default)
 //   - false
 //
-// pane_frames true
+// Disable outer border on entire session, as it screws up copying text.
+pane_frames false
 
 // Toggle between having Zellij lay out panes according to a predefined set of layouts whenever possible
 // Options:
