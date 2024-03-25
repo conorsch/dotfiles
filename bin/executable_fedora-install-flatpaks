@@ -31,6 +31,7 @@ setup_app_symlink org.signal.Signal signal-desktop
 setup_app_symlink com.onepassword.OnePassword onepassword
 setup_app_symlink com.onepassword.OnePassword 1password
 setup_app_symlink com.visualstudio.code vscode
+setup_app_symlink us.zoom.Zoom zoom
 
 # Clean up old confusing shortcut
 if [[ -L /usr/local/bin/signal ]]; then

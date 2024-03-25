@@ -58,6 +58,7 @@ workon() {
 bright() {
     killall -9 redshift > /dev/null 2>&1 || true
     redshift -x -r > /dev/null
+    brightnessctl --quiet set '100%'
 }
 
 # Set evening time laptop lighting.
@@ -69,7 +70,8 @@ warm() {
 # Set night time laptop lighting.
 dark() {
     bright
-    redshift -orP -O 3700 -b "0.8" > /dev/null
+    redshift -orP -O 3700 > /dev/null
+    brightnessctl --quiet set '60%'
 }
 
 # Warm the build caches on a Rust project.
