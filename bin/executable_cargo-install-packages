@@ -5,20 +5,37 @@
 set -euo pipefail
 
 
-echo "Installing cargo packages..."
+# Declare all cargo packages to install.
+cargo_pkgs=(
+    bottom
+    cargo-watch
+    etym
+    exa
+    hyperfine
+    just
+    tokei
+    toml-cli
+    watchexec-cli
+)
+
+
+echo "Installing cargo packages: ${cargo_pkgs[*]}"
 # shellcheck source=/dev/null
 source ~/.cargo/env
 
-# Another chezmoi script has already set /usr/local/bin/ to writable.
-# The `--root` option is the parent dir, inside which cargo will create
-# a "bin" subdir. Because cargo also expects to write a `.cargo.toml` file
-# inside the directory, we'll copy them post-install.
-cargo install --root /usr/local/bin \
-    bottom \
-    cargo-watch \
-    exa \
-    just \
-    tokei \
+i=0
+for p in "${cargo_pkgs[@]}" ; do
+    i=$((i+1))
+    # These installs can take a long time, since we're compiling from source,
+    # so log timestamps.
+    >&2 printf '%s installing %d/%d %s ...\n' "$(date +'%Y-%m-%dT%T.%6N')" "$i" "${#cargo_pkgs[@]}" "$p"
+
+    # Another chezmoi script has already set /usr/local/bin/ to writable.
+    # The `--root` option is the parent dir, inside which cargo will create
+    # a "bin" subdir. Because cargo also expects to write a `.cargo.toml` file
+    # inside the directory, we'll copy them post-install.
+    cargo install --quiet --root /usr/local/bin "$p"
+done
 
 echo "Copying cargo packages into final location..."
 cp -v /usr/local/bin/bin/* /usr/local/bin/
