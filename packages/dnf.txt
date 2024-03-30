@@ -16,6 +16,7 @@ i3
 ImageMagick
 ipython3
 libsq3-devel
+neovim
 nitrogen
 openssl-devel
 picom
