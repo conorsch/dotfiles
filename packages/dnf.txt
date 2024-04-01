@@ -23,6 +23,7 @@ picom
 python3
 redshift
 ripgrep
+rofi
 scrot
 sshfs
 tokei
