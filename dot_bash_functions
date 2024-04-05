@@ -97,3 +97,15 @@ presentation-mode() {
     # A 'reset' is slow, ~3s, but complete. A 'clear' did not work here.
     reset
 }
+
+# Trying to get used to nvim, but I've been typing "vim" for decades...
+vim() {
+    local _editor
+    if hash nvim > /dev/null 2>&1 ; then
+        _editor="nvim"
+	>&2 echo "Launching 'nvim' instead of 'vim'..."
+    else
+        _editor="vim"
+    fi
+    "$_editor" "$@"
+}
