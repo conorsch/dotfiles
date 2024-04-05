@@ -85,3 +85,15 @@ cargo-everything() {
         printf 'OK\n'
     done
 }
+
+# Set terminal-config for screen-sharing and/or demo-recording.
+# Simplifies the interface for clarity.
+presentation-mode() {
+    simple_starship_config="$HOME/.config/starship-presentation.toml"
+    export STARSHIP_CONFIG="$simple_starship_config"
+    clear
+    "$SHELL"
+    unset STARSHIP_CONFIG
+    # A 'reset' is slow, ~3s, but complete. A 'clear' did not work here.
+    reset
+}
