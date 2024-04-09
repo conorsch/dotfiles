@@ -12,6 +12,13 @@ vim.g.mapleader = '\\' -- works across all nvim files
 vim.wo.number = true
 -- vim.wo.relativenumber = true
 
+-- Tab/whitespace settings
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+
+vim.opt.wrap = false
+
 -- Configure the "lazy" package manager, for installing Neovim plugins.
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
