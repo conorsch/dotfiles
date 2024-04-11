@@ -13,11 +13,16 @@ vim.wo.number = true
 -- vim.wo.relativenumber = true
 
 -- Tab/whitespace settings
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
+vim.opt.autoindent = true
+vim.opt.cindent = true
+vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
+vim.opt.smartindent = true
+vim.opt.softtabstop = 4
+vim.opt.tabstop = 4
 
-vim.opt.wrap = false
+-- Disable annoying temp file recovery.
+noswapfile = true
 
 -- Configure the "lazy" package manager, for installing Neovim plugins.
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
