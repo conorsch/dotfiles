@@ -42,4 +42,22 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup('plugins')
 
 -- Configure the nvim-tree file browser with defaults.
+-- vim.g.loaded_netrw = 1
+-- vim.g.loaded_netrwPlugin = 1
 require("nvim-tree").setup()
+
+-- Treesitter config
+require('nvim-treesitter.configs').setup {
+  ensure_installed = { "lua", "rust", "toml" },
+  auto_install = true,
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting=false,
+  },
+  ident = { enable = true }, 
+  rainbow = {
+    enable = true,
+    extended_mode = true,
+    max_file_lines = nil,
+  }
+}

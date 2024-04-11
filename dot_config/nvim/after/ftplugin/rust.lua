@@ -10,3 +10,11 @@ vim.keymap.set(
   end,
   { silent = true, buffer = bufnr }
 )
+
+vim.g.rustaceanvim = {
+  tools = {
+		hover_actions = {
+			replace_builtin_hover = true,
+		}
+  }
+}

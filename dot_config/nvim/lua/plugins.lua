@@ -7,4 +7,5 @@ return {
         ft = { 'rust' },
     },
     { 'nvim-tree/nvim-tree.lua' },
+    { 'nvim-treesitter/nvim-treesitter' },
 }
