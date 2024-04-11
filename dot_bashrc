@@ -1,15 +1,17 @@
-# If not running interactively, don't do anything
+# Set up PATH first
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/bin"
+export EDITOR="nvim"
+export BROWSER="firefox"
+
+# If not running interactively, leave the rest.
 [[ -z "${PS1:-}" ]] && return
 
 shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
 shopt -s cdspell # correct typos when spelling out paths.
 shopt -s cmdhist # multi-line commands are still entered into history
 shopt -s histreedit # re-edit history substitution if command fails
-
-export PATH="$PATH:$HOME/.local/bin"
-export PATH="$PATH:$HOME/bin"
-export EDITOR="nvim"
-export BROWSER="firefox"
+shopt -s histappend # ensure all terminal commands are appended to history log
 
 # Set caps lock to Escape
 if hash setxkbmap > /dev/null 2>&1 \

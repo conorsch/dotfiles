@@ -1,6 +1,3 @@
-# If not running interactively, don't do anything
-[[ -z "${PS1:-}" ]] && return
-
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 [[ -f ~/.bash_env_extra ]] && source ~/.bash_env_extra
 if [[ -z "SSH_CLIENT" ]] ; then
@@ -8,6 +5,9 @@ if [[ -z "SSH_CLIENT" ]] ; then
         source ~/.bin/ssh-agent-wrapper
     fi
 fi
+
+# If not running interactively, don't do the rest.
+[[ -z "${PS1:-}" ]] && return
 
 # bash-completions
 if [[ -f /etc/bash_completion ]] ; then
