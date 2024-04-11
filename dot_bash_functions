@@ -26,7 +26,7 @@ editall() {
     local file_ext
     file_ext="$1"
     shift 1
-    fd -e "$file_ext" . -X "${EDITOR:-nvim}" -p
+    fd -e "$file_ext" . -X vim -p
 }
 
 mkvenv() {
