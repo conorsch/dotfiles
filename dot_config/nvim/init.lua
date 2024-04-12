@@ -1,3 +1,8 @@
+-- Disable netrw at start of init.lua, to avoid conflicts with nerdtree.
+-- See docs at https://github.com/nvim-tree/nvim-tree.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Set colorscheme. Reads from `~/.config/nvim/colors/*`.
 vim.opt.termguicolors = true
 -- The "acidcupcake" theme was copied wholesale from the vim colorscheme.
@@ -43,3 +48,5 @@ require('lazy').setup('plugins')
 
 -- Configure the nvim-tree file browser with defaults.
 require("nvim-tree").setup()
+-- Enable a toggle key for opening/closing nerdtree file browser.
+vim.api.nvim_set_keymap("n", "<C-j>", ":NvimTreeToggle<cr>", {silent = true, noremap = true})
