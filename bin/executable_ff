@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Wrapper script to start Firefox with profile manager always.
+set -euo pipefail
+
+
+if [[ $# -gt 0 ]]; then
+    exec firefox "$@"
+else
+    exec firefox -p -no-remote
+fi
