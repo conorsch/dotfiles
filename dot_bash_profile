@@ -21,11 +21,11 @@ if hash direnv > /dev/null 2>&1; then
 fi
 
 # kubectl
-# haven't figured out how to use shell completion
-# with asdf shims, so disabling kubectl for now. =/
-# if hash kubectl > /dev/null 2>&1 ; then
-#     source <(kubectl completion bash)
-# fi
+if hash kubectl > /dev/null 2>&1 ; then
+    source <(kubectl completion bash)
+    complete -o default -F __start_kubectl k
+    complete -o default -F __start_kubectl kubecolor
+fi
 
 # virtualenv
 # Prefer home dir path, more often up to date

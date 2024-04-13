@@ -102,10 +102,24 @@ presentation-mode() {
 vim() {
     local _editor
     if hash nvim > /dev/null 2>&1 ; then
+        >&2 echo "Launching 'nvim' instead of 'vim'..."
         _editor="nvim"
-	>&2 echo "Launching 'nvim' instead of 'vim'..."
     else
         _editor="vim"
     fi
     "$_editor" "$@"
+}
+
+# Convenient alias for kubectl
+k() {
+    local _kubectl_cli
+    if hash kubecolor > /dev/null 2>&1 ; then
+        _kubectl_cli="kubecolor"
+    elif hash kubectl > /dev/null 2>&1 ; then
+        _kubectl_cli="kubectl"
+    else
+        >&2 echo "ERROR: kubectl not installed, cannot use 'k' alias"
+        return 1
+    fi
+    "$_kubectl_cli" "$@"
 }
