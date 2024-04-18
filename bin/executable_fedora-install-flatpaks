@@ -6,10 +6,12 @@ set -euo pipefail
 # Add Flathub remote repository
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-sudo flatpak install -y flathub org.signal.Signal
-sudo flatpak install -y flathub com.spotify.Client
-sudo flatpak install -y flathub com.visualstudio.code
-sudo flatpak install -y flathub us.zoom.Zoom
+sudo flatpak install -y flathub \
+    org.signal.Signal \
+    com.spotify.Client \
+    com.visualstudio.code \
+    us.zoom.Zoom \
+    io.github.dweymouth.supersonic
 
 # 1password, via https://support.1password.com/install-linux/#flatpak
 if ! flatpak list | grep -q ^OnePassword ; then
@@ -32,6 +34,7 @@ setup_app_symlink com.onepassword.OnePassword onepassword
 setup_app_symlink com.onepassword.OnePassword 1password
 setup_app_symlink com.visualstudio.code vscode
 setup_app_symlink us.zoom.Zoom zoom
+setup_app_symlink io.github.dweymouth.supersonic supersonic
 
 # Clean up old confusing shortcut
 if [[ -L /usr/local/bin/signal ]]; then
