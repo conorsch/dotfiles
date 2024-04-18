@@ -26,6 +26,9 @@ vim.opt.smartindent = true
 vim.opt.softtabstop = 4
 vim.opt.tabstop = 4
 
+-- Disable text-wrapping, so that resizing windows doesn't cause jerky wrap changes.
+vim.opt.wrap = false
+
 -- Disable annoying temp file recovery.
 noswapfile = true
 
