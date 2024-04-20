@@ -11,7 +11,8 @@ sudo flatpak install -y flathub \
     com.spotify.Client \
     com.visualstudio.code \
     us.zoom.Zoom \
-    io.github.dweymouth.supersonic
+    io.github.dweymouth.supersonic \
+    com.valvesoftware.Steam
 
 # 1password, via https://support.1password.com/install-linux/#flatpak
 if ! flatpak list | grep -q ^OnePassword ; then
@@ -35,6 +36,7 @@ setup_app_symlink com.onepassword.OnePassword 1password
 setup_app_symlink com.visualstudio.code vscode
 setup_app_symlink us.zoom.Zoom zoom
 setup_app_symlink io.github.dweymouth.supersonic supersonic
+setup_app_symlink com.valvesoftware.Steam steam
 
 # Clean up old confusing shortcut
 if [[ -L /usr/local/bin/signal ]]; then
