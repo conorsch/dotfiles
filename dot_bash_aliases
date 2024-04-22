@@ -34,3 +34,5 @@ alias wurk="ssh wurk"
 alias cargo-all="cargo build && cargo build --release && cargo check && cargo check --release"
 
 alias r="rsync -a --info=progress2"
+alias z="zellij"
+alias zdas="zellij delete-all-sessions --force --yes"
