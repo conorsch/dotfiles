@@ -194,7 +194,16 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
+        i3bar_command i3bar --transparency
         status_command i3status
+
+        colors {
+            # Configure the background color of the i3bar to be mostly transparent,
+            # by prefixing `66` to the hex code for black `#000000`. See guide at:
+            # https://itsfoss.com/i3-customization/#make-i3-bar-transparent
+            set $bar-color #66000000
+            background $bar-color
+        }
         # Disable scroll wheel when hovering over bar. Prevents inadvertent workspace switching.
         # See docs at https://i3wm.org/docs/userguide.html#_mouse_button_commands
         bindsym button4 nop
