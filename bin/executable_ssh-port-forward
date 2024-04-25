@@ -1,0 +1,19 @@
+#!/bin/bash
+# Wrapper for creating SSH port forwards.
+#
+# Useful when a remote machine has a service bound to its localhost,
+# but we want to access it from a different context. And honestly,
+# I cannot remember the `ssh -L` syntax for the life of me.
+set -euo pipefail
+
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $0 <target_host> <target_port>"
+    exit 1
+fi
+
+target_host="$1"
+target_port="$2"
+shift 2
+
+>&2 echo "Opening SSH port forward '${target_host}:${target_port}'..."
+ssh -N -L "${target_port}:127.0.0.1:${target_port}" "$target_host"

@@ -1,0 +1,11 @@
+#!/bin/bash
+# Utility script to POST a message to a self-hosted ntfy server.
+set -euo pipefail
+
+
+if [[ $# -lt 1 ]]; then
+    echo "Usage: $0 <msg> [msg]" >&2
+    exit 1
+fi
+
+curl -sSf -d "$*" https://ruin.dev/ntfy/jawn
