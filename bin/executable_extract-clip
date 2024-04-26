@@ -4,9 +4,37 @@
 # shellcheck disable=SC2317
 set -euo pipefail
 
+# By default, don't generate a GIF.
+MAKE_GIF=0
 
-# Arg parsing
-if [[ $# -lt 3 ]]; then
+# Arg parsing. First, we'll look for `-g` opts, then do
+# another loop to handle positional args.
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -g|--gif)
+      MAKE_GIF=1
+      shift
+      ;;
+    --*|-*)
+      echo "Unknown option $1"
+      exit 1
+      ;;
+    *)
+      # save positional arg for next arg-parsing loop
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+
+# Restore positional parameters. See more info on this approach:
+# https://stackoverflow.com/a/14203146
+set -- "${POSITIONAL_ARGS[@]}"
+
+# Second arg-parsing loop, handling positional args.
+# We can't use `$#` since that would include e.g. `--gif` as well.
+# if [[ $# -lt 3 ]]; then
+if [[ ${#POSITIONAL_ARGS[@]} -lt 3 ]]; then
     echo "Usage: $0 <vid.mp4> <start_time> <duration>"
     exit 1
 fi
@@ -33,7 +61,7 @@ ffmpeg -i "$target_video" -ss "$start_time" -t "$duration" \
     "$dest_video" > /dev/null
 printf ' OK\n'
 
-# Exit early, before GIF is made, because usually we just want a clip.
-# TODO: make this logic conditional on a CLI flag.
-echo "Creating gif from video clip..."
-gifski --output "${dest_video%.*}.gif" --height 500 --quality 70 "$dest_video"
+# Make a gif, only if requested.
+if [[ $MAKE_GIF -gt 0 ]] ; then
+    gifski --output "${dest_video%.*}.gif" --height 500 --quality 70 "$dest_video"
+fi
