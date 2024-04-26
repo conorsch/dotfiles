@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Record video of screen in Linux, via ffmpeg.
+# Source: https://trac.ffmpeg.org/wiki/Capture/Desktop
+# Will record only video, no audio.
+set -euo pipefail
+
+# Store files in home
+dest_dir="$HOME/vids/screengrabs"
+mkdir -p "$dest_dir"
+dest_file="${dest_dir}/screengrab-$(date --iso-8601=seconds).mp4"
+
+# Set up pretty-printing of results on exit.
+function print_results() {
+    local f
+    f="${1:-}"
+    shift 1
+    if ! test -e "$f" ; then
+        >&2 echo "ERROR: screengrab not saved, see errors above"
+        return 1
+    fi
+    >&2 printf 'Screengrab saved to: %s\nFilesize is: %s\n' "$dest_file" "$(exa -l $dest_file | cut -d" " -f2)"
+}
+
+trap 'print_results "$dest_file"' EXIT
+>&2 echo "Recording screen, use ctrl+c to stop..."
+ffmpeg -loglevel quiet -framerate 25 -f x11grab -i :0.0 "$dest_file"
