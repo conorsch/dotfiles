@@ -26,12 +26,15 @@ alias light-mode="terminal-config light"
 
 alias ll="exa -l"
 alias tree="exa -l -R --tree"
+alias t="exa -l -R --tree"
 alias ipy='ipython --no-banner --no-confirm-exit -i'
 alias dcd="doctl compute droplet"
 
 alias wurk="ssh wurk"
 
-alias cargo-all="cargo build && cargo build --release && cargo check && cargo check --release"
+# rust/cargo aliases
+alias cbr="cargo build --release"
+alias cb="cargo build --release"
 
 alias r="rsync -a --info=progress2"
 alias z="zellij"
