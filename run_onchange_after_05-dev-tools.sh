@@ -55,3 +55,10 @@ fi
 if [[ -e /usr/bin/alacritty ]] ; then
     ln -s "/usr/bin/alacritty" -f "/usr/local/bin/x-terminal-emulator"
 fi
+
+# Install devbox, a nix shim. Requires at least `xz-utils`
+# and `direnv`.
+echo "Setting up devbox..."
+if ! hash devbox > /dev/null 2>&1 ; then
+    curl -fsSL https://get.jetify.com/devbox | bash -s -- -f
+fi
