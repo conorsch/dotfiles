@@ -29,16 +29,23 @@ wait
 
 # Unzippify
 echo "Extracting binaries..."
-xz -d ./*.xz
+# Prior to v0.73.1, artifacts were posted as `.tar.xz`.
+# Inclusive of v0.73.1 and thereafter, artifacts are posted as `.tar.gz`.
+find . -type f -iname '*.xz' -print0 | xargs -0 -P 5 -r -n1 xz -d
 find . -type f -iname '*.tar' -print0 | xargs -0 -P 5 -r -n1 tar -xf
+find . -type f -iname '*.tar.gz' -print0 | xargs -0 -P 5 -r -n1 tar -xf
 
-# TODO: test for writable dest dir.
+# Check that dir is writable, otherwise make it so.
 target_base_dir="/opt/penumbra"
+if [[ ! -e "$target_base_dir" || ! -w "$target_base_dir" ]] ; then
+    sudo mkdir -p "$target_base_dir"
+    sudo chmod 775 "$target_base_dir"
+    sudo chown "root:${USER:-}" "$target_base_dir"
+fi
+# Install.
 dest_dir="${target_base_dir}/${tag_name}"
 echo "Installing binaries to: $dest_dir"
-sudo mkdir -p "$dest_dir"
-sudo chmod 775 "$dest_dir" "$target_base_dir"
-sudo chown "root:${USER:-}" "$dest_dir" "$target_base_dir"
+mkdir -p "$dest_dir"
 # TODO: requires `fd` rather than find.
 fd -t x . -X mv -v -t "$dest_dir"
 
@@ -47,8 +54,8 @@ rm -f /opt/penumbra/latest
 ln -sf "$dest_dir" /opt/penumbra/latest
 
 # Enable binding to low ports as normal user
-echo "Setting net-bind capabilities for pd"
-sudo setcap CAP_NET_BIND_SERVICE,CAP_NET_ADMIN=+ep "${dest_dir}/pd"
+# echo "Setting net-bind capabilities for pd"
+# sudo setcap CAP_NET_BIND_SERVICE,CAP_NET_ADMIN=+ep "${dest_dir}/pd"
 
 echo "Provisioned binaries for Penumbra ${tag_name} in:"
 fd -t x . "$dest_dir"
