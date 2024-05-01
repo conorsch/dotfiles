@@ -46,3 +46,5 @@ fi
 # To test, try `firefox -p` and see how the profile-picker window renders.
 # Including here as comment for easy reference.
 # export GTK_THEME="Adwaita:dark"
+
+if [ -e /home/conor/.nix-profile/etc/profile.d/nix.sh ]; then . /home/conor/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
