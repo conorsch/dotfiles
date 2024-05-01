@@ -2,7 +2,6 @@
 # Pull up recent media uploads, to review recorded clips of recent gaming.
 set -euo pipefail
 
-set -x
 # Will be used for both remote and local mount points.
 media_dir="/mnt/Valhalla"
 # Media server identity on innernet.
@@ -10,8 +9,10 @@ media_host="adolin.ruindev.wg"
 # How recent the videos must be to be included.
 time_range="${1:-1d}"
 
-
+# Sort videos on remote host. Vids are uploaded and stored in a directory,
+# and should be moved (actually, hard-linked) to an "incoming" dir for review.
 ssh "$media_host" ./check-for-new-gaming-vids.sh
+
 # Use other dotfiles script to ensure media directory is mounted locally.
 media-mount
 
