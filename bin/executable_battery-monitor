@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Utility script to monitor battery level on laptop, and fire a notification
+# when low. Necessary because I'm a curmudgeon and I use i3, rather than
+# friendlier desktop environment that would do this automatically.
+#
+set -euo pipefail
+
+# Here's an example of the outputs to inspect:
+#
+#   ❯ cat /sys/class/power_supply/BAT1/capacity
+#   57
+#
+#   ❯ cat /sys/class/power_supply/BAT1/status
+#   Charging
+#
+#   ❯ cat /sys/class/power_supply/BAT1/status
+#   Discharging
+#
+# That should be enough to cobble together an alert.
+
+# The percentage of charge below which alert will fire.
+warn_threshold=15
+# The percentage of charge below which the system will be suspended.
+suspend_threshold=5
+
+# Number of seconds to sleep between polls.
+check_every=30
+# Duration, in ms, for warning to be displayed
+msg_duration=9000
+
+# Presumed battery path. Check is skipped if non-existent.
+battery_path="/sys/class/power_supply/BAT1"
+battery_level="$(cat "${battery_path}/capacity")"
+battery_state="$(cat "${battery_path}/status")"
+
+function check_battery_level() {
+    if [[ "$battery_level" -lt "$warn_threshold" ]] ; then
+        # Only warn if not plugged in, because that's the point.
+        if [[ "$battery_state" = "Discharging" ]] ; then
+            # It's OK to assume the battery-discharge icon exists, because notify-send
+            # will proceed with message posting even if it doesn't.
+            notify-send \
+                --icon /usr/share/icons/material-design-dark/scalable/devices/battery-20.svg \
+                --expire-time "$msg_duration" --urgency critical "WARNING: battery at ${battery_level}%"
+            if [[ "$battery_level" -lt "$suspend_threshold" ]] ; then
+                notify-send \
+                    --icon /usr/share/icons/material-design-dark/scalable/devices/battery-20.svg \
+                    --expire-time "$msg_duration" --urgency critical "CRITICAL: suspending immediately"
+                systemctl suspend
+            fi
+
+        fi
+    else
+        >&2 echo "DEBUG: battery level fine: ${battery_level}% ; alerts at ${warn_threshold}%; suspends at ${suspend_threshold}"
+    fi
+}
+
+function main() {
+    while true ; do
+        # If we don't have a battery, skip all this.
+        if test -e "$battery_path" ; then
+            check_battery_level
+        else
+            >&2 echo "DEBUG: no battery found, not checking..."
+        fi
+        sleep "$check_every"
+    done
+}
+
+main

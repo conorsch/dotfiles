@@ -1,0 +1,13 @@
+[Service]
+Type=simple
+# Export display, so that notify-send works
+Environment=DISPLAY=:0.0
+# Custom script, requires PATH config
+ExecStart=/home/conor/bin/battery-monitor
+Restart=no
+
+[Install]
+WantedBy=default.target
+
+[Unit]
+Requires=graphical-session.target
