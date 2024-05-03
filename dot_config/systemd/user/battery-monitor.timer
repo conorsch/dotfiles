@@ -1,0 +1,12 @@
+# systemd.timer config for running the correspondingly named
+# `battery-monitor.service` unit on a cron-like schedule.
+# Using systemd for the timing, rather than running a one-shot
+[Unit]
+Description=Run battery-timer script regularly
+Requires=graphical-session.target
+
+[Timer]
+OnUnitActiveSec=5m
+
+[Install]
+WantedBy=timers.target

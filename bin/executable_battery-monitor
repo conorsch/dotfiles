@@ -24,9 +24,11 @@ warn_threshold=15
 suspend_threshold=5
 
 # Number of seconds to sleep between polls.
-check_every=30
+# N.B. Only takes effect if the `daemonize` function is used below.
+check_every=300
+
 # Duration, in ms, for warning to be displayed
-msg_duration=9000
+msg_duration=15000
 
 # Presumed battery path. Check is skipped if non-existent.
 battery_path="/sys/class/power_supply/BAT1"
@@ -37,25 +39,30 @@ function check_battery_level() {
     if [[ "$battery_level" -lt "$warn_threshold" ]] ; then
         # Only warn if not plugged in, because that's the point.
         if [[ "$battery_state" = "Discharging" ]] ; then
+            >&2 echo "DEBUG: sending warning message for ${battery_level}% (threshold ${warn_threshold}%)"
             # It's OK to assume the battery-discharge icon exists, because notify-send
             # will proceed with message posting even if it doesn't.
             notify-send \
                 --icon /usr/share/icons/material-design-dark/scalable/devices/battery-20.svg \
                 --expire-time "$msg_duration" --urgency critical "WARNING: battery at ${battery_level}%"
             if [[ "$battery_level" -lt "$suspend_threshold" ]] ; then
+                >&2 echo "CRITICAL: suspending system for ${battery_level}% (threshold ${warn_threshold}%)"
                 notify-send \
                     --icon /usr/share/icons/material-design-dark/scalable/devices/battery-20.svg \
                     --expire-time "$msg_duration" --urgency critical "CRITICAL: suspending immediately"
                 systemctl suspend
             fi
-
         fi
     else
         >&2 echo "DEBUG: battery level fine: ${battery_level}% ; alerts at ${warn_threshold}%; suspends at ${suspend_threshold}"
     fi
 }
 
-function main() {
+# Run logic in a while loop, so the script blocks. Downsides:
+# changes to script aren't reflected until service is restarted,
+# which is easy to forget. Looking into switching to systemd timers
+# for managing the rerun schedule.
+function daemonize() {
     while true ; do
         # If we don't have a battery, skip all this.
         if test -e "$battery_path" ; then
@@ -65,6 +72,15 @@ function main() {
         fi
         sleep "$check_every"
     done
+}
+
+# Execute directly, then exit. Depends on a scheduler to rerun.
+function main() {
+    if test -e "$battery_path" ; then
+        check_battery_level
+    else
+        >&2 echo "DEBUG: no battery found, not checking..."
+    fi
 }
 
 main

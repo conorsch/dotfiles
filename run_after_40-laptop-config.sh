@@ -13,4 +13,6 @@ fi
 # Files have already been copied, so we can assume the battery-monitor
 # scripts and user-level systemd services are in place.
 systemctl --user daemon-reload
-systemctl --user enable --now battery-monitor
+systemctl --user enable --now battery-monitor battery-monitor.timer
+# Also restart, in case the script itself changed.
+systemctl --user restart battery-monitor battery-monitor.timer
