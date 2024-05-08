@@ -11,3 +11,4 @@ WantedBy=default.target
 
 [Unit]
 Requires=graphical-session.target
+Requires=battery-monitor.timer

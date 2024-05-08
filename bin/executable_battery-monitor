@@ -23,10 +23,6 @@ warn_threshold=15
 # The percentage of charge below which the system will be suspended.
 suspend_threshold=5
 
-# Number of seconds to sleep between polls.
-# N.B. Only takes effect if the `daemonize` function is used below.
-check_every=300
-
 # Duration, in ms, for warning to be displayed
 msg_duration=15000
 
@@ -52,26 +48,13 @@ function check_battery_level() {
                     --expire-time "$msg_duration" --urgency critical "CRITICAL: suspending immediately"
                 systemctl suspend
             fi
-        fi
-    else
-        >&2 echo "DEBUG: battery level fine: ${battery_level}% ; alerts at ${warn_threshold}%; suspends at ${suspend_threshold}"
-    fi
-}
-
-# Run logic in a while loop, so the script blocks. Downsides:
-# changes to script aren't reflected until service is restarted,
-# which is easy to forget. Looking into switching to systemd timers
-# for managing the rerun schedule.
-function daemonize() {
-    while true ; do
-        # If we don't have a battery, skip all this.
-        if test -e "$battery_path" ; then
-            check_battery_level
         else
-            >&2 echo "DEBUG: no battery found, not checking..."
+            >&2 echo "DEBUG: battery level low: ${battery_level}%, but is charging"
         fi
-        sleep "$check_every"
-    done
+
+    else
+        >&2 echo "DEBUG: battery level fine: ${battery_level}% ; alerts at ${warn_threshold}%; suspends at ${suspend_threshold}%"
+    fi
 }
 
 # Execute directly, then exit. Depends on a scheduler to rerun.

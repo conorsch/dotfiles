@@ -8,9 +8,10 @@ Requires=graphical-session.target
 [Timer]
 # Use `OnStartupSec` for user-level timers, see `man systemd.timer`
 OnStartupSec=3m
+OnUnitActiveSec=3m
 # Ensure that even across service restarts, max `OnStartupSec` will elapse
 # before checking, as opposed to resetting the counter on every restart.
-Persistent=true
+# Persistent=true
 
 [Install]
 WantedBy=timers.target
