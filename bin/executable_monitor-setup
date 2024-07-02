@@ -14,7 +14,8 @@ fi
 secondary_side="left"
 
 xrandr --auto
-primary_monitor="eDP-1"
+# primary_monitor="eDP-1"
+primary_monitor="eDP"
 xrandr --output "${primary_monitor}" --primary
 if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
    xrandr --output "${secondary_monitor}" "--${secondary_side}-of" "${primary_monitor}" --rotate normal
@@ -28,3 +29,24 @@ else
 fi
 # redraw desktop (fixes both orientation and tiling issues)
 nitrogen --restore > /dev/null 2>&1
+
+
+# Preserve the internal laptop display at native resolution,
+# but stretch that to an external monitor at 1080p.
+# via: https://superuser.com/a/1247117
+function mirror_to_projector() {
+    # N.B. display names are hardcoded for Framework 13
+    xrandr --output DisplayPort-1 --auto --scale-from 2256x1504 --output eDP
+}
+
+# Configure the external monitor ('projector') as a 1080p resolution secondary display,
+# to the right of the internal/primary laptop display.
+function multitask_projector() {
+    # N.B. display names are hardcoded for Framework 13
+    xrandr --output DisplayPort-1 --auto --right-of eDP
+}
+
+# Primary entrypoint.
+function main() {
+    mirror_to_projector
+}
