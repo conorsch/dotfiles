@@ -8,6 +8,7 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 
 sudo flatpak install -y flathub \
     org.signal.Signal \
+    com.github.eneshecan.WhatsAppForLinux \
     com.spotify.Client \
     com.visualstudio.code \
     us.zoom.Zoom \
@@ -37,6 +38,7 @@ setup_app_symlink com.visualstudio.code vscode
 setup_app_symlink us.zoom.Zoom zoom
 setup_app_symlink io.github.dweymouth.supersonic supersonic
 setup_app_symlink com.valvesoftware.Steam steam
+setup_app_symlink com.github.eneshecan.WhatsAppForLinux whatsapp
 
 # Clean up old confusing shortcut
 if [[ -L /usr/local/bin/signal ]]; then
