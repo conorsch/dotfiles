@@ -6,37 +6,27 @@ set -euo pipefail
 primary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected primary / && say $1')
 secondary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected (?!primary)/ && say $1')
 
-if [[ -z "${secondary_monitor}" ]] && [[ "${1:-}" != "solo" ]] ; then
-    echo "No secondary monitor found."
-    exit 1
+if [[ -z "${secondary_monitor}" ]] && [[ "${1:-}" = "solo" ]] ; then
+    >&2 echo "WARNING: no secondary monitor found."
 fi
 
-secondary_side="left"
+# Configure "normal" setup via xrandr
+function sane_defaults() {
+    xrandr --auto
+    xrandr --output "${primary_monitor}" --primary
+}
 
-xrandr --auto
-# primary_monitor="eDP-1"
-primary_monitor="eDP"
-xrandr --output "${primary_monitor}" --primary
-if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
-   xrandr --output "${secondary_monitor}" "--${secondary_side}-of" "${primary_monitor}" --rotate normal
-elif [[ $# -ne 0 && "$1" == "solo" ]] ; then
-   set +e
-   xrandr --output "${secondary_monitor}" --off
-   xrandr --output "${primary_monitor}" --primary
-   set -e
-else
-   xrandr --output "${secondary_monitor}" "--${secondary_side}-of" "${primary_monitor}" --rotate left
-fi
 # redraw desktop (fixes both orientation and tiling issues)
-nitrogen --restore > /dev/null 2>&1
-
+function nitrogen_restore() {
+    nitrogen --restore > /dev/null 2>&1
+}
 
 # Preserve the internal laptop display at native resolution,
 # but stretch that to an external monitor at 1080p.
 # via: https://superuser.com/a/1247117
 function mirror_to_projector() {
     # N.B. display names are hardcoded for Framework 13
-    xrandr --output DisplayPort-1 --auto --scale-from 2256x1504 --output eDP
+    xrandr --output DisplayPort-1 --rotate normal --auto --scale-from 2256x1504 --output eDP
 }
 
 # Configure the external monitor ('projector') as a 1080p resolution secondary display,
@@ -48,5 +38,9 @@ function multitask_projector() {
 
 # Primary entrypoint.
 function main() {
-    mirror_to_projector
+    sane_defaults
+    # mirror_to_projector
+    nitrogen_restore
 }
+
+main
