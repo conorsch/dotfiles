@@ -67,3 +67,7 @@ echo "Setting up devbox..."
 if ! hash devbox > /dev/null 2>&1 ; then
     curl -fsSL https://get.jetify.com/devbox | bash -s -- -f
 fi
+# On each update, devbox demands that several abstruse commands be run.
+# Let's try to avoid prompts to do so interactively.
+eval "$(devbox global shellenv --recompute)"
+# refresh-global
