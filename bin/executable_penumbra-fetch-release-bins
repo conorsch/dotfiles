@@ -3,7 +3,9 @@
 set -euo pipefail
 
 
-# Look up most recent release from GitHub
+# Look up most recent release from GitHub. That's probably what we want.
+# TODO: make the version overrideable, defaulting to latest, but supporting
+# installing older versions, since they all go in their same path, anyway.
 f="$(mktemp -p /tmp penumbra-binaries-release-XXXXX)"
 curl -sSfL https://api.github.com/repos/penumbra-zone/penumbra/releases/latest -o "$f"
 # Pilfer tag name so we can use it in messaging
@@ -18,7 +20,7 @@ function get_asset_urls() {
 }
 
 # Download 'em.
-echo "Downloading bins for ${tag_name} ..."
+>&2 echo "Downloading bins for ${tag_name} ..."
 # Create temporary directory for downloading the compressed artifacts.
 d="$(mktemp -p /tmp -d penumbra-binaries-XXXXX)"
 cd "$d" || exit 1
@@ -28,7 +30,7 @@ done < <(get_asset_urls)
 wait
 
 # Unzippify
-echo "Extracting binaries..."
+>&2 echo "Extracting binaries..."
 # Prior to v0.73.1, artifacts were posted as `.tar.xz`.
 # Inclusive of v0.73.1 and thereafter, artifacts are posted as `.tar.gz`.
 find . -type f -iname '*.xz' -print0 | xargs -0 -P 5 -r -n1 xz -d
@@ -44,7 +46,7 @@ if [[ ! -e "$target_base_dir" || ! -w "$target_base_dir" ]] ; then
 fi
 # Install.
 dest_dir="${target_base_dir}/${tag_name}"
-echo "Installing binaries to: $dest_dir"
+>&2 echo "Installing binaries to: $dest_dir"
 mkdir -p "$dest_dir"
 # TODO: requires `fd` rather than find.
 fd -t x . -X mv -v -t "$dest_dir"
@@ -57,5 +59,5 @@ ln -sf "$dest_dir" /opt/penumbra/latest
 # echo "Setting net-bind capabilities for pd"
 # sudo setcap CAP_NET_BIND_SERVICE,CAP_NET_ADMIN=+ep "${dest_dir}/pd"
 
-echo "Provisioned binaries for Penumbra ${tag_name} in:"
+>&2 echo "Provisioned binaries for Penumbra ${tag_name} in:"
 fd -t x . "$dest_dir"
