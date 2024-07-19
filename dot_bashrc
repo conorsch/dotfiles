@@ -35,13 +35,6 @@ if hash direnv > /dev/null 2>&1; then
     eval "$(direnv hook bash)"
 fi
 
-# kubectl
-if hash kubectl > /dev/null 2>&1 ; then
-    source <(kubectl completion bash)
-    complete -o default -F __start_kubectl k
-    complete -o default -F __start_kubectl kubecolor
-fi
-
 # Starship shell prompt
 if hash starship > /dev/null 2>&1 ; then
     eval "$(starship init bash)"
