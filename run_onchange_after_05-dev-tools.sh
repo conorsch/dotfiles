@@ -31,6 +31,7 @@ if [[ ! -d "$alacritty_theme_dir" ]] ; then
     mkdir -p "$alacritty_theme_dir"
     git clone https://github.com/alacritty/alacritty-theme "$alacritty_theme_dir"
 fi
+
 # The alacritty package was already installed via another script, but only on workstations.
 # Now we symlink it as `x-terminal-emulator` so that `i3-sensible-terminal`
 # picks it up. This seems to work better than setting TERMINAL=alacritty.
@@ -44,6 +45,7 @@ echo "Setting up devbox..."
 if ! hash devbox > /dev/null 2>&1 ; then
     curl -fsSL https://get.jetify.com/devbox | bash -s -- -f
 fi
+
 # On each update, devbox demands that several abstruse commands be run.
 # Let's try to avoid prompts to do so interactively.
 eval "$(devbox global shellenv --recompute)"

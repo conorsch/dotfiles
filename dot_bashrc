@@ -6,17 +6,6 @@
 # Source host-specific (non-version-controlled) env vars.
 [[ -f ~/.bash_env_extra ]] && source ~/.bash_env_extra
 
-# Configure PS1 via, only on interactive shells
-if [[ $- = *i* ]] ; then
-    # Starship shell prompt
-    if hash starship > /dev/null 2>&1 ; then
-        eval "$(starship init bash)"
-    fi
-else
-    # Don't continue if shell is non-interactive
-    return
-fi
-
 # Set bash shell options.
 shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
 shopt -s cdspell # correct typos when spelling out paths.
@@ -53,9 +42,15 @@ if hash kubectl > /dev/null 2>&1 ; then
     complete -o default -F __start_kubectl kubecolor
 fi
 
+# Starship shell prompt
+if hash starship > /dev/null 2>&1 ; then
+    eval "$(starship init bash)"
+fi
+
 # Devshell global env, because I haven't learned nix yet.
 if hash devbox > /dev/null 2>&1 ; then
     eval "$(devbox global shellenv)"
 fi
 
+# Nix config
 if [ -e /home/conor/.nix-profile/etc/profile.d/nix.sh ]; then . /home/conor/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
