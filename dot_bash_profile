@@ -1,50 +1,5 @@
+# vim: ft=bash
+# Intentionally quite sparse: load the profile for logins,
+# then load the default bashrc. That's it.
+[[ -f ~/.profile ]] && source ~/.profile
 [[ -f ~/.bashrc ]] && source ~/.bashrc
-[[ -f ~/.bash_env_extra ]] && source ~/.bash_env_extra
-if [[ -z "SSH_CLIENT" ]] ; then
-    if ! printenv | grep -q ^QUBES_ ; then
-        source ~/.bin/ssh-agent-wrapper
-    fi
-fi
-
-# If not running interactively, don't do the rest.
-[[ -z "${PS1:-}" ]] && return
-
-# bash-completions
-if [[ -f /etc/bash_completion ]] ; then
-    source /etc/bash_completion
-elif [[ -f /usr/share/bash-completion/bash_completion ]] ; then
-    source /usr/share/bash-completion/bash_completion
-fi
-# direnv
-if hash direnv > /dev/null 2>&1; then
-    eval "$(direnv hook bash)"
-fi
-
-# kubectl
-if hash kubectl > /dev/null 2>&1 ; then
-    source <(kubectl completion bash)
-    complete -o default -F __start_kubectl k
-    complete -o default -F __start_kubectl kubecolor
-fi
-
-# virtualenv
-# Prefer home dir path, more often up to date
-venv_script="$HOME/.local/bin/virtualenvwrapper.sh"
-if [[ -f "$venv_script" ]]; then
-    source "$venv_script"
-elif [[ -e "/usr/bin/virtualenvwrapper.sh" ]]; then
-    source "/usr/bin/virtualenvwrapper.sh"
-fi
-
-# rustlang dev config
-. "$HOME/.cargo/env"
-
-# Force dark mode for GTK apps under i3.
-# For reasons I don't understand, this declaration doesn't work
-# if set in e.g. `~/.bash_profile`. Setting it system-wide does work,
-# e.g. in `/etc/profile.d/ruindev-dark-mode.sh`.
-# To test, try `firefox -p` and see how the profile-picker window renders.
-# Including here as comment for easy reference.
-# export GTK_THEME="Adwaita:dark"
-
-if [ -e /home/conor/.nix-profile/etc/profile.d/nix.sh ]; then . /home/conor/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

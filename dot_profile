@@ -1,0 +1,45 @@
+# vim: ft=sh
+# shellcheck shell=sh
+
+# Set up PATH first
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/bin"
+export EDITOR="nvim"
+export BROWSER="firefox"
+
+# Set alacritty as default terminal, so it's picked up by i3-sensible-terminal
+export TERMINAL="alacritty"
+
+# Experimental new docker build system, prettier and slightly faster
+export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
+
+# golang dev config
+export GOPATH="$HOME/go"
+export GOBIN="$GOPATH/bin"
+export PATH="$PATH:$GOBIN:/usr/local/go/bin"
+export GO111MODULE=on
+
+# Force dark mode for GTK apps under i3.
+# For reasons I don't understand, this declaration doesn't work
+# if set in e.g. `~/.bash_profile`. Setting it system-wide does work,
+# e.g. in `/etc/profile.d/ruindev-dark-mode.sh`.
+# To test, try `firefox -p` and see how the profile-picker window renders.
+# Including here as comment for easy reference.
+export GTK_THEME="Adwaita:dark"
+
+# Set custom key remaps, like caps lock to Escape, but only for graphical environments.
+if [ -n "$DISPLAY" ] && [ "$DESKTOP_SESSION" != "sway" ] ; then
+    if hash setxkbmap > /dev/null 2>&1 ; then
+        setxkbmap -option caps:escape
+        setxkbmap -option ralt:compose
+        setxkbmap -option compose:ralt
+    fi
+fi
+
+# Default byobu config screws up vim colors, override.
+if [ -n "$BYOBU_TERM" ]; then
+    export BYOBU_TERM=xterm-256color
+    export TERM="$BYOBU_TERM"
+    export BYOBU_PYTHON=python3
+fi

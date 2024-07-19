@@ -29,10 +29,6 @@ editall() {
     fd -e "$file_ext" . -X vim -p
 }
 
-mkvenv() {
-    mkvirtualenv -a "$PWD" "$(basename "$PWD")" -p "$(which python3)"
-}
-
 # Verify that emojis can display in terminal.
 # Taken from starship docs:
 # https://starship.rs/faq/#why-don-t-i-see-a-glyph-symbol-in-my-prompt

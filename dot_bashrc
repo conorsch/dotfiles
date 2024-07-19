@@ -1,28 +1,12 @@
-# Set up PATH first
-export PATH="$PATH:$HOME/.local/bin"
-export PATH="$PATH:$HOME/bin"
-export EDITOR="nvim"
-export BROWSER="firefox"
+# vim: ft=bash
 
-# If not running interactively, leave the rest.
-[[ -z "${PS1:-}" ]] && return
+# Source custom aliases and functions.
+[[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
+[[ -f ~/.bash_functions ]] && source ~/.bash_functions
+# Source host-specific (non-version-controlled) env vars.
+[[ -f ~/.bash_env_extra ]] && source ~/.bash_env_extra
 
-shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
-shopt -s cdspell # correct typos when spelling out paths.
-shopt -s cmdhist # multi-line commands are still entered into history
-shopt -s histreedit # re-edit history substitution if command fails
-shopt -s histappend # ensure all terminal commands are appended to history log
-
-# Set caps lock to Escape
-if hash setxkbmap > /dev/null 2>&1 \
-       && test -n "$DISPLAY" \
-       && [[ "$DESKTOP_SESSION" != "sway" ]] ; then
-    setxkbmap -option caps:escape
-    setxkbmap -option ralt:compose
-    setxkbmap -option compose:ralt
-fi
-
-# Configure PS1, only on interactive shells
+# Configure PS1 via, only on interactive shells
 if [[ $- = *i* ]] ; then
     # Starship shell prompt
     if hash starship > /dev/null 2>&1 ; then
@@ -33,45 +17,45 @@ else
     return
 fi
 
-# Source alias/function files only if they haven't been loaded already,
-# by checking whether a custom alias is found.
-if ! type refresh > /dev/null 2>&1 ; then
-    [[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
-    [[ -f ~/.bash_functions ]] && source ~/.bash_functions
-    [[ -f ~/.bash_profile ]] && source ~/.bash_profile
+# Set bash shell options.
+shopt -s checkwinsize # check the window size after each command and, if necessary, update the values of LINES and COLUMNS.
+shopt -s cdspell # correct typos when spelling out paths.
+shopt -s cmdhist # multi-line commands are still entered into history
+shopt -s histreedit # re-edit history substitution if command fails
+shopt -s histappend # ensure all terminal commands are appended to history log
+
+# Consider tab-completion via bash. Required for e.g. git branch names to be autocompleted.
+if [[ -f /etc/bash_completion ]] ; then
+    source /etc/bash_completion
+elif [[ -f /usr/share/bash-completion/bash_completion ]] ; then
+    source /usr/share/bash-completion/bash_completion
 fi
 
-# source virtualenv wrappers, e.g. "workon"
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-
-# golang dev config
-export GOPATH="$HOME/go"
-export GOBIN="$GOPATH/bin"
-export PATH="$PATH:$GOBIN:/usr/local/go/bin"
-export GO111MODULE=on
-
-# Experimental new docker build system, prettier and slightly faster
-export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
-
-# Default byobu config screws up vim colors, override.
-if [[ -n "$BYOBU_TERM" ]]; then
-    export BYOBU_TERM=xterm-256color
-    export TERM=$BYOBU_TERM
-    export BYOBU_PYTHON=python3
+# Source ssh-agent wrapper, specifically for QubesOS.
+if [[ -z "SSH_CLIENT" ]] ; then
+    if ! printenv | grep -q ^QUBES_ ; then
+        source ~/.bin/ssh-agent-wrapper
+    fi
 fi
-
-# Forcing terminal setting, because vim colorscheme fails with "TERM=alacritty".
-# Might need to switch to neovim finally.
-export TERM=xterm-256color
 
 # rustlang dev config
 . "$HOME/.cargo/env"
 
-# Set alacritty as default terminal, so it's picked up by i3-sensible-terminal
-export TERMINAL="alacritty"
+# direnv
+if hash direnv > /dev/null 2>&1; then
+    eval "$(direnv hook bash)"
+fi
+
+# kubectl
+if hash kubectl > /dev/null 2>&1 ; then
+    source <(kubectl completion bash)
+    complete -o default -F __start_kubectl k
+    complete -o default -F __start_kubectl kubecolor
+fi
 
 # Devshell global env, because I haven't learned nix yet.
 if hash devbox > /dev/null 2>&1 ; then
     eval "$(devbox global shellenv)"
 fi
+
+if [ -e /home/conor/.nix-profile/etc/profile.d/nix.sh ]; then . /home/conor/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
