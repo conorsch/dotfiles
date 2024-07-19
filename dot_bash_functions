@@ -105,3 +105,16 @@ vim() {
     fi
     "$_editor" "$@"
 }
+
+# Detect whether current host is likely a physical machine,
+# based on two factors: 1) must be physical; 2) must have a graphical environment.
+is_workstation() {
+    result=1
+    chassis="$(hostnamectl status --json pretty | jq -r .Chassis)"
+    if [[ "$chassis" = "laptop" ]] || [[ "$chassis" = "desktop" ]] ; then
+        if [[ -n "$DISPLAY" ]] ; then
+            result=0
+        fi
+    fi
+    return "$result"
+}
