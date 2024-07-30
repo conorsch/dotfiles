@@ -7,7 +7,7 @@ export PATH="$PATH:$HOME/bin"
 export EDITOR="nvim"
 export BROWSER="firefox"
 # Set a color-friendly TERM by default.
-export TERMINAL="xterm-256color"
+export TERM="xterm-256color"
 
 # Experimental new docker build system, prettier and slightly faster
 export DOCKER_BUILDKIT=1
@@ -40,6 +40,6 @@ fi
 # but only for graphical environments.
 if [ -n "$DISPLAY" ] ; then
     if hash alacritty > /dev/null 2>&1 ; then
-        export TERMINAL="alacritty"
+        export TERM="alacritty"
     fi
 fi

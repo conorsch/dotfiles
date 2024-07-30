@@ -23,7 +23,7 @@ fi
 # The alacritty package was already installed via another script, but only on Fedora,
 # which is a proxy for saying "likely a workstation"
 # Now we symlink it as `x-terminal-emulator` so that `i3-sensible-terminal`
-# picks it up. This seems to work better than setting TERMINAL=alacritty.
+# picks it up. This seems to work better than setting `TERM=alacritty`.
 if [[ -e /usr/bin/alacritty ]] ; then
     ln -s "/usr/bin/alacritty" -f "/usr/local/bin/x-terminal-emulator"
 fi
