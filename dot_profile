@@ -6,9 +6,8 @@ export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/bin"
 export EDITOR="nvim"
 export BROWSER="firefox"
-
-# Set alacritty as default terminal, so it's picked up by i3-sensible-terminal
-export TERMINAL="alacritty"
+# Set a color-friendly TERM by default.
+export TERMINAL="xterm-256color"
 
 # Experimental new docker build system, prettier and slightly faster
 export DOCKER_BUILDKIT=1
@@ -37,9 +36,10 @@ if [ -n "$DISPLAY" ] && [ "$DESKTOP_SESSION" != "sway" ] ; then
     fi
 fi
 
-# Default byobu config screws up vim colors, override.
-if [ -n "$BYOBU_TERM" ]; then
-    export BYOBU_TERM=xterm-256color
-    export TERM="$BYOBU_TERM"
-    export BYOBU_PYTHON=python3
+# Set alacritty as default terminal, so it's picked up by i3-sensible-terminal,
+# but only for graphical environments.
+if [ -n "$DISPLAY" ] ; then
+    if hash alacritty > /dev/null 2>&1 ; then
+        export TERMINAL="alacritty"
+    fi
 fi
