@@ -118,3 +118,13 @@ is_workstation() {
     fi
     return "$result"
 }
+
+# Set up a guitar practice session
+guitar() {
+    local s="${1:-.}"
+    media_dir="/mnt/Valhalla/Media/Video/Guitar_vidz"
+    >&2 echo "playing vids that match '$s'..."
+    cd "$media_dir" || return 1
+    # fd -t f MESHUGGAH --max-results 1 -X vlc --random
+    fd -t f "$s" -X vlc --random
+}
