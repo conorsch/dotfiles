@@ -25,6 +25,16 @@ vim.opt.shiftwidth = 4
 vim.opt.smartindent = true
 vim.opt.softtabstop = 4
 vim.opt.tabstop = 4
+-- Set the highlight for trailing whitespace, via https://stackoverflow.com/a/78723637
+-- vim.api.nvim_set_hl(0, "ExtraWhitespace", { ctermbg = "lightblue", bg = "lightblue" })
+vim.api.nvim_set_hl(0, "ExtraWhitespace", { ctermbg = "darkred", bg = "darkred" })
+-- Autocommand to highlight trailing whitespace in all buffers
+vim.api.nvim_create_autocmd("BufWinEnter", {
+    pattern = "*",
+    callback = function()
+        vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
+    end,
+})
 
 -- Disable text-wrapping, so that resizing windows doesn't cause jerky wrap changes.
 vim.opt.wrap = false
