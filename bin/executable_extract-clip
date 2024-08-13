@@ -15,6 +15,10 @@ while [[ $# -gt 0 ]]; do
       MAKE_GIF=1
       shift
       ;;
+    -o|--open)
+      OPEN_FILE=1
+      shift
+      ;;
     --*|-*)
       echo "Unknown option $1"
       exit 1
@@ -61,7 +65,14 @@ ffmpeg -i "$target_video" -ss "$start_time" -t "$duration" \
     "$dest_video" > /dev/null
 printf ' OK\n'
 
-# Make a gif, only if requested.
+# Make a gif if requested.
 if [[ $MAKE_GIF -gt 0 ]] ; then
+    >&2 echo "Making gif..."
     gifski --output "${dest_video%.*}.gif" --height 500 --quality 70 "$dest_video"
+fi
+
+# View file if requested.
+if [[ $OPEN_FILE -gt 0 ]] ; then
+    >&2 echo "Opening file..."
+    xdg-open "$dest_video"
 fi
