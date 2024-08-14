@@ -45,5 +45,10 @@ if hash devbox > /dev/null 2>&1 ; then
     eval "$(devbox global shellenv)"
 fi
 
+# penv: penumbra version manager
+if hash penv > /dev/null 2>&1 ; then
+    eval "$(penv hook bash)"
+fi
+
 # Nix config
 if [ -e /home/conor/.nix-profile/etc/profile.d/nix.sh ]; then . /home/conor/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
