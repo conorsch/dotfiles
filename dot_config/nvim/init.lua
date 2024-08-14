@@ -1,7 +1,5 @@
--- Disable netrw at start of init.lua, to avoid conflicts with nerdtree.
--- See docs at https://github.com/nvim-tree/nvim-tree.lua
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+-- bootstrap lazy.nvim, LazyVim and your plugins
+require("config.lazy")
 
 -- Set colorscheme. Reads from `~/.config/nvim/colors/*`.
 vim.opt.termguicolors = true
@@ -9,57 +7,3 @@ vim.opt.termguicolors = true
 -- For reasons I don't understand, the colorscheme subtly changes
 -- after Rust LSP finishes initializing, which is jarring.
 vim.cmd("colorscheme acidcupcake")
-
--- Set leader key.
-vim.g.mapleader = '\\' -- works across all nvim files
-
--- Enable line numbers
-vim.wo.number = true
--- vim.wo.relativenumber = true
-
--- Tab/whitespace settings
-vim.opt.autoindent = true
-vim.opt.cindent = true
-vim.opt.expandtab = true
-vim.opt.shiftwidth = 4
-vim.opt.smartindent = true
-vim.opt.softtabstop = 4
-vim.opt.tabstop = 4
--- Set the highlight for trailing whitespace, via https://stackoverflow.com/a/78723637
--- vim.api.nvim_set_hl(0, "ExtraWhitespace", { ctermbg = "lightblue", bg = "lightblue" })
-vim.api.nvim_set_hl(0, "ExtraWhitespace", { ctermbg = "darkred", bg = "darkred" })
--- Autocommand to highlight trailing whitespace in all buffers
-vim.api.nvim_create_autocmd("BufWinEnter", {
-    pattern = "*",
-    callback = function()
-        vim.fn.matchadd("ExtraWhitespace", [[\s\+$]])
-    end,
-})
-
--- Disable text-wrapping, so that resizing windows doesn't cause jerky wrap changes.
-vim.opt.wrap = false
-
--- Disable annoying temp file recovery.
-noswapfile = true
-
--- Configure the "lazy" package manager, for installing Neovim plugins.
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
-end
-vim.opt.rtp:prepend(lazypath)
-
--- Load plugins from ~/.config/nvim/lua/plugins.lua
-require('lazy').setup('plugins')
-
--- Configure the nvim-tree file browser with defaults.
-require("nvim-tree").setup()
--- Enable a toggle key for opening/closing nerdtree file browser.
-vim.api.nvim_set_keymap("n", "<C-j>", ":NvimTreeToggle<cr>", {silent = true, noremap = true})
