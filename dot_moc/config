@@ -10,8 +10,8 @@ ReadTags		= yes
 # Directory in which you store music files. If you specify it you will be able
 # to quickly go to this directory with the '-m' parameter or the 'm' command.
 # This can also point to a playlist.
-# MusicDir		= "/mnt/Valhalla/Media/Heimchen"
-MusicDir		= "~/music"
+MusicDir = "/mnt/Valhalla/Media/Heimchen"
+# MusicDir		= "~/music"
 
 # How to sort? FileName is the only option for now.
 Sort			= FileName
@@ -44,16 +44,19 @@ AutoNext		= yes
 FormatString		= "%(n:%n :)%(a:%a - :)%(t:%t:)%(A: \(%A\):)"
 
 # Output buffer size in kilobytes. Minimum value is 128KB. */
-OutputBuffer		= 2048
+# OutputBuffer		= 2048
+OutputBuffer		= 12000
 
 # Input buffer size in kilobytes. Minimum value is 32KB. */
-InputBuffer		= 512
+# InputBuffer		= 512
+InputBuffer		= 12000
 
 # How much to fill the input buffer before playing (in kilobytes)?
 # This can't be more than InputBuffer value.
 # Remember that for network streams beside the positive effect this also causes
 # delay between what you can hear and what is broadcasted.
-Prebuffering		= 512
+# Prebuffering		= 512
+Prebuffering		= 7000
 
 # Use this HTTP proxy server for internet streams. If not set, the
 # environment variables http_proxy and ALL_PROXY will be used if present.
@@ -322,7 +325,7 @@ Fastdir10 = ${MusicDir}/Periphery
 # 24bit output (for example MP3 decoder uses this format). This is disabled
 # in the default configuration because there were reports that it prevents
 # MP3 files from playing on some soundcards.
-Allow24bitOutput	= yes
+Allow24bitOutput	= no
 
 # Use realtime priority for output buffer thread. This will prevent gaps while
 # playing even with heavy load. The user which runs MOC must have permissions
@@ -332,7 +335,8 @@ Allow24bitOutput	= yes
 
 # The number of audio files for which MOC will cache tags.  When this limit
 # is reached, file tags are discarded on a least recently used basis.
-TagsCacheSize		= 2048
+# TagsCacheSize		= 2048
+TagsCacheSize		= 4096
 
 # Number items in the playlist.
 PlaylistNumbering	= yes
