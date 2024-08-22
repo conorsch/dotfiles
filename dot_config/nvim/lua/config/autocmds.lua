@@ -20,3 +20,15 @@ set_autoformat({ "lua" }, true)
 set_autoformat({ "rust" }, true)
 set_autoformat({ "toml" }, false)
 set_autoformat({ "yaml" }, false)
+
+-- Toggle "conceal" behavior which hides certain characters.
+local disable_conceal = function(pattern)
+  vim.api.nvim_create_autocmd({ "FileType" }, {
+    pattern = pattern,
+    callback = function()
+      vim.opt_local.conceallevel = 0
+    end,
+  })
+end
+-- Disable concealing on Markdown files, to avoid hiding triple-backticks in code block in code blocks.
+disable_conceal({ "markdown" })
