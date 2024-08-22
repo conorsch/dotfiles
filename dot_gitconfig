@@ -1,0 +1,29 @@
+[user]
+	name = Conor Schaefer
+	email = conor@ruin.dev
+[pull]
+	rebase = true
+[transfer]
+	fsckobjects = true
+[fetch]
+	fsckobjects = true
+[receive]
+	fsckobjects = true
+[status]
+	submodulesummary = true
+[diff]
+	submodule = log
+[init]
+	defaultBranch = main
+[core]
+	excludesFile = ~/.gitignore
+[advice]
+	addEmptyPathspec = false
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[rerere]
+	enabled = true
