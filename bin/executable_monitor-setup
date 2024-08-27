@@ -36,10 +36,22 @@ function multitask_projector() {
     xrandr --output DisplayPort-1 --auto --right-of eDP
 }
 
+# Determine how many screens are available. If only one,
+# we should reset to defaults.
+function how_many_monitors() {
+    xrandr | perl -lanE 'say $F[1]' | rg '^connected' -c
+}
+
 # Primary entrypoint.
 function main() {
-    sane_defaults
-    # mirror_to_projector
+    if [[ "$(how_many_monitors)" = 1 ]] ; then
+        sane_defaults
+        >&2 echo "Resetting to default state"
+    else
+        # TODO: make these options accessible via cli args
+        multitask_projector
+        # mirror_to_projector
+    fi
     nitrogen_restore
 }
 
