@@ -6,6 +6,8 @@ set -euo pipefail
 
 # By default, don't generate a GIF.
 MAKE_GIF=0
+# By default, don't open the file for viewing.
+OPEN_FILE=0
 
 # Arg parsing. First, we'll look for `-g` opts, then do
 # another loop to handle positional args.
