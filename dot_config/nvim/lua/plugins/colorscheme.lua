@@ -3,7 +3,14 @@
 -- * disable/enabled LazyVim plugins
 -- * override the configuration of LazyVim plugins
 return {
-  -- add gruvbox
+  -- Configure LazyVim to load gruvbox
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "gruvbox",
+    },
+  },
+  -- configure gruvbox theme
   {
     "ellisonleao/gruvbox.nvim",
     -- disable italics because i find them jarring in code files
@@ -16,13 +23,15 @@ return {
         folds = false,
       },
     },
-  },
-
-  -- Configure LazyVim to load gruvbox
-  {
-    "LazyVim/LazyVim",
-    opts = {
-      colorscheme = "gruvbox",
-    },
+    -- force very dark background for gruvbox; the default grey is too washed out.
+    -- via https://stackoverflow.com/a/75856730
+    config = function()
+      require("gruvbox").setup({
+        contrast = "hard",
+        palette_overrides = {
+          dark0_hard = "#000000",
+        },
+      })
+    end,
   },
 }
