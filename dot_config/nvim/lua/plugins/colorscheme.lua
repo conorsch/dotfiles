@@ -22,16 +22,12 @@ return {
         operators = false,
         folds = false,
       },
+      -- force very dark background for gruvbox; the default grey is too washed out.
+      -- adapted from https://stackoverflow.com/a/75856730
+      contrast = "hard",
+      palette_overrides = {
+        dark0_hard = "#000000",
+      },
     },
-    -- force very dark background for gruvbox; the default grey is too washed out.
-    -- via https://stackoverflow.com/a/75856730
-    config = function()
-      require("gruvbox").setup({
-        contrast = "hard",
-        palette_overrides = {
-          dark0_hard = "#000000",
-        },
-      })
-    end,
   },
 }
