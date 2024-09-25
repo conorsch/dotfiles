@@ -76,5 +76,5 @@ fi
 # View file if requested.
 if [[ $OPEN_FILE -gt 0 ]] ; then
     >&2 echo "Opening file..."
-    xdg-open "$dest_video"
+    vlc "$dest_video"
 fi

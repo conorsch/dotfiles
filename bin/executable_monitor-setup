@@ -33,6 +33,7 @@ function mirror_to_projector() {
 # to the right of the internal/primary laptop display.
 function multitask_projector() {
     # N.B. display names are hardcoded for Framework 13
+    # xrandr --output eDP --primary --left-of DisplayPort-1 --auto
     xrandr --output DisplayPort-1 --auto --right-of eDP
 }
 
@@ -46,11 +47,10 @@ function how_many_monitors() {
 function main() {
     if [[ "$(how_many_monitors)" = 1 ]] ; then
         sane_defaults
-        >&2 echo "Resetting to default state"
+        >&2 echo "Only one monitor detected, resetting to default state"
     else
         # TODO: make these options accessible via cli args
         multitask_projector
-        # mirror_to_projector
     fi
     nitrogen_restore
 }
