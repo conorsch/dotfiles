@@ -9,10 +9,12 @@ set -euo pipefail
 cargo_pkgs=(
     bottom
     cargo-watch
+    du-dust
     etym
     exa
     hyperfine
     just
+    oha
     tokei
     toml-cli
     watchexec-cli
