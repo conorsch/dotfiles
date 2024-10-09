@@ -11,7 +11,10 @@ shopt -s checkwinsize # check the window size after each command and, if necessa
 shopt -s cdspell # correct typos when spelling out paths.
 shopt -s cmdhist # multi-line commands are still entered into history
 shopt -s histreedit # re-edit history substitution if command fails
+
 shopt -s histappend # ensure all terminal commands are appended to history log
+# Write to history immediately after each command, not at end of session.
+export PROMPT_COMMAND="history -a"
 
 # Consider tab-completion via bash. Required for e.g. git branch names to be autocompleted.
 if [[ -f /etc/bash_completion ]] ; then
