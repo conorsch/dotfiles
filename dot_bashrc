@@ -43,15 +43,15 @@ if hash starship > /dev/null 2>&1 ; then
     eval "$(starship init bash)"
 fi
 
-# Devshell global env, because I haven't learned nix yet.
-if hash devbox > /dev/null 2>&1 ; then
-    eval "$(devbox global shellenv)"
-fi
-
 # penv: penumbra version manager
 if hash penv > /dev/null 2>&1 ; then
     eval "$(penv hook bash)"
 fi
 
 # Nix config
-if [ -e /home/conor/.nix-profile/etc/profile.d/nix.sh ]; then . /home/conor/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+# The nix-installer appends a reference to the nix profile to bash,
+# but doesn't actually create a file at this location.
+nix_config="${HOME}/.nix-profile/etc/profile.d/nix.sh"
+if [[ -e "$nix_config" ]] ; then
+  . "$nix_config"
+fi

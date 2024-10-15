@@ -34,10 +34,10 @@ alias ipy='ipython --no-banner --no-confirm-exit -i'
 # devops/sysadmin tooling abbreviations
 alias apb="ansible-playbook --diff"
 alias dcd="doctl compute droplet"
-alias ds="devbox shell"
 alias gp="kubectl get pods -A"
 alias jp="jetporch"
 alias k="kubectl"
+alias nd="nix develop"
 alias tf="terraform"
 
 # ssh aliases
