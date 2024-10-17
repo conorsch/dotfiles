@@ -61,7 +61,7 @@ function configure_hardware_workstation() {
     fedora-install-rpm-fusion
     install_zellij
     i3-setup
-    install-nix
+    install_nix
 }
 
 # Handle config specifically for Qubes VMs. Supports both AppVM and TemplateVM types.
@@ -85,7 +85,7 @@ function configure_qubes() {
         # fedora-install-flatpaks
         >&2 echo "WARNING: skipping nix install on Qubes, marked TODO"
         # TODO install nix, but requires `qubes-bind-dirs` support for persistence.
-        # install-nix
+        # install_nix
     elif [[ "$qubes_vm_type" = "TemplateVM" ]] ; then
         # flatpaks will be installed via AppVM
         # fedora-install-flatpaks
