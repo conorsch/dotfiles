@@ -5,3 +5,7 @@ lint:
         rg '^# shellcheck \w+=\w+' -l ) \
         | sort -u \
         | xargs -r shellcheck
+
+# apply only workstation configs
+workstation:
+  bash run_after_50-workstation-config.sh
