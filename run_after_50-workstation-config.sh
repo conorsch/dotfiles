@@ -81,7 +81,8 @@ function configure_qubes() {
             >&2 printf '\trestart the present AppVM, and re-run the script.\n'
             return 1
         fi
-        fedora-install-flatpaks
+        # Don't install heavy flatpaks always, best on hardware only.
+        # fedora-install-flatpaks
         >&2 echo "WARNING: skipping nix install on Qubes, marked TODO"
         # TODO install nix, but requires `qubes-bind-dirs` support for persistence.
         # install-nix
