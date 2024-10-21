@@ -7,13 +7,14 @@ set -euo pipefail
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 sudo flatpak install -y flathub \
-    org.signal.Signal \
     com.github.eneshecan.WhatsAppForLinux \
     com.spotify.Client \
+    com.valvesoftware.Steam \
     com.visualstudio.code \
-    us.zoom.Zoom \
     io.github.dweymouth.supersonic \
-    com.valvesoftware.Steam
+    org.mozilla.Thunderbird \
+    org.signal.Signal \
+    us.zoom.Zoom
 
 # 1password, via https://support.1password.com/install-linux/#flatpak
 if ! flatpak list | grep -q ^OnePassword ; then
@@ -39,6 +40,7 @@ setup_app_symlink us.zoom.Zoom zoom
 setup_app_symlink io.github.dweymouth.supersonic supersonic
 setup_app_symlink com.valvesoftware.Steam steam
 setup_app_symlink com.github.eneshecan.WhatsAppForLinux whatsapp
+setup_app_symlink org.mozilla.Thunderbird thunderbird
 
 # Clean up old confusing shortcut
 if [[ -L /usr/local/bin/signal ]]; then
