@@ -219,7 +219,7 @@ Fastdir9 = "${MusicDir}/Son of Aurelius"
 Fastdir10 = "${MusicDir}/Periphery"
 
 # How fast to seek? Number of seconds per key stroke.
-#SeekTime		= 1
+SeekTime = 7
 
 # How fast to seek (when using silent seeking)? Number of seconds per key
 # stroke.
