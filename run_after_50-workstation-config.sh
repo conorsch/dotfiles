@@ -62,6 +62,7 @@ function configure_hardware_workstation() {
     install_zellij
     i3-setup
     install_nix
+    configure_alacritty
 }
 
 # Handle config specifically for Qubes VMs. Supports both AppVM and TemplateVM types.
@@ -86,6 +87,7 @@ function configure_qubes() {
         >&2 echo "WARNING: skipping nix install on Qubes, marked TODO"
         # TODO install nix, but requires `qubes-bind-dirs` support for persistence.
         # install_nix
+        configure_alacritty
     elif [[ "$qubes_vm_type" = "TemplateVM" ]] ; then
         # flatpaks will be installed via AppVM
         # fedora-install-flatpaks
@@ -115,7 +117,6 @@ function configure_laptop() {
 # Primary script entrypoint. Basically a big switch statement
 # to match on workstation type, and do the needful.
 main() {
-    result=1
     hostnamectl_json="$(hostnamectl status --json pretty)"
     chassis="$(jq -r .Chassis <<< "$hostnamectl_json")"
     kernel_release="$(jq -r .KernelRelease <<< "$hostnamectl_json")"
@@ -129,7 +130,7 @@ main() {
         configure_laptop
     # Desktops, but only if run within a graphical environment.
     # Skips hardware servers.
-    elif [[ "$chassis" = "desktop" ]] && [[ -n "$DISPLAY" ]] ; then
+    elif [[ "$chassis" = "desktop" ]] && [[ -n "${DISPLAY:-}" ]] ; then
         configure_hardware_workstation
     # If we're in a VM running a Qubes kernel, consider that a workstation, too.
     elif [[ "$chassis" = "vm" ]] && [[ "$kernel_release"  =~ ^.*qubes.*$ ]] ; then
