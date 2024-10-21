@@ -20,6 +20,23 @@ cargo_pkgs=(
     watchexec-cli
 )
 
+# Declare build dependencies. This script isn't smart enough
+# to provide OS-level dependencies, but it can at least bail out
+# early if deps are missing.
+system_pkgs=(
+    make # required for `oha`
+)
+system_pkg_missing=0
+for p in "${system_pkgs[@]}" ; do
+    if ! hash "$p" > /dev/null 2>&1 ; then
+        >&2 echo "ERROR: package missing for cargo dep: ${p}"
+        system_pkg_missing="$((system_pkg_missing + 1))"
+    fi
+done
+if [[ "$system_pkg_missing" -gt 0 ]] ; then
+    >&2 echo "ERROR: missing ${system_pkg_missing} system packages, cannot build, exiting"
+    exit 1
+fi
 
 echo "Installing cargo packages: ${cargo_pkgs[*]}"
 # shellcheck source=/dev/null
