@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Pipeline script to remove ANSI escape codes from text output.
+# Useful when an app's logging config always forces color, rather than
+# disabling colorized output in non-interactive contexts, like a pipe.
+set -euo pipefail
+
+# sed one-liner via https://stackoverflow.com/a/43627833
+# Support reading filename via args, otherwise assume we're reading from stdin.
+sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" "$@" <&0
+exit 0

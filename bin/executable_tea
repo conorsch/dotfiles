@@ -1,0 +1,10 @@
+#!/bin/bash
+# Tiny timer script.
+set -euo pipefail
+
+
+brew_time="${1:-5m}"
+
+notify-send "Brewing tea for $brew_time ..."
+sleep "$brew_time"
+notify-send "Tea is ready!"
