@@ -25,17 +25,6 @@ function install_zellij() {
     sudo dnf install -y zellij
 }
 
-# Install Nix
-function install_nix() {
-    >&2 echo "Setting up nix..."
-    # Install nix: https://nixos.org/download/
-    if ! hash nix > /dev/null 2>&1 ; then
-        sh <(curl -L https://nixos.org/nix/install) --daemon
-        # shellcheck source=/dev/null
-        source ~/.bashrc
-    fi
-}
-
 # Edit user configurations for Alacritty terminal emulator.
 function configure_alacritty() {
     >&2 echo "Setting up alacritty..."
@@ -61,7 +50,7 @@ function configure_hardware_workstation() {
     fedora-install-rpm-fusion
     install_zellij
     i3-setup
-    install_nix
+    install-nix
     configure_alacritty
 }
 
@@ -86,7 +75,7 @@ function configure_qubes() {
         # fedora-install-flatpaks
         >&2 echo "WARNING: skipping nix install on Qubes, marked TODO"
         # TODO install nix, but requires `qubes-bind-dirs` support for persistence.
-        # install_nix
+        # install-nix
         configure_alacritty
     elif [[ "$qubes_vm_type" = "TemplateVM" ]] ; then
         # flatpaks will be installed via AppVM
