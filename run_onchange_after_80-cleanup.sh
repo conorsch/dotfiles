@@ -9,3 +9,6 @@ rm -vf ~/bin/fedora-login-wallpaper
 # Ensure bash_login does not exist, because its presence will prevent
 # loading of ~/.bash_profile and ~/.profile.
 rm -vf ~/.bash_login
+
+# Remove old version of starship, installed before switch to home-manager.
+rm -vf ~/.local/bin/starship

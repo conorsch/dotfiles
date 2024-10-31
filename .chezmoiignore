@@ -5,3 +5,8 @@ bootstrap.sh
 dom0/
 justfile
 packages/
+
+# nix config
+flake.nix
+flake.lock
+home.nix

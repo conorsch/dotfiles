@@ -55,3 +55,9 @@ nix_config="${HOME}/.nix-profile/etc/profile.d/nix.sh"
 if [[ -e "$nix_config" ]] ; then
   . "$nix_config"
 fi
+
+# Configure home-manager
+home_manager_config="${HOME}/.nix-profile/etc/profile.d/hm-session-vars.sh"
+if [[ -e "$home_manager_config" ]] ; then
+  . "$home_manager_config"
+fi

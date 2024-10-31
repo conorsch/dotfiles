@@ -18,7 +18,6 @@
 #  * i3-setup
 set -ueo pipefail
 
-
 # Install the zellij terminal emulator, via custom RPM repo.
 function install_zellij() {
     sudo dnf copr enable -y varlad/zellij
@@ -51,7 +50,22 @@ function configure_hardware_workstation() {
     install_zellij
     i3-setup
     install-nix
+    install_home_manager
     configure_alacritty
+}
+
+# Configure home-manager via nix.
+function install_home_manager() {
+    # unset prohibition of unbound variables, otherwise home-manager installer fails
+    set +u
+    source ~/.bashrc
+    # Uses the "standalone" installation type for home-manager.
+    # TODO: figure out how to codify the `24.05` release string
+    nix-channel --add https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
+    nix-channel --update
+    nix-shell '<home-manager>' -A install
+    home-manager switch
+    set -u
 }
 
 # Handle config specifically for Qubes VMs. Supports both AppVM and TemplateVM types.

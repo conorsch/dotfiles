@@ -1,3 +1,6 @@
 bin/chezmoi
 dot_config/systemd/user/default.target.wants/
 dot_config/systemd/user/timers.target.wants/
+
+# nix
+result
