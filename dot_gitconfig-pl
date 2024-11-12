@@ -1,0 +1,4 @@
+; Overrides for Penumbra Labs git projects.
+[user]
+	name = Conor Schaefer
+	email = conor@penumbralabs.xyz

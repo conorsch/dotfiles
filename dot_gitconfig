@@ -27,3 +27,6 @@
 	helper = !/usr/bin/gh auth git-credential
 [rerere]
 	enabled = true
+; override email settings on work projects
+[includeIf "hasconfig:remote.*.url:https://github.com/penumbra-zone/**"]
+	path = ~/.gitconfig-pl
