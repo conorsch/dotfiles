@@ -12,3 +12,6 @@ rm -vf ~/.bash_login
 
 # Remove old version of starship, installed before switch to home-manager.
 rm -vf ~/.local/bin/starship
+
+# Remove old version of k0sctl, previously managed via `.chezmoiexternal.toml`.
+rm -vf ~/.local/bin/k0sctl
