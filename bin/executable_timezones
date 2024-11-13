@@ -9,14 +9,15 @@ declare -a watched_timezones
 watched_timezones=(
   America/Los_Angeles
   America/New_York
-  Asia/Tehran
-  Asia/Singapore
-  Asia/Tokyo
-  Asia/Shanghai
+  Asia/Bangkok
   Asia/Kolkata
+  Asia/Shanghai
+  Asia/Singapore
+  Asia/Tehran
+  Asia/Tokyo
   Europe/Berlin
-  Europe/Paris
   Europe/Moscow
+  Europe/Paris
 )
 
 # The date format string uses a concatenated datestimp as the final field,
