@@ -16,7 +16,6 @@ git
 i3
 ipython3
 libsq3-devel
-moc
 neovim
 nfs-utils
 nitrogen
