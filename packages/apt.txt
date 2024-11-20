@@ -12,3 +12,4 @@ neovim
 pkg-config
 tree
 vim
+xz-utils

@@ -1,3 +1,5 @@
+@development-tools
+ImageMagick
 age
 alacritty
 bat
@@ -6,14 +8,12 @@ brightnessctl
 byobu
 clang-devel
 curl
-@development-tools
 diceware
 direnv
 dunst
 fd-find
 git
 i3
-ImageMagick
 ipython3
 libsq3-devel
 moc
@@ -34,3 +34,4 @@ uuid
 vim
 xrandr
 xset
+xz
