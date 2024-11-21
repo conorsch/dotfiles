@@ -12,9 +12,18 @@ shopt -s cdspell # correct typos when spelling out paths.
 shopt -s cmdhist # multi-line commands are still entered into history
 shopt -s histreedit # re-edit history substitution if command fails
 
-shopt -s histappend # ensure all terminal commands are appended to history log
-# Write to history immediately after each command, not at end of session.
-export PROMPT_COMMAND="history -a"
+# Configure merged history, so that commands from all terminal sessions,
+# even in multiplexers, are recorded in history for the host machine.
+# Taken from https://unix.stackexchange.com/a/556267
+export HISTSIZE=5000
+export HISTFILESIZE=5000
+export HISTCONTROL=ignorespace:erasedups
+shopt -s histappend
+function historymerge {
+    history -n; history -w; history -c; history -r;
+}
+trap historymerge EXIT
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
 
 # Consider tab-completion via bash. Required for e.g. git branch names to be autocompleted.
 if [[ -f /etc/bash_completion ]] ; then
