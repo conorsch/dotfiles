@@ -3,3 +3,20 @@
 # then load the default bashrc. That's it.
 [[ -f ~/.profile ]] && source ~/.profile
 [[ -f ~/.bashrc ]] && source ~/.bashrc
+
+# Autostart zellij if no connection. Generated via:
+#
+#   zellij setup --generate-auto-start bash
+#
+if hash zellij > /dev/null 2>&1 ; then
+  if [[ -z "$ZELLIJ" ]]; then
+    if [[ "$ZELLIJ_AUTO_ATTACH" == "true" ]]; then
+      zellij attach -c
+    else
+      zellij
+    fi
+    if [[ "$ZELLIJ_AUTO_EXIT" == "true" ]]; then
+      exit
+    fi
+  fi
+fi
