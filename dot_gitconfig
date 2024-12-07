@@ -30,3 +30,5 @@
 ; override email settings on work projects
 [includeIf "hasconfig:remote.*.url:https://github.com/penumbra-zone/**"]
 	path = ~/.gitconfig-pl
+[includeIf "hasconfig:remote.*.url:git@github.com:penumbra-zone/**"]
+	path = ~/.gitconfig-pl
