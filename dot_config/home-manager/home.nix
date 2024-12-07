@@ -46,14 +46,16 @@
     pkgs.git
     pkgs.htop
     pkgs.neovim
+    pkgs.ntfy-sh
     pkgs.ripgrep
+    pkgs.sops
     pkgs.starship
     pkgs.zellij
 
     # graphical workstation packages
     # TODO: make this inclusion conditional
     pkgs.alacritty
-    pkgs.moc
+    # pkgs.moc # throws libasound/pipewire errors
     pkgs.redshift
     pkgs.rofi
     # pkgs.xrandr

@@ -8,4 +8,4 @@ if [[ $# -lt 1 ]]; then
     exit 1
 fi
 
-curl -sSf -d "$*" https://ruin.dev/ntfy/jawn
+curl -sSf -d "$*" https://ntfy.ruin.dev/jawn

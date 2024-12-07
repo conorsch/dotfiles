@@ -1,0 +1,20 @@
+[Unit]
+Description="Subscribe to self-hosted ntfy service and display alerts"
+After=graphical-session.target
+# BindsTo=graphical-session.target
+# PartOf=graphical-session.target
+Requisite=graphical-session.target
+# ConditionEnvironment=DISPLAY
+
+[Service]
+Type=simple
+Environment="DISPLAY=:0"
+# We run a bash interactive login session in order to source the nix env,
+# so that `ntfy` is on the path.
+ExecStart=/bin/bash -l -c "source ~/.bashrc && ntfy subscribe https://ntfy.ruin.dev/jawn | jq .message -r --unbuffered | xargs -r  -I{} notify-send 'ntfy: {}'"
+Restart=on-failure
+RestartSec=1
+# RemainAfterExit=yes
+
+[Install]
+WantedBy=graphical-session.target
