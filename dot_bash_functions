@@ -43,11 +43,26 @@ emoji-test() {
 # Replaces `virtualenvwrappers`'s alias,
 # leveraging the muscle memory but relying on direnv.
 workon() {
-    local project_name
+    local project_namespaces project_name
+    declare -a project_namespaces=(pl personal misc)
     project_name="${1:-}"
     shift 1
-    d="${HOME}/src/$project_name"
-    pushd "$d" || return 1
+    for project_namespace in "${project_namespaces[@]}"; do
+      d="${HOME}/src/${project_namespace}/${project_name}"
+      if [[ -e "$d" ]] ; then
+        pushd "$d"
+        return 0
+      fi
+    done
+    # Backwards-compat: try without namespace.
+    d="${HOME}/src/${project_name}"
+    if [[ -e "$d" ]] ; then
+      pushd "$d"
+      return 0
+    fi
+    # If we made it this far then we don't have a result
+    >&2 echo "ERROR: project name '$project_name' not found"
+    return 1
 }
 
 # Remove an warm light / darkness customization
