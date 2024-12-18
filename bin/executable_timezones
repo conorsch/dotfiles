@@ -18,6 +18,7 @@ watched_timezones=(
   Europe/Berlin
   Europe/Moscow
   Europe/Paris
+  Pacific/Chatham
 )
 
 # The date format string uses a concatenated datestimp as the final field,
