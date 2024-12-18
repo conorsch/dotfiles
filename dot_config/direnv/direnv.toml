@@ -1,0 +1,10 @@
+[whitelist]
+# Never prompt for permission for these `.envrc` files.
+exact = [
+    "/home/conor/src/fleet/.envrc"
+]
+
+[global]
+# Don't print verbose list of all env vars that changed
+# when an `.envrc` file is loaded.
+hide_env_diff = true

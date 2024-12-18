@@ -46,6 +46,8 @@ fi
 if hash direnv > /dev/null 2>&1; then
     eval "$(direnv hook bash)"
 fi
+# hush up direnv
+export DIRENV_LOG_FORMAT=""
 
 # Starship shell prompt
 if hash starship > /dev/null 2>&1 ; then
