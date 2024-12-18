@@ -7,6 +7,7 @@ set -euo pipefail
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
 sudo flatpak install -y flathub \
+    com.brave.Browser \
     com.github.eneshecan.WhatsAppForLinux \
     com.spotify.Client \
     com.valvesoftware.Steam \
@@ -31,16 +32,17 @@ function setup_app_symlink() {
     sudo ln -v -f -s "${flatpak_bin_path}/${flatpak_name}" "/usr/local/bin/${cli_name}"
 }
 # Declare mapping of flatpak name to convenient cli shortcut.
-setup_app_symlink com.spotify.Client spotify
-setup_app_symlink org.signal.Signal signal-desktop
-setup_app_symlink com.onepassword.OnePassword onepassword
-setup_app_symlink com.onepassword.OnePassword 1password
-setup_app_symlink com.visualstudio.code vscode
-setup_app_symlink us.zoom.Zoom zoom
-setup_app_symlink io.github.dweymouth.supersonic supersonic
-setup_app_symlink com.valvesoftware.Steam steam
+setup_app_symlink com.brave.Browser brave
 setup_app_symlink com.github.eneshecan.WhatsAppForLinux whatsapp
+setup_app_symlink com.onepassword.OnePassword 1password
+setup_app_symlink com.onepassword.OnePassword onepassword
+setup_app_symlink com.spotify.Client spotify
+setup_app_symlink com.valvesoftware.Steam steam
+setup_app_symlink com.visualstudio.code vscode
+setup_app_symlink io.github.dweymouth.supersonic supersonic
 setup_app_symlink org.mozilla.Thunderbird thunderbird
+setup_app_symlink org.signal.Signal signal-desktop
+setup_app_symlink us.zoom.Zoom zoom
 
 # Clean up old confusing shortcut
 if [[ -L /usr/local/bin/signal ]]; then

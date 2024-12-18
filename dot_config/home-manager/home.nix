@@ -46,7 +46,7 @@
     pkgs.git
     pkgs.htop
     pkgs.neovim
-    pkgs.ntfy-sh
+    # pkgs.ntfy-sh conflicts with home-manager-path/bin/fbsen
     pkgs.ripgrep
     pkgs.sops
     pkgs.starship
@@ -56,7 +56,7 @@
     # TODO: make this inclusion conditional
     pkgs.alacritty
     # pkgs.moc # throws libasound/pipewire errors
-    pkgs.redshift
+    # pkgs.redshift # idk how to do user systemd services on non-nixos for nixpkgs
     pkgs.rofi
     # pkgs.xrandr
     # pkgs.xset
@@ -125,4 +125,5 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
 }
