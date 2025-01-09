@@ -26,6 +26,9 @@ export GO111MODULE=on
 # To test, try `firefox -p` and see how the profile-picker window renders.
 # Including here as comment for easy reference.
 export GTK_THEME="Adwaita:dark"
+# As of 2025Q1, Adwaita-dark may be deprecated? Switching to `kvantum` under F41.
+# The `QT_STYLE_OVERRIDE` is intended for VLC specifically.
+export QT_STYLE_OVERRIDE="kvantum"
 
 # Set custom key remaps, like caps lock to Escape, but only for graphical environments.
 if [ -n "$DISPLAY" ] && [ "$DESKTOP_SESSION" != "sway" ] ; then
@@ -43,3 +46,4 @@ if [ -n "$DISPLAY" ] ; then
         export TERM="alacritty"
     fi
 fi
+
