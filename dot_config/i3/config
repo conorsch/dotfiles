@@ -7,9 +7,12 @@
 # Use meta key for primary mod.
 set $mod Mod4
 
+# Completely remove title bar
+new_window 1pixel
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
+font pango:monospace 10
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
@@ -27,12 +30,13 @@ bindsym $mod+Shift+q kill
 # gaps bottom 0
 # gaps horizontal 5
 gaps outer 0
-gaps inner 5
+gaps inner 1
 smart_gaps off
 smart_borders on
 # hide_edge_borders smart_no_gaps
-# default_border pixel 0
+default_border pixel 0
 hide_edge_borders horizontal
+hide_edge_borders vertical
 
 # if true, permit double-tapping a workspace entry to flip back to origin.
 workspace_auto_back_and_forth no
@@ -49,9 +53,8 @@ exec --no-startup-id picom --backend xrender
 # Restore desktop picture
 exec --no-startup-id nitrogen --restore
 
-# Warm it up, if appropriate
-# exec --no-startup-id redshift -O 3700
-exec --no-startup-id redshift
+# Don't run redshift, defer to user systemd service
+# exec --no-startup-id redshift -t 6500:3700
 
 # Start standard apps
 exec --no-startup-id i3-msg 'workspace 1:terminal; exec /usr/bin/i3-sensible-terminal'
@@ -205,11 +208,14 @@ bar {
         i3bar_command i3bar --transparency
         status_command i3status
 
+        position top
+
         colors {
             # Configure the background color of the i3bar to be mostly transparent,
             # by prefixing `66` to the hex code for black `#000000`. See guide at:
             # https://itsfoss.com/i3-customization/#make-i3-bar-transparent
-            set $bar-color #66000000
+            # set $bar-color #66000000
+            set $bar-color #00000099
             background $bar-color
         }
         # Disable scroll wheel when hovering over bar. Prevents inadvertent workspace switching.

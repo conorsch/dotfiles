@@ -274,12 +274,15 @@ pane_frames false
 // Default: default
 //
 // theme "default"
-theme "molokai-dark"
+//
+// theme "molokai-dark"
+theme "gruvbox-dark"
 
 // The name of the default layout to load on startup
 // Default: "default"
 //
-default_layout "compact"
+// Use custom layout to flip tab bar to top
+default_layout "compact_custom"
 
 // Choose the mode that zellij uses when starting up.
 // Default: normal
