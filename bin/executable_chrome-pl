@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Wrapper script to run Chromium Browser with a specific profile.
+set -euo pipefail
+
+
+profile_directory="${HOME:?}/.config/chromium-browser-pl-1"
+mkdir -p "$profile_directory"
+
+chromium-browser --user-data-dir="$profile_directory"
