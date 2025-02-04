@@ -3,22 +3,26 @@
 set -euo pipefail
 
 
+# TODO: check for 'chromium-browser' on PATH
+
 # The default Chromium browser path is `~/.config/chromium`; we don't want to use a subdir of that,
 # so we'll name custom ones `~/.config/chromium-browser-<foo>`, and select on `foo`.
 # Let's look up any that are present on the system.
 config_dir="${HOME:?}/.config"
 chromium_profiles=$(fd -t d '^chromium-browser' "$config_dir" -X basename | sed 's/chromium-browser-//')
 if [[ -z "$chromium_profiles" ]] ; then
-  >&2 echo "ERROR: no custom chromium files exist."
+  gum log --level=error "no custom chromium files exist."
+  rofi -e "ERROR: no custom chromium files exist."
+  exit 1
 fi
 
 # Use rofi to prompt user to select a profile interactively.
 selected_profile="$(echo "$chromium_profiles" | rofi -dmenu -p "Select Chromium profile")"
 if [[ -z "$selected_profile" ]]; then
-    >&2 echo "ERROR: no profile selected"
-    exit 1
+  gum log --level=error "no profile selected"
+  exit 2
 fi
 
 # Run it.
 profile_directory="${config_dir}/chromium-browser-${selected_profile}"
-chromium-browser --user-data-dir="$profile_directory"
+exec chromium-browser --user-data-dir="$profile_directory"
