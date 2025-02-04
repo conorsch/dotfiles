@@ -43,6 +43,7 @@
     pkgs.direnv
     pkgs.dunst
     pkgs.fd
+    pkgs.fzf
     pkgs.git
     pkgs.gum
     pkgs.htop
