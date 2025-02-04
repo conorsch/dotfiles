@@ -44,6 +44,7 @@
     pkgs.dunst
     pkgs.fd
     pkgs.git
+    pkgs.gum
     pkgs.htop
     pkgs.neovim
     # pkgs.ntfy-sh conflicts with home-manager-path/bin/fbsen

@@ -17,13 +17,17 @@ current_fedora_version="$(hostnamectl --json pretty \
     | perl -F: -lanE 'say $F[-1]')"
 next_fedora_version="$((current_fedora_version + 1))"
 
-echo "Would upgrade from F$current_fedora_version -> F$next_fedora_version"
-# exit because these commands are useful mostly as a reference for now
-exit 0
+if ! gum confirm --default="No" "Upgrade from F${current_fedora_version} -> F${next_fedora_version}?" ; then
+    >&2 echo "Exiting..."
+    exit 0
+fi
 
 sudo dnf upgrade -y --refresh
 # technically supposed to reboot here
 >&2 echo "Finished running 'sudo dnf upgrade -y --refresh' (consider rebooting)..."
 sudo dnf install -y dnf-plugin-system-upgrade
 sudo dnf system-upgrade download --releasever="$next_fedora_version"
+
+notify-send --urgency critical "Rebooting workstation in 1m!"
+sleep 60
 sudo dnf system-upgrade reboot
