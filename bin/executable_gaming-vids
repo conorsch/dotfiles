@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Will be used for both remote and local mount points.
-media_dir="/mnt/Valhalla"
+media_dir="/mnt/Valhalla/Media/incoming/gaming"
 # Media server identity on innernet.
 media_host="adolin.ruindev.wg"
 # How recent the videos must be to be included.
@@ -13,11 +13,14 @@ time_range="${1:-1d}"
 # and should be moved (actually, hard-linked) to an "incoming" dir for review.
 ssh "$media_host" ./check-for-new-gaming-vids.sh
 
-# Use other dotfiles script to ensure media directory is mounted locally.
-media-mount
+if ! test -d "$media_dir" ; then
+  >&2 echo "vids dir not mounted, mounting..."
+  # Use other dotfiles script to ensure media directory is mounted locally.
+  media-mount
+fi
 
 # Hop into directory
-cd "${media_dir}/Media/incoming/gaming" || exit 1
+cd "${media_dir}" || exit 1
 
 # Look 'em up. This views *all* video files, which is fine.
 fd -t f -e mp4 . --changed-within "$time_range" \
