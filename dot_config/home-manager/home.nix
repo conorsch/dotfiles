@@ -54,6 +54,10 @@
     pkgs.starship
     pkgs.zellij
 
+    # temporary dev cruft
+    pkgs.pnpm
+    pkgs.nodejs_22
+
     # graphical workstation packages
     # TODO: make this inclusion conditional
     pkgs.alacritty

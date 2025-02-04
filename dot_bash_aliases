@@ -49,6 +49,9 @@ alias cargo-all="cargo build && cargo build --release && cargo check && cargo ch
 alias cb="cargo build"
 alias cbr="cargo build --release"
 
+# nix aliases
+alias hms="home-manager switch"
+
 # machine maintenance, copying files around
 alias r="rsync -a --info=progress2"
 alias z="zellij"
