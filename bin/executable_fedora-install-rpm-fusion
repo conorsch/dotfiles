@@ -1,24 +1,23 @@
 #!/bin/bash
 # Configure the RPM fusion repos, for media playback in Firefox,
-# on Fedora systems.
+# on Fedora systems. See docs here:
+# https://docs.fedoraproject.org/en-US/quick-docs/rpmfusion-setup/
 set -euo pipefail
 
 # sanity check
 if ! grep -q '^ID=fedora' /etc/os-release ; then
-    echo "ERROR: not a fedora system, exiting..."
+    >&2 echo "ERROR: not a fedora system, exiting..."
     exit 1
 fi
 
 # DRY version updates, don't want to bump this script
 # every six months when a new Fedora comes out.
-fedora_version="$(perl -nE '/^VERSION_ID=(\d+)/ and say $1' /etc/os-release)"
+fedora_version="$(rpm -E %fedora)"
 if [[ -z "$fedora_version" ]] ; then
-    echo "ERROR: could not find fedora version"
+    >&2 echo "ERROR: could not find fedora version"
     exit 2
 fi
 
-sudo dnf install -y "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_version}.noarch.rpm"
-sudo dnf config-manager --set-enabled rpmfusion-free
-sudo dnf config-manager --set-enabled rpmfusion-free-updates
+sudo dnf install -y "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-${fedora_version}.noarch.rpm"
 sudo dnf upgrade --refresh -y
 sudo dnf install -y ffmpeg --allowerasing
