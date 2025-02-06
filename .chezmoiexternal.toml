@@ -1,4 +1,16 @@
+# External includes for chezmoi, see docs at
+# https://www.chezmoi.io/user-guide/include-files-from-elsewhere/#include-a-subdirectory-from-a-url
+
 [".vim/autoload/plug.vim"]
     type = "file"
     url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-    refreshPeriod = "168h"
+    # refreshPeriod = "168h"
+
+# Totally sick project https://github.com/hastinbe/i3-volume
+# GUI notifs for adjusting volume.
+["bin/i3volume"]
+    type = "file"
+    executable = true
+    url = "https://raw.githubusercontent.com/hastinbe/i3-volume/8f50a700762285a082e931d06e49219f95a38043/volume"
+    # default `refreshPeriod` is `Never`
+    # refreshPeriod = "168h"
