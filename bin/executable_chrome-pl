@@ -9,7 +9,7 @@ set -euo pipefail
 # so we'll name custom ones `~/.config/chromium-browser-<foo>`, and select on `foo`.
 # Let's look up any that are present on the system.
 config_dir="${HOME:?}/.config"
-chromium_profiles=$(fd -t d '^chromium-browser' "$config_dir" -X basename | sed 's/chromium-browser-//')
+chromium_profiles="$(fd -t d '^chromium-browser' "$config_dir" -x basename | sed 's/chromium-browser-//')"
 if [[ -z "$chromium_profiles" ]] ; then
   gum log --level=error "no custom chromium files exist."
   rofi -e "ERROR: no custom chromium files exist."
