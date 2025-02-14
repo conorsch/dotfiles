@@ -14,7 +14,7 @@ time_range="${1:-1d}"
 ssh "$media_host" ./check-for-new-gaming-vids.sh
 
 if ! test -d "$media_dir" ; then
-  >&2 echo "vids dir not mounted, mounting..."
+  gum log --level=warn "vids dir not mounted, mounting..."
   # Use other dotfiles script to ensure media directory is mounted locally.
   media-mount
 fi
@@ -22,6 +22,7 @@ fi
 # Hop into directory
 cd "${media_dir}" || exit 1
 
-# Look 'em up. This views *all* video files, which is fine.
+# Look 'em up, and play all recent vids for review.
+# The `vlc` invocation silences stderr because otherwise the terminal output is garish.
 fd -t f -e mp4 . --changed-within "$time_range" \
-    | sort -n | xargs -r -d '\n' vlc
+    | sort -n | xargs -r -d '\n' vlc 2>/dev/null
