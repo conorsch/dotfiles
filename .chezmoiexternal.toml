@@ -14,3 +14,13 @@
     url = "https://raw.githubusercontent.com/hastinbe/i3-volume/8f50a700762285a082e931d06e49219f95a38043/volume"
     # default `refreshPeriod` is `Never`
     # refreshPeriod = "168h"
+
+# nix-direnv, for faster loading of nix flakes via .envrc
+# https://github.com/nix-community/nix-direnv
+[".local/share/nix-direnv"]
+    type = "git-repo"
+    url = "https://github.com/nix-community/nix-direnv.git"
+    # refreshPeriod = "168h"
+    clone.args = ["--depth=1"]
+    exact = true
+    ref = "3.0.6"

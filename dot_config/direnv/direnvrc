@@ -1,0 +1,2 @@
+# source nix-direnv, for faster loading of flake devshells
+source "${HOME:?}/.local/share/nix-direnv/direnvrc"
