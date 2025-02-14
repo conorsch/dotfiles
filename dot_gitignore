@@ -20,3 +20,8 @@ node_modules
 # General
 *.so
 *.sqlite3*
+
+# direnv
+.envrc
+.direnv/
+.env
