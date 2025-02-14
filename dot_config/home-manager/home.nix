@@ -57,6 +57,7 @@
     # temporary dev cruft
     pkgs.pnpm
     pkgs.nodejs_22
+    pkgs.wasm-pack
 
     # graphical workstation packages
     # TODO: make this inclusion conditional
