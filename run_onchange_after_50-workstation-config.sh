@@ -50,32 +50,7 @@ function configure_hardware_workstation() {
     install_zellij
     i3-setup
     install-nix
-    install_home_manager
     configure_alacritty
-}
-
-# Perform "standalone" installation of home-manager. See docs at:
-# https://nix-community.github.io/home-manager/index.xhtml#ch-installation
-function install_home_manager() {
-    # Workaround for a bug where home-manager assumes files exist but they don't.
-    # https://github.com/nix-community/home-manager/issues/3734
-    # error msg is:
-    #
-    #   error: opening lock file '/nix/var/nix/profiles/per-user/conor/profile.lock': No such file or directory
-    #
-    # so let's make sure the solution addresses that path.
-    sudo mkdir -m 0755 -p /nix/var/nix/{profiles,gcroots}/per-user/"${USER:?}"
-    sudo chown -R "${USER:?}:nixbld" /nix/var/nix/{profiles,gcroots}/per-user/"${USER:?}"
-
-    # Uses the "standalone" installation type for home-manager.
-    # TODO: figure out how to codify the `24.05` release string
-    nix-channel --add https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
-    nix-channel --update
-    # unset prohibition of unbound variables, otherwise home-manager installer fails
-    set +u
-    nix-shell '<home-manager>' -A install
-    home-manager switch
-    set -u
 }
 
 # Handle config specifically for Qubes VMs. Supports both AppVM and TemplateVM types.
