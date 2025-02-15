@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Lazy developer script intended to Do The Right Thing™.
+# Encourages reuse of common tooling across repos.
+#
+#   1. Supports Rust projects, to run a `cargo check` in a loop
+#   2. Doesn't do anything else yet.
+#
+#
+set -euo pipefail
+
+
+# Let's figure out what we're dealing with.
+
+# Identify Rust projects
+if [[ -e "Cargo.toml" ]]; then
+  gum log --level=info "Found a Rust project! Running check in loop..."
+
+  watch_dir="."
+  if [[ -d "crates" ]]; then
+    watch_dir="crates"
+  fi
+  cargo watch -c -s 'cargo check -r --all-targets --all-features' -w "${watch_dir}" --poll
+fi
