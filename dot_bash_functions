@@ -50,14 +50,14 @@ workon() {
     for project_namespace in "${project_namespaces[@]}"; do
       d="${HOME}/src/${project_namespace}/${project_name}"
       if [[ -e "$d" ]] ; then
-        pushd "$d"
+        pushd "$d" || return 1
         return 0
       fi
     done
     # Backwards-compat: try without namespace.
     d="${HOME}/src/${project_name}"
     if [[ -e "$d" ]] ; then
-      pushd "$d"
+      pushd "$d" || return 1
       return 0
     fi
     # If we made it this far then we don't have a result
