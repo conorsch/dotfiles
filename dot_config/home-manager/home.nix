@@ -53,6 +53,7 @@
     pkgs.sops
     pkgs.starship
     pkgs.zellij
+    pkgs.gifski
 
     # temporary dev cruft
     pkgs.pnpm
