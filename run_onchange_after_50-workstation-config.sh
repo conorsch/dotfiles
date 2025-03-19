@@ -36,7 +36,7 @@ function configure_alacritty() {
     # The alacritty package was already installed via the default rpm repos.
     # Now we symlink it as `x-terminal-emulator` so that `i3-sensible-terminal`
     # picks it up. This seems to work better than setting `TERM=alacritty`.
-    if [[ -e /usr/bin/alacritty ]] ; then
+    if [[ -e /usr/bin/alacritty ]] && [[ -w /usr/local/bin ]]; then
         ln -s "/usr/bin/alacritty" -f "/usr/local/bin/x-terminal-emulator"
     fi
   }
