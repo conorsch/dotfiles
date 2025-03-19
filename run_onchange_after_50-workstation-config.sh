@@ -64,25 +64,9 @@ function configure_qubes() {
     qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
 
     if [[ "$qubes_vm_type" = "AppVM" ]] ; then
-        if ! hash zellij > /dev/null 2>&1 ; then
-            >&2 echo "ERROR: Running in a Qubes AppVM, but zellij not installed"
-            >&2 printf '\tRun this script from inside the associated TemplateVM first,\n'
-            >&2 printf '\trestart the present AppVM, and re-run the script.\n'
-            return 1
-        fi
         # Don't install heavy flatpaks always, best on hardware only.
         # fedora-install-flatpaks
-        >&2 echo "WARNING: skipping nix install on Qubes, marked TODO"
-        # TODO install nix, but requires `qubes-bind-dirs` support for persistence.
-        # install-nix
         configure_alacritty
-    elif [[ "$qubes_vm_type" = "TemplateVM" ]] ; then
-        # flatpaks will be installed via AppVM
-        # fedora-install-flatpaks
-        fedora-install-rpm-fusion
-        install_zellij
-        # In qubes, i3 config only applies to dom0.
-        # i3-setup
     elif [[ "$qubes_vm_type" = "StandaloneVM" ]] ; then
         # Treat a standalone VM as a normal workstation.
         configure_hardware_workstation
