@@ -12,7 +12,7 @@ new_window 1pixel
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 10
+font pango:monospace 8
 
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
