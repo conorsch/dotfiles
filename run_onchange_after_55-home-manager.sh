@@ -41,7 +41,7 @@ function is_nix_installed() {
 # and configures home-manager if so.
 main() {
   if ! is_nix_installed ; then
-    >&2 "DEBUG: nix is not installed, so skipping home-manager installation"
+    >&2 echo "DEBUG: nix is not installed, so skipping home-manager installation"
     exit 0
   fi
 
