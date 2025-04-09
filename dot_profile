@@ -5,6 +5,8 @@
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/bin"
 export EDITOR="nvim"
+# Read manpages in vim
+export MANPAGER="${EDITOR:-vim} +Man!"
 export BROWSER="firefox"
 # Set a color-friendly TERM by default.
 export TERM="xterm-256color"
