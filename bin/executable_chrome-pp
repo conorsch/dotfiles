@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# `chrome-profile-picker` or `chrome-pp`.
+#
+# Wrapper script to run Chromium Browser with a specific profile.
+# Helps when setting up dev profiles for web development, where specific
+# profiles can have certain web extensions installed and configured.
+#
+# The default Chromium browser path is `~/.config/chromium`; we don't want to use a subdir of that,
+# so we'll name custom ones `~/.config/chromium-browser-<foo>`, and select on `foo`,
+# presenting each option to the user for launching the browser.
+#
+# Invocation is assumed to be via i3 dmenu, which is why `rofi` is used for a more pleasant interface.
+set -euo pipefail
+
+
+# Check for script dependencies
+function check_deps() {
+  declare -a cli_deps
+  cli_deps=(
+    chromium-browser
+    fd
+    gum
+    rofi
+  )
+  result=0
+  for d in "${cli_deps[@]}" ; do
+    if ! hash "$d" > /dev/null 2>&1 ; then
+      >&2 echo "ERROR: '$d' not found on PATH"
+      result=1
+    fi
+    if [[ "$result" -gt 0 ]]; then
+      exit 1
+    fi
+  done
+}
+
+# Search for custom chromium profiles on the system
+function choose_chromium_profile() {
+  config_dir="${HOME:?}/.config"
+  chromium_profiles="$(fd -t d '^chromium-browser' "$config_dir" -x basename | sed 's/chromium-browser-//')"
+  if [[ -z "$chromium_profiles" ]] ; then
+    gum log --level=error "no custom chromium profiles exist."
+    rofi -e "ERROR: no custom chromium profiles exist."
+    exit 1
+  fi
+
+  # Use rofi to prompt user to select a profile interactively.
+  selected_profile="$(echo "$chromium_profiles" | rofi -dmenu -p "Select Chromium profile")"
+  if [[ -z "$selected_profile" ]]; then
+    gum log --level=error "no profile selected"
+    exit 2
+  fi
+
+  # Run it.
+  profile_directory="${config_dir}/chromium-browser-${selected_profile}"
+  exec chromium-browser --user-data-dir="$profile_directory"
+}
+
+# Primary script entrypoint
+function main() {
+  check_deps
+  choose_chromium_profile
+}
+
+main
+exit 0

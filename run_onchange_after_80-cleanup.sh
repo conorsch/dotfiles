@@ -19,3 +19,6 @@ rm -vf ~/.local/bin/k0sctl
 # Migrated to using `gifski` from nixpkgs, which makes building with
 # --features=video much easier.
 rm -vf ~/bin/gifski
+
+# Renamed script `chrome-pl` -> `chrome-pp`
+rm -vf ~/bin/chrome-pl
