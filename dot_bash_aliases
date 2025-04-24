@@ -31,6 +31,8 @@ alias ll="exa -l"
 alias t="exa -l -R --tree"
 alias tree="exa -l -R --tree"
 alias ipy='ipython --no-banner --no-confirm-exit -i'
+# find a file and open it for editing. uses fd to honor git-ignores.
+alias f='${EDITOR:-nvim} $(fd -t f | fzf --preview "bat --color=always {}")'
 
 # devops/sysadmin tooling abbreviations
 alias apb="ansible-playbook --diff"
