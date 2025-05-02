@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Script to configure trackpad on laptops
+set -euo pipefail
+
+
+# Install X11 deps
+sudo dnf install xorg-x11-drv-libinput libinput-utils xinput
+
+# Try to find any touchpad.
+# Confirmed working on an old Lenovo X1.
+TRACKPAD_ID="$(xinput list | grep -E 'touchpad|Synaptics|TrackPad' -i | head -n1 | grep -o "id=[0-9]*" | cut -d= -f2)"
+
+# Only apply if a touchpad was found
+if [[ -n "$TRACKPAD_ID" ]]; then
+    # Check if this is a Synaptics device
+    if xinput list-props "$TRACKPAD_ID" | grep -q "Synaptics Tap Action"; then
+        xinput set-prop "$TRACKPAD_ID" "Synaptics Tap Action" 1 1 1 1 1 1 1
+    # If it's a libinput device
+    elif xinput list-props "$TRACKPAD_ID" | grep -q "libinput Tapping Enabled"; then
+        xinput set-prop "$TRACKPAD_ID" "libinput Tapping Enabled" 1
+    fi
+else
+    >&2 echo "DEBUG: no touchpad found, not configuring"
+fi
