@@ -27,7 +27,7 @@ suspend_threshold=5
 msg_duration=15000
 
 # Presumed battery path. Check is skipped if non-existent.
-battery_path="/sys/class/power_supply/BAT1"
+battery_path="$(find /sys/class/power_supply/ -mindepth 1 -maxdepth 1 -iname 'BAT*' | sort -V | tail -n1)"
 battery_level="$(cat "${battery_path}/capacity")"
 battery_state="$(cat "${battery_path}/status")"
 
