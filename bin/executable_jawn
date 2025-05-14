@@ -20,4 +20,8 @@ if [[ -e "Cargo.toml" ]]; then
     watch_dir="crates"
   fi
   cargo watch -c -s 'cargo check -r --all-targets --all-features' -w "${watch_dir}" --poll
+# Catch-all conditional
+else
+  gum log --level=error "Sorry, couldn't figure out to do with the current dir"
+  exit 1
 fi
