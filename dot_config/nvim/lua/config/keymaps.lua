@@ -2,9 +2,6 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
--- Set backslash as the leader key
-vim.g.mapleader = "\\"
-
 -- Function to remove trailing whitespace
 local function remove_trailing_whitespace()
   -- Save cursor position
