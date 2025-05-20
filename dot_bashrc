@@ -39,8 +39,11 @@ if [[ -z "SSH_CLIENT" ]] ; then
     fi
 fi
 
-# rustlang dev config
-. "$HOME/.cargo/env"
+# rustlang dev config. Don't assume cargo config exists.
+_rust_env="$HOME/.cargo/env"
+if [[ -e "$_rust_env" ]] ; then
+  source "$_rust_env"
+fi
 
 # direnv
 if hash direnv > /dev/null 2>&1; then
