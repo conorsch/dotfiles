@@ -12,6 +12,7 @@ rm -vf ~/.bash_login
 
 # Remove old version of starship, installed before switch to home-manager.
 rm -vf ~/.local/bin/starship
+rm -vf ~/starship
 
 # Remove old version of k0sctl, previously managed via `.chezmoiexternal.toml`.
 rm -vf ~/.local/bin/k0sctl
@@ -22,3 +23,6 @@ rm -vf ~/bin/gifski
 
 # Renamed script `chrome-pl` -> `chrome-pp`
 rm -vf ~/bin/chrome-pl
+
+# Moved script ~/bin/i3volume -> ~/.local/bin/i3volume
+rm -vf ~/bin/i3volume
