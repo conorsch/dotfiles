@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Utility script to convert a PDF document to a single PNG
+# image, vertically stitching together all pages.
+set -euo pipefail
+
+
+if [[ $# -lt 1 ]] ; then
+  >&2 echo "Usage: $0 <pdf>"
+  exit 1
+fi
+# TODO: check for deps
+
+target_pdf="${1:-}"
+shift
+
+# Create tmpdir as workspace.
+d="$(mktemp -d)"
+trap 'rm -rf $d' EXIT
+cp "$target_pdf" "$d"
+pushd "$d" > /dev/null
+
+# Strip file extension.
+output_basename="${target_pdf%.*}"
+output_png="${output_basename}.png"
+
+>&2 echo "Converting '$target_pdf' -> '$output_png'..."
+pdftoppm -png "$target_pdf" "$output_basename"
+convert "${output_basename}"-*.png -append "$output_png"
+popd > /dev/null
+cp "${d}/${output_png}" .
