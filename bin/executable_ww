@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# ww: Productivity tool to capture notes, quickly.
+# Immediately grabs focus and writes persistently
+# to disk, in ~/.local/share/ww
+#
+# Named after "written when?"
+set -euo pipefail
+
+
+data_directory="${HOME:?}/.local/share/ww"
+mkdir -p "$data_directory"
+
+# generate unique filename
+random_name="$(diceware -n2 --no-caps -d'-')"
+output_filename="${data_directory}/${random_name}.md"
+
+# ensure that probably-unique filename isn't taken
+if [[ -e "$output_filename" ]] ; then
+  gum log --level=error "filename already exists: $output_filename"
+  exit 1
+fi
+
+"${EDITOR:-vim}" "$output_filename"
+gum log --level=debug "wrote output to $output_filename"
