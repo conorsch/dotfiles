@@ -17,6 +17,7 @@ watched_timezones=(
   Asia/Tokyo
   Etc/UTC
   Europe/Berlin
+  Europe/Dublin
   Europe/Moscow
   Europe/Paris
   Pacific/Chatham
