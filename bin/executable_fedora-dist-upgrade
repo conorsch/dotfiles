@@ -28,6 +28,8 @@ sudo dnf upgrade -y --refresh
 sudo dnf install -y dnf-plugin-system-upgrade
 sudo dnf system-upgrade download --releasever="$next_fedora_version"
 
-notify-send --urgency critical "Rebooting workstation in 1m!"
+msg="Rebooting workstation in 1m!"
+gum log --level=warn "$msg"
+notify-send --urgency critical "$msg"
 sleep 60
 sudo dnf system-upgrade reboot
