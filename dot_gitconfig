@@ -36,3 +36,5 @@
 	path = ~/.gitconfig-pl
 [includeIf "hasconfig:remote.*.url:https://github.com/prax-wallet/**"]
 	path = ~/.gitconfig-pl
+[includeIf "gitdir:~/src/pl/"]
+	path = ~/.gitconfig-pl
