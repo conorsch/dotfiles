@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# Configure user.js customizations for Firefox.
+#
+# Specifically, strips off the default chrome of URL bar and tar bar,
+# for maximum economy in a tiling window manager like i3. Notably,
+# pressing ctrl+t for a new tab does display the tabs, and the URL bar,
+# momentarily.
+#
+# For this to work, you must set first navigate to `about:config` and set
+# `toolkit.legacyUserProfileCustomizations.stylesheets = true`. Not sure
+# it's possible to automate that step via dotfiles scripting.
+#
+# Seriously sick solution, from https://superuser.com/a/1497982.
+set -euo pipefail
+
+
+# Bail out if there's no Firefox dir found; we probably shouldn't be running
+# this script on such a host. Maybe this should be a warning, but playing
+# safe for now.
+firefox_config_dir="${HOME:?}/.mozilla/firefox"
+if [[ ! -e "$firefox_config_dir" ]] ; then
+  gum log --level error "Firefox config dir not found: '$firefox_config_dir', exiting"
+  exit 1
+fi
+
+# Let's start by setting the chrome overrides only on the "personal" profile.
+# If satisfied, we can match on `^\w{8}\.(\w+)$` to get all profiles.
+profile_dir="$(fd -t d '\.personal$' --max-depth 1 "$firefox_config_dir")"
+
+# Create overrides dir
+mkdir -p "${profile_dir}/chrome"
+cat <<EOM > "${profile_dir}/chrome/userChrome.css"
+# Absolutely amazing solution from for stripping Firefox chrome,
+# via https://superuser.com/a/1497982
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+#navigator-toolbox {
+    height: 0px !important;
+    min-height: 0px !important;
+    overflow: hidden !important;
+}
+
+#navigator-toolbox:focus,
+#navigator-toolbox:focus-within,
+#navigator-toolbox:active {
+    height: auto !important;
+    overflow: visible !important;
+}
+EOM
