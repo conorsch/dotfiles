@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Script to backup current machine via restic.
+set -euo pipefail
+
+
+# Check for deps
+if ! hash restic > /dev/null 2>&1 ; then
+  gum log --level error "'restic' not installed!"
+  exit 1
+fi
+
+# By default, target homelab NAS. Accept overrides on the CLI as $1.
+target_repo="${1:-}"
+if [[ -z "$target_repo" ]] ; then
+  target_repo="sftp:${USER:?}@adolin.ruindev.wg:/mnt/Valhalla/Backup/restic/${HOSTNAME:?}-home"
+  gum log --level debug --time datetime "No target repository declared, default to: '$target_repo'"
+fi
+
+# Prepare a tempfile of excluded paths. Ultimately this should live in a separate file,
+# but there doesn't appear to be a config file for restic, so path is arbitrary anyway.
+# Consider reusing ~/.gitignore for this purpose.
+f="$(mktemp)"
+cat <<EOM > "$f"
+# Exclude heavy work artifacts
+src/pl/grand-archive/
+src/pl/**/test_data/
+
+# Exclude rust build dirs
+src/**/target/**
+# Exclude node modules
+src/**/node_modules/**
+# More JS excludes
+.turbo/
+.next/
+
+# For expediting debugging, ignore likely large files
+Downloads/
+music/
+src/nixpkgs/
+go/
+
+# Common dotfiles
+.direnv/
+.envrc
+.venv/
+
+# Exclude most dotfiles
+.cache/
+.local/cache/
+.local/share/containers/
+.local/share/pnpm/
+.cargo/
+.rustup/
+
+# Ignore all flatpaks by default
+.var/app/
+
+# Opt in to backups for certain flatpaks
+!.var/app/com.onepassword.OnePassword
+!.var/app/io.github.dweymouth.supersonic
+!.var/app/org.mozilla.Thunderbird
+!.var/app/org.signal.Signal
+EOM
+
+gum log --level info --time datetime "Backing up to repo: '$target_repo'"
+# restic backup --repo "$backup_remote_dir" --exclude-file "$f" ~/* --dry-run -vv
+# restic backup --repo "sftp:conor@adolin.ruindev.wg:${backup_remote_dir}" --exclude-file "$f" ~/
+restic backup --repo "$target_repo" --exclude-file "$f" ~/
+gum log --level info --time datetime "Backup successful"
