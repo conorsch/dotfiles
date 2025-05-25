@@ -24,6 +24,14 @@ cat <<EOM > "$f"
 # Exclude heavy work artifacts
 src/pl/grand-archive/
 src/pl/**/test_data/
+src/pl/notes/backups/
+src/pl/**/*.tar
+src/pl/**/*.gz
+src/pl/**/*.bin
+src/pl/**/*.dump
+src/pl/infra/compose/.share/
+.local/share/pindexer-db-wrangler/
+node-state-permanent/
 
 # Exclude rust build dirs
 src/**/target/**
@@ -40,17 +48,25 @@ src/nixpkgs/
 go/
 
 # Common dotfiles
+.asdf/
 .direnv/
 .envrc
+.gvm/
 .venv/
+.virtualenvs/
 
 # Exclude most dotfiles
 .cache/
+.cache/restic/
 .local/cache/
 .local/share/containers/
 .local/share/pnpm/
+.local/share/chezmoi/
 .cargo/
 .rustup/
+.pnpm-store/
+.npm/
+.gvm/
 
 # Ignore all flatpaks by default
 .var/app/
