@@ -9,6 +9,7 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 sudo flatpak install -y flathub \
     com.brave.Browser \
     com.github.eneshecan.WhatsAppForLinux \
+    com.logseq.Logseq \
     com.spotify.Client \
     com.valvesoftware.Steam \
     com.visualstudio.code \
@@ -34,6 +35,7 @@ function setup_app_symlink() {
 # Declare mapping of flatpak name to convenient cli shortcut.
 setup_app_symlink com.brave.Browser brave
 setup_app_symlink com.github.eneshecan.WhatsAppForLinux whatsapp
+setup_app_symlink com.logseq.Logseq logseq
 setup_app_symlink com.onepassword.OnePassword 1password
 setup_app_symlink com.onepassword.OnePassword onepassword
 setup_app_symlink com.spotify.Client spotify
