@@ -26,6 +26,10 @@ fi
 # Let's start by setting the chrome overrides only on the "personal" profile.
 # If satisfied, we can match on `^\w{8}\.(\w+)$` to get all profiles.
 profile_dir="$(fd -t d '\.personal$' --max-depth 1 "$firefox_config_dir")"
+if [[ -z "$profile_dir" ]] ; then
+  gum log --level error "No 'personal' Firefox profile found"
+  exit 2
+fi
 
 # Create overrides dir
 mkdir -p "${profile_dir}/chrome"
@@ -47,3 +51,5 @@ cat <<EOM > "${profile_dir}/chrome/userChrome.css"
     overflow: visible !important;
 }
 EOM
+
+gum log --level debug "Wrote Firefox config to '${profile_dir}/chrome/userChrome.css'"
