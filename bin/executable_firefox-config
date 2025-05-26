@@ -6,7 +6,7 @@
 # pressing ctrl+t for a new tab does display the tabs, and the URL bar,
 # momentarily.
 #
-# For this to work, you must set first navigate to `about:config` and set
+# For this to work, you must first navigate to `about:config` and set
 # `toolkit.legacyUserProfileCustomizations.stylesheets = true`. Not sure
 # it's possible to automate that step via dotfiles scripting.
 #
@@ -33,9 +33,15 @@ fi
 
 # Create overrides dir
 mkdir -p "${profile_dir}/chrome"
-cat <<EOM > "${profile_dir}/chrome/userChrome.css"
-# Absolutely amazing solution from for stripping Firefox chrome,
-# via https://superuser.com/a/1497982
+# Write user preferences
+cat <<'EOM' > "${profile_dir}/chrome/userChrome.css"
+/*
+Absolutely amazing solution from for stripping Firefox chrome,
+via https://superuser.com/a/1497982
+
+For this to work, set in `about:config`:
+`toolkit.legacyUserProfileCustomizations.stylesheets = true`.
+*/
 @namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
 #navigator-toolbox {
