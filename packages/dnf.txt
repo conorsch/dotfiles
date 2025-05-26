@@ -23,10 +23,12 @@ openssl-devel
 picom
 python3
 redshift
+restic
 ripgrep
 rofi
 scrot
 sshfs
+syncthing
 tokei
 tree
 uuid
