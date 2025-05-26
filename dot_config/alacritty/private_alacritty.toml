@@ -3,6 +3,7 @@
 # Setting monospace font family by itself isn't enough; see also
 # `~/.config/fontconfig/fonts.conf`, which forces use of an emoji-capable font.
 normal.family = "monospace"
+size = 8
 
 [general]
 import = [
