@@ -31,5 +31,5 @@ sudo dnf system-upgrade download --releasever="$next_fedora_version"
 msg="Rebooting workstation in 1m!"
 gum log --level=warn "$msg"
 notify-send --urgency critical "$msg"
-sleep 60
+gum confirm --timeout 60s "Reboot now?"
 sudo dnf system-upgrade reboot
