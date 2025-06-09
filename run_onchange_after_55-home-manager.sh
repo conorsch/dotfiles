@@ -4,6 +4,11 @@
 set -ueo pipefail
 
 
+# The channel of nixpkgs to use for home-manager. Must be supported by the version
+# of home-manager being used! See docs for details:
+# https://home-manager.dev/manual/24.11/
+home_manager_nix_channel="24.11"
+
 # Perform "standalone" installation of home-manager. See docs at:
 # https://nix-community.github.io/home-manager/index.xhtml#ch-installation
 function install_home_manager() {
@@ -18,9 +23,9 @@ function install_home_manager() {
     sudo chown -R "${USER:?}:nixbld" /nix/var/nix/{profiles,gcroots}/per-user/"${USER:?}"
 
     # Uses the "standalone" installation type for home-manager.
-    # TODO: figure out how to codify the `24.05` release string
-    nix-channel --add https://github.com/nix-community/home-manager/archive/release-24.05.tar.gz home-manager
+    nix-channel --add "https://github.com/nix-community/home-manager/archive/release-${home_manager_nix_channel}.tar.gz" home-manager
     nix-channel --update
+
     # unset prohibition of unbound variables, otherwise home-manager installer fails
     set +u
     nix-shell '<home-manager>' -A install
