@@ -1,10 +1,15 @@
 { config, pkgs, ... }:
 
+# Look up username dynamically, to support multiple environments.
+let
+  username = builtins.getEnv "USER";
+  homeDirectory = "/home/${username}";
+in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "conor";
-  home.homeDirectory = "/home/conor";
+  home.username = username;
+  home.homeDirectory = homeDirectory;
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -62,7 +67,6 @@
 
     # graphical workstation packages
     # TODO: make this inclusion conditional
-    pkgs.alacritty
     # pkgs.moc # throws libasound/pipewire errors
     # pkgs.redshift # idk how to do user systemd services on non-nixos for nixpkgs
     pkgs.rofi
