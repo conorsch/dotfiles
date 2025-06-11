@@ -7,7 +7,7 @@ set -ueo pipefail
 # The channel of nixpkgs to use for home-manager. Must be supported by the version
 # of home-manager being used! See docs for details:
 # https://home-manager.dev/manual/24.11/
-home_manager_nix_channel="24.11"
+home_manager_nix_channel="25.05"
 
 # Perform "standalone" installation of home-manager. See docs at:
 # https://nix-community.github.io/home-manager/index.xhtml#ch-installation
@@ -31,6 +31,8 @@ function install_home_manager() {
     nix-shell '<home-manager>' -A install
     home-manager switch
     set -u
+    # dismiss notifications of "news"
+    home-manager news > /dev/null
 }
 
 # Check whether `nix` is installed and configured.
