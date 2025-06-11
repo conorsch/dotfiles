@@ -76,6 +76,9 @@ bindsym $mod+control+l exec --no-startup-id ~/bin/fuzzy-lock
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
 
+# Bluetooth device control
+exec --no-startup-id blueman-applet
+
 # Audio controls. Binds to the XF86 controls, so laptop fn keys will work,
 # as will fn-layer-bindings on external keyboards.
 set $refresh_i3status killall -SIGUSR1 i3status
