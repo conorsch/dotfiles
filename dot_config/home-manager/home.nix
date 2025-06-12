@@ -20,17 +20,8 @@ in
   # release notes.
   home.stateVersion = "25.05"; # Please read the comment before changing.
 
-  # I don't know how to straighten out this error:
-  #
-  #   trace: warning: You are using
-  #   Home Manager version 24.05 and
-  #   Nixpkgs version 24.11.
-  #
-  #   Using mismatched versions is likely to cause errors and unexpected
-  #   behavior. It is therefore highly recommended to use a release of Home
-  #   Manager that corresponds with your chosen release of Nixpkgs.
-  #
-  # so we're disabling it.
+  # Silence the warning, because I still can't figure out how to force
+  # the OS-level nix package "channel" to match that of home-manager's.
   home.enableNixpkgsReleaseCheck = false;
 
   # The home.packages option allows you to install Nix packages into your
@@ -65,14 +56,6 @@ in
     pkgs.nodejs_22
     pkgs.wasm-pack
 
-    # graphical workstation packages
-    # TODO: make this inclusion conditional
-    # pkgs.moc # throws libasound/pipewire errors
-    # pkgs.redshift # idk how to do user systemd services on non-nixos for nixpkgs
-    pkgs.rofi
-    # pkgs.xrandr
-    # pkgs.xset
- 
     # cargo pkgs
     pkgs.bottom
     pkgs.cargo-watch

@@ -18,6 +18,7 @@
 #  * i3-setup
 set -ueo pipefail
 
+
 # Install the zellij terminal emulator, via custom RPM repo.
 function install_zellij() {
     sudo dnf copr enable -y varlad/zellij
@@ -47,10 +48,11 @@ function configure_hardware_workstation() {
     # These are helper scripts also installed by chezmoi/dotfiles.
     fedora-install-flatpaks
     fedora-install-rpm-fusion
-    install_zellij
     i3-setup
-    install-nix
+    install_zellij
     configure_alacritty
+    install-nix
+    install-home-manager
 }
 
 # Handle config specifically for Qubes VMs. Supports both AppVM and TemplateVM types.
@@ -61,19 +63,14 @@ function configure_qubes() {
     fi
 
     # This value will likely be `AppVM` or `TemplateVM`.
-    qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
+    # qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
 
-    if [[ "$qubes_vm_type" = "AppVM" ]] ; then
-        # Don't install heavy flatpaks always, best on hardware only.
-        # fedora-install-flatpaks
-        configure_alacritty
-    elif [[ "$qubes_vm_type" = "StandaloneVM" ]] ; then
-        # Treat a standalone VM as a normal workstation.
-        configure_hardware_workstation
-    else
-        >&2 echo "ERROR: unknown Qubes VM type '$qubes_vm_type'"
-        return 1
-    fi
+    # fedora-install-flatpaks
+    # fedora-install-rpm-fusion
+    # i3-setup
+    install_zellij
+    configure_alacritty
+    install-nix
 }
 
 # Run laptop-specific configs, for battery monitoring.

@@ -26,3 +26,8 @@ rm -vf ~/bin/chrome-pl
 
 # Moved script ~/bin/i3volume -> ~/.local/bin/i3volume
 rm -vf ~/bin/i3volume
+
+# Remove heavy-handed alacritty overrides
+if [[ -L /usr/local/bin/x-terminal-emulator ]] ; then
+  rm -vf /usr/local/bin/x-terminal-emulator
+fi
