@@ -68,3 +68,11 @@ home_manager_config="${HOME}/.nix-profile/etc/profile.d/hm-session-vars.sh"
 if [[ -e "$home_manager_config" ]] ; then
   . "$home_manager_config"
 fi
+
+# pnpm
+export PNPM_HOME="/home/conor/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
