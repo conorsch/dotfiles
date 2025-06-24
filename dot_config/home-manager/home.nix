@@ -59,6 +59,7 @@ in
     # cargo pkgs
     pkgs.bottom
     pkgs.cargo-watch
+    pkgs.watchexec
     pkgs.du-dust
     # pkgs.etym
     # pkgs.exa
