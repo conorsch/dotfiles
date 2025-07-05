@@ -70,7 +70,8 @@ function configure_qubes() {
     # i3-setup
     install_zellij
     configure_alacritty
-    install-nix
+    >&2 echo "Skipping nix install on qubes"
+    # install-nix
 }
 
 # Run laptop-specific configs, for battery monitoring.
