@@ -37,7 +37,7 @@ function check_deps() {
 # Search for custom chromium profiles on the system
 function choose_chromium_profile() {
   config_dir="${HOME:?}/.config"
-  chromium_profiles="$(fd -t d '^chromium-browser' "$config_dir" -x basename | sed 's/chromium-browser-//')"
+  chromium_profiles="$(fd -t d '^chromium-browser' "$config_dir" -x basename | sed 's/chromium-browser-//' | sort -V)"
   if [[ -z "$chromium_profiles" ]] ; then
     gum log --level=error "no custom chromium profiles exist."
     rofi -e "ERROR: no custom chromium profiles exist."
