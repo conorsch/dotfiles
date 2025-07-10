@@ -14,3 +14,9 @@ rustup component add rust-analyzer
 rustup toolchain add nightly
 rustup target add wasm32-unknown-unknown x86_64-unknown-linux-musl
 rustup update
+
+echo "Installing llm tooling"
+# opencode, via https://opencode.ai/docs/
+if ! hash opencode > /dev/null 2>&1 ; then
+  curl -fsSL https://opencode.ai/install | bash
+fi
