@@ -42,6 +42,6 @@ fi
 # but only for graphical environments.
 if [ -n "$DISPLAY" ] ; then
     if hash alacritty > /dev/null 2>&1 ; then
-        export TERM="alacritty"
+        export TERMINAL="alacritty"
     fi
 fi
