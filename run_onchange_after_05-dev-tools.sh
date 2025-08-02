@@ -21,7 +21,4 @@ if ! hash cargo > /dev/null 2>&1 ; then
 fi
 
 echo "Installing llm tooling"
-# opencode, via https://opencode.ai/docs/
-if ! hash opencode > /dev/null 2>&1 ; then
-  curl -fsSL https://opencode.ai/install | bash
-fi
+install-opencode
