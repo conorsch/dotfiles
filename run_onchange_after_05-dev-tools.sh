@@ -21,4 +21,4 @@ if ! hash cargo > /dev/null 2>&1 ; then
 fi
 
 echo "Installing llm tooling"
-install-opencode
+install-llms

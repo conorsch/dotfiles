@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Install LLM-related CLI tooling
+set -euo pipefail
+
+
+# Ensure we have pnpm, presumably via nix.
+# We use pnpm rather than npm because it works well for installing globally.
+if ! hash pnpm > /dev/null 2>&1 ; then
+  >&2 echo "ERROR: pnpm is not installed; maybe dotfiles not set up?"
+  exit 1
+fi
+
+gum log --level debug "Installing claude code..."
+pnpm install -g @anthropic-ai/claude-code
+
+gum log --level debug "Installing crush..."
+pnpm install -g @charmland/crush
+
+gum log --level debug "Installing opencode..."
+# opencode automatically self-updates on start,
+# so we don't need to rerun the command.
+if ! hash opencode > /dev/null 2>&1 ; then
+  curl -fsSL https://opencode.ai/install | bash
+fi

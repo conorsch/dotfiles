@@ -31,3 +31,7 @@ rm -vf ~/bin/i3volume
 if [[ -L /usr/local/bin/x-terminal-emulator ]] ; then
   rm -vf /usr/local/bin/x-terminal-emulator
 fi
+
+# Consolidated LLM tooling to "install-llms" script
+rm -vf ~/bin/install-claude
+rm -vf ~/bin/install-opencode
