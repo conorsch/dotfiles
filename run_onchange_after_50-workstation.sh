@@ -53,6 +53,7 @@ function configure_hardware_workstation() {
     configure_alacritty
     install-nix
     install-home-manager
+    install-dev-tools
 }
 
 # Handle config specifically for Qubes VMs. Supports both AppVM and TemplateVM types.
@@ -105,8 +106,11 @@ main() {
     elif [[ "$chassis" = "vm" ]] && [[ "$kernel_release"  =~ ^.*qubes.*$ ]] ; then
         >&2 echo "Detected Qubes VM"
         configure_qubes
+    # If we're in a non-Qubes VM, probably a cloud machine, so don't assume a workstation.
+    elif [[ "$chassis" = "vm" ]] && [[ "$kernel_release"  =~ ^.*qubes.*$ ]] ; then
+        >&2 echo "Detected VM, skipping workstation configs"
     else
-        >&2 echo "Not a workstation, skipping workstation configs"
+        >&2 echo "Machine type '${chassis}' not a workstation, skipping workstation configs"
     fi
 }
 
