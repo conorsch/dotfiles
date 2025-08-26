@@ -29,6 +29,11 @@ if [[ -e "Cargo.toml" ]]; then
     watch_dir="crates"
   fi
   cargo watch -c -s 'cargo check -r --all-targets --all-features' -w "${watch_dir}" --poll
+# Identify Helm charts
+elif [[ -e "Chart.yaml" ]]; then
+  gum log --level=info "Found a Helm chart! Running lint in loop..."
+  sleep 1
+  watchexec -c -w '.' -- helm lint
 # Catch-all conditional
 else
   gum log --level=error "Sorry, couldn't figure out to do with the current dir"
