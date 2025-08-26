@@ -11,6 +11,7 @@ time_range="${1:-1d}"
 
 # Sort videos on remote host. Vids are uploaded and stored in a directory,
 # and should be moved (actually, hard-linked) to an "incoming" dir for review.
+gum log --level=debug "organizing vids on remote server"
 ssh "$media_host" ./check-for-new-gaming-vids.sh
 
 if ! test -d "$media_dir" ; then
@@ -19,10 +20,14 @@ if ! test -d "$media_dir" ; then
   media-mount
 fi
 
-# Hop into directory
-cd "${media_dir}" || exit 1
-
 # Look 'em up, and play all recent vids for review.
 # The `vlc` invocation silences stderr because otherwise the terminal output is garish.
-fd -t f -e mp4 . --changed-within "$time_range" \
+gum log --level=info "copying latest vids locally"
+fd -t f -e mp4 . "$media_dir" --changed-within "$time_range" -X rsync -a --info=progress2 {} ~/vids/
+
+
+gum log --level=info "playing vids"
+# Look 'em up, and play all recent vids for review.
+# The `vlc` invocation silences stderr because otherwise the terminal output is garish.
+fd -t f -e mp4 . ~/vids --changed-within "$time_range" \
     | sort -n | xargs -r -d '\n' vlc 2>/dev/null
