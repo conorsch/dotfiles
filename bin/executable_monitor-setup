@@ -1,6 +1,7 @@
 #!/bin/bash
 # dual-monitor configs for various machines
 set -euo pipefail
+set -x
 
 # set up some default vars shared across hosts
 primary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected primary / && say $1')
@@ -26,7 +27,7 @@ function nitrogen_restore() {
 # via: https://superuser.com/a/1247117
 function mirror_to_projector() {
     # N.B. display names are hardcoded for Framework 13
-    xrandr --output DisplayPort-1 --rotate normal --auto --scale-from 2256x1504 --output eDP
+    xrandr --output DisplayPort-2 --rotate normal --auto --scale-from 2256x1504 --output eDP
 }
 
 # Configure the external monitor ('projector') as a 1080p resolution secondary display,
@@ -34,7 +35,7 @@ function mirror_to_projector() {
 function multitask_projector() {
     # N.B. display names are hardcoded for Framework 13
     # xrandr --output eDP --primary --left-of DisplayPort-1 --auto
-    xrandr --output DisplayPort-1 --auto --right-of eDP
+    xrandr --output DisplayPort-2 --auto --right-of eDP
 }
 
 # Determine how many screens are available. If only one,
@@ -50,8 +51,10 @@ function main() {
         >&2 echo "Only one monitor detected, resetting to default state"
     else
         # TODO: make these options accessible via cli args
-        multitask_projector
+        # multitask_projector
+        mirror_to_projector
     fi
+    mirror_to_projector
     nitrogen_restore
 }
 
