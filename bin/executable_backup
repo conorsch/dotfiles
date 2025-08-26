@@ -31,6 +31,7 @@ src/pl/**/*.bin
 src/pl/**/*.dump
 src/pl/infra/compose/.share/
 .local/share/pindexer-db-wrangler/
+.local/share/penumbra-reindexer/
 node-state-permanent/
 
 # Exclude rust build dirs
@@ -47,7 +48,7 @@ music/
 src/nixpkgs/
 go/
 
-# Common dotfiles
+# Exclude dev tooling and download caches
 .asdf/
 .direnv/
 .envrc
