@@ -57,6 +57,6 @@ alias cbr="cargo build --release"
 alias hms="home-manager switch"
 
 # machine maintenance, copying files around
-alias r="rsync -a --info=progress2"
+alias r="rsync -a --info=progress2 --partial --partial-dir=.rsync-partial --append"
 alias z="zellij"
 alias zdas="zellij delete-all-sessions --force --yes"
