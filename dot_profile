@@ -29,6 +29,9 @@ export GO111MODULE=on
 # Including here as comment for easy reference.
 export GTK_THEME="Adwaita:dark"
 
+# Enable automatic joining of zellij sessions
+export ZELLIJ_AUTO_ATTACH="true"
+
 # Set custom key remaps, like caps lock to Escape, but only for graphical environments.
 if [ -n "$DISPLAY" ] && [ "$DESKTOP_SESSION" != "sway" ] ; then
     if hash setxkbmap > /dev/null 2>&1 ; then
