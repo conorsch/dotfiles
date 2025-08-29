@@ -17,7 +17,7 @@
 if hash zellij > /dev/null 2>&1 ; then
   most_recent_zellij_session="$(zellij ls --short --reverse | head -n 1)"
   # Proceed only if we're not already in a zellij session.
-  if [[ -z "$ZELLIJ" ]]; then
+  if [[ -z "$ZELLIJ" ]] && [[ "${SHLVL:-1}" -ne 1 ]]; then
     # If we're running a terminal application, i.e. we're on a graphial workstation,
     # don't autoattach, just start a fresh session.
     if [[ -z "$TERMINAL" ]] && [[ -n "$most_recent_zellij_session" ]] ; then
