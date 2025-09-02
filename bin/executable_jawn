@@ -11,13 +11,14 @@ set -euo pipefail
 
 # Let's figure out what we're dealing with.
 #
+# TODO: is it `watch-exec` or `watchexec`? nixpkgs uses the latter.
 # First, if any args were provided, assume that's a command to be run in a loop
 # on changes to the dir. We won't assume project structure, we'll just call
 # out to watch-exec, via `cargo install watchexec-cli`
 
 if [[ $# -gt 0 ]] ; then
   gum log --level=info "Running custom command on changes to current directory"
-  watch-exec "$@"
+  watchexec --clear=reset "$@"
 fi
 
 # Identify Rust projects

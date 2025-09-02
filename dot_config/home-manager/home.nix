@@ -32,6 +32,7 @@ in
     # pkgs.hello
     pkgs.age
     pkgs.bat
+    pkgs.btop
     pkgs.bottom
     pkgs.byobu
     pkgs.curl
@@ -50,6 +51,7 @@ in
     pkgs.starship
     pkgs.zellij
     pkgs.gifski
+    pkgs.watchexec
 
     # temporary dev cruft
     pkgs.pnpm
