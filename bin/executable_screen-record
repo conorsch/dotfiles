@@ -18,7 +18,7 @@ function print_results() {
         >&2 echo "ERROR: screengrab not saved, see errors above"
         return 1
     fi
-    >&2 printf 'Screengrab saved to: %s\nFilesize is: %s\n' "$dest_file" "$(exa -l "$dest_file" | cut -d" " -f2)"
+    >&2 printf 'Screengrab saved to: %s\nFilesize is: %s\n' "$dest_file" "$(eza -l "$dest_file" | cut -d" " -f2)"
 }
 
 trap 'print_results "$dest_file"' EXIT

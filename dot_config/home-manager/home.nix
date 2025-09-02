@@ -64,7 +64,7 @@ in
     pkgs.watchexec
     pkgs.du-dust
     # pkgs.etym
-    # pkgs.exa
+    pkgs.eza
     pkgs.hyperfine
     pkgs.just
     pkgs.oha

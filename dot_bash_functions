@@ -21,6 +21,19 @@ git-contributors() {
         | sort | uniq -c | sort -nr
 }
 
+# Quick dir-hopping. Uses functions rather than aliases because `exa` package
+# is waning in availability. The "exa" utility was abandoned, briefly maintained
+# as "eza", then that too was abandoned.
+function ll() {
+  if hash exa > /dev/null 2>&1 ; then
+    exa -l
+  elif hash eza > /dev/null 2>&1 ; then
+    eza -l
+  else
+    ls -lsh
+  fi
+}
+
 # Open all files by extension
 editall() {
     local file_ext
