@@ -44,6 +44,7 @@ in
     pkgs.git
     pkgs.gum
     pkgs.htop
+    pkgs.magic-wormhole-rs
     pkgs.neovim
     # pkgs.ntfy-sh conflicts with home-manager-path/bin/fbsen
     pkgs.ripgrep
