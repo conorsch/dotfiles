@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Script to configure display for watching a movie.
+set -euo pipefail
+
+set -x
+
+# disable automatic screen sleep.
+xset s off -dpms
+
+# kill screenlock
+killall xss-lock || true
+
+# disable warm mode via redshift
+systemctl --user stop redshift
+
+# configure external displays
+monitor-setup
