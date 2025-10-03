@@ -26,11 +26,11 @@ git-contributors() {
 # as "eza", then that too was abandoned.
 function ll() {
   if hash exa > /dev/null 2>&1 ; then
-    exa -l
+    exa -l "$@"
   elif hash eza > /dev/null 2>&1 ; then
-    eza -l
+    eza -l "$@"
   else
-    ls -lsh
+    ls -lsh "$@"
   fi
 }
 
