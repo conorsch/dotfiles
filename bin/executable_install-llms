@@ -10,13 +10,22 @@ if ! hash pnpm > /dev/null 2>&1 ; then
   exit 1
 fi
 
-gum log --level debug "Installing claude code..."
+gum log --level info "Installing claude code..."
 pnpm install -g @anthropic-ai/claude-code
 
-gum log --level debug "Installing crush..."
+gum log --level info "Installing crush..."
 pnpm install -g @charmland/crush
 
-gum log --level debug "Installing opencode..."
+gum log --level debug "Installing ollama..."
+# The ollama installer is not idempotent, so let's display the version
+if ! hash ollama > /dev/null 2>71 ; then
+  curl -fsSL https://ollama.com/install.sh | sh
+else
+  ollama_version="$(ollama --version)"
+  gum log --level debug "Found ollama, at version: ${ollama_version}"
+fi
+
+gum log --level info "Installing opencode..."
 # opencode automatically self-updates on start,
 # so we don't need to rerun the command.
 if ! hash opencode > /dev/null 2>&1 ; then
