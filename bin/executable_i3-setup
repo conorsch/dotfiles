@@ -33,7 +33,7 @@ EOM
 # Configure nitrogen for first-run. The config file will have lots of display-specific
 # info, so we won't clobber it, but we'll make sure something's there to get started.
 nitrogen_config="${HOME:?}/.config/nitrogen/nitrogen.cfg"
-if [[ ! -e "$nitrogen_config" ]] ; then
+if [[ -e "$nitrogen_config" ]] ; then
     cat << EOM > "$nitrogen_config"
 [nitrogen]
 view=icon
