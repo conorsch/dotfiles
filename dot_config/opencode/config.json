@@ -4,18 +4,31 @@
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://localhost:11434/v1"
+        "baseURL": "http://localhost:11434/v1",
+        "timeout": 6000000
       },
       "models": {
-        "qwen3:8b": {
+        "qwen3-coder:30b": {
           "limit": {
-            "context": 200000,
+            "context": 100000,
             "output": 32000
           }
         },
-        "qwen3-coder:30": {
+        "qwen3:8b": {
           "limit": {
-            "context": 200000,
+            "context": 100000,
+            "output": 32000
+          }
+        },
+        "deepseek-r1:7b": {
+          "limit": {
+            "context": 100000,
+            "output": 32000
+          }
+        },
+        "devstral:24b": {
+          "limit": {
+            "context": 100000,
             "output": 32000
           }
         }
