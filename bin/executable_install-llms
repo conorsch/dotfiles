@@ -18,7 +18,7 @@ pnpm install -g @charmland/crush
 
 gum log --level debug "Installing ollama..."
 # The ollama installer is not idempotent, so let's display the version
-if ! hash ollama > /dev/null 2>71 ; then
+if ! hash ollama > /dev/null 2>&1 ; then
   curl -fsSL https://ollama.com/install.sh | sh
 else
   ollama_version="$(ollama --version)"
