@@ -20,5 +20,10 @@ if ! hash cargo > /dev/null 2>&1 ; then
   rustup update
 fi
 
+# TODO: use gum spinner here
+# via https://github.com/folke/lazy.nvim/discussions/1034#discussioncomment-7034355
+echo "Installing neovim plugins..."
+nvim --headless "+Lazy! sync" +qa
+
 echo "Installing llm tooling"
 install-llms
