@@ -3,13 +3,10 @@ Host *
     IdentityFile "~/.ssh/id_ed25519"
     PasswordAuthentication no
     SetEnv TERM=xterm-256color
+    User conor
 
 Host wurk
     Hostname antigonus.ruindev.wg
-
-Host tar tartessos
-  # Hostname tartessos.ruindev.wg
-  Hostname 192.168.8.141
 
 Host rsync-net-backup
   Hostname de2851.rsync.net
