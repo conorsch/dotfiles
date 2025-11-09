@@ -6,6 +6,7 @@ direnv
 fd-find
 git
 htop
+just
 libssl-dev
 neovim
 pkg-config
