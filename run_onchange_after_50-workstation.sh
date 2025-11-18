@@ -82,10 +82,11 @@ function configure_laptop() {
 main() {
     hostnamectl_json="$(hostnamectl status --json pretty)"
     chassis="$(jq -r .Chassis <<< "$hostnamectl_json")"
+    hostname="$(jq -r .Hostname <<< "$hostnamectl_json")"
     kernel_release="$(jq -r .KernelRelease <<< "$hostnamectl_json")"
     # Hardcode primary workstation name, which often hosts ssh sessions.
     # DISPLAY won't be set, but still consider it a workstation.
-    if [[ "$(hostname)" = "Antigonus" ]] ; then
+    if [[ "$hostname" = "Antigonus" ]] ; then
         configure_hardware_workstation
     # All laptops are workstations.
     elif [[ "$chassis" = "laptop" ]] ; then
