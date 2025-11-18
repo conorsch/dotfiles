@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# script to upload files to ephemeral storage via transfer.sh
+set -euo pipefail
+
+
+# parse args
+
+if [[ $# -lt 1 ]] ; then
+    gum log --time datetime --level error "Usage: $0 <filepath> [filepath...]"
+    exit 1
+fi
+
+
+# straight from the transfer endpoint html view:
+#
+#   $ curl --upload-file ./hello.txt https://ruin.dev/give/hello.txt
+#   https://ruin.dev/give/bXUTjn2hCY/hello.txt
+#
+# TODO: better error handling
+
+for f in "$@" ; do
+    fname="$(basename "$f")"
+    gum log --time datetime --level info "Uploading file: $f"
+    curl --upload-file "$f" "https://ruin.dev/give/${fname}"
+    # curl command emits url plaintext response with new trailing newline.
+    echo ''
+done
+gum log --time datetime --level info "Done!"
