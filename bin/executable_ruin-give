@@ -3,6 +3,7 @@
 set -euo pipefail
 
 
+REMOTE_UPLOAD_BASE_URL="https://ruin.dev/give/"
 # parse args
 
 if [[ $# -lt 1 ]] ; then
@@ -10,6 +11,12 @@ if [[ $# -lt 1 ]] ; then
     exit 1
 fi
 
+# convert local filepath string to escaped URL, for upload via POST.
+url_escape() {
+    local filename="$1"
+    shift 1
+    python3 -c "import urllib.parse; print(urllib.parse.quote('$filename', safe='~@#$&()*!+=:;,.?/'))"
+}
 
 # straight from the transfer endpoint html view:
 #
@@ -19,9 +26,11 @@ fi
 # TODO: better error handling
 
 for f in "$@" ; do
-    fname="$(basename "$f")"
     gum log --time datetime --level info "Uploading file: $f"
-    curl --upload-file "$f" "https://ruin.dev/give/${fname}"
+    upload_filename="$(url_escape "$(basename "$f")")"
+    upload_url="${REMOTE_UPLOAD_BASE_URL}/${upload_filename}"
+    gum log --time datetime --level debug "Uploading to URL: $upload_url"
+    curl --upload-file "$upload_url"
     # curl command emits url plaintext response with new trailing newline.
     echo ''
 done
