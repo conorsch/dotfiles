@@ -3,10 +3,10 @@
 set -euo pipefail
 
 
-REMOTE_UPLOAD_BASE_URL="https://ruin.dev/give/"
+REMOTE_UPLOAD_BASE_URL="https://ruin.dev/give"
 # parse args
-
-if [[ $# -lt 1 ]] ; then
+num_files="$#"
+if [[ "$num_files" -lt 1 ]] ; then
     gum log --time datetime --level error "Usage: $0 <filepath> [filepath...]"
     exit 1
 fi
@@ -25,13 +25,15 @@ url_escape() {
 #
 # TODO: better error handling
 
+i=1
 for f in "$@" ; do
-    gum log --time datetime --level info "Uploading file: $f"
+    gum log --time datetime --level info "Uploading file: ${i}/${num_files} $f"
     upload_filename="$(url_escape "$(basename "$f")")"
     upload_url="${REMOTE_UPLOAD_BASE_URL}/${upload_filename}"
-    gum log --time datetime --level debug "Uploading to URL: $upload_url"
-    curl --upload-file "$upload_url"
+    # gum log --time datetime --level debug "Uploading to URL: $upload_url"
+    curl --upload-file "$f" "$upload_url"
     # curl command emits url plaintext response with new trailing newline.
     echo ''
+    i="$(( i + 1 ))"
 done
 gum log --time datetime --level info "Done!"
