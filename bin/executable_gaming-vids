@@ -15,7 +15,7 @@ subcommand="${1:-}"
 
 if [[ "$subcommand" = "upload" ]] ; then
   # upload mode should only work on windows, where game clips are
-  if ! hostnamectl status --json pretty | jq -r .OperatingSystemPrettyName | grep -v WSL ; then
+  if ! hostnamectl status --json pretty | jq -r .OperatingSystemPrettyName | grep -q WSL ; then
       gum log --level=error "upload mode only supported under WSL"
       exit 1
   fi
