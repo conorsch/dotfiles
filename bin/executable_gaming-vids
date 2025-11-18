@@ -9,6 +9,24 @@ media_host="adolin.ruindev.wg"
 # How recent the videos must be to be included.
 time_range="${1:-1d}"
 
+
+# permit optional subcommands
+subcommand="${1:-}"
+
+if [[ "$subcommand" = "upload" ]] ; then
+  # upload mode should only work on windows, where game clips are
+  if ! hostnamectl status --json pretty | jq -r .OperatingSystemPrettyName | grep -v WSL ; then
+      gum log --level=error "upload mode only supported under WSL"
+      exit 1
+  fi
+  windows_gaming_captures_dir="/mnt/c/Users/${USER:-conor}/Videos/Captures"
+  if [[ ! -d "$windows_gaming_captures_dir" ]] ; then
+      gum log --level=error "vids dir not found: $windows_gaming_captures_dir"
+      exit 2
+  fi
+  fd . "$windows_gaming_captures_dir" --changed-within 1d -X ruin-give
+fi
+
 # Sort videos on remote host. Vids are uploaded and stored in a directory,
 # and should be moved (actually, hard-linked) to an "incoming" dir for review.
 gum log --level=debug "organizing vids on remote server"
