@@ -36,3 +36,4 @@ uuid
 vim
 xrandr
 xset
+xz
