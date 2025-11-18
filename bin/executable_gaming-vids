@@ -25,6 +25,7 @@ if [[ "$subcommand" = "upload" ]] ; then
       exit 2
   fi
   fd . "$windows_gaming_captures_dir" --changed-within 1d -X ruin-give
+  exit 0
 fi
 
 # Sort videos on remote host. Vids are uploaded and stored in a directory,
