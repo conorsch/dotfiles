@@ -54,7 +54,10 @@ in
     pkgs.gifski
     pkgs.watchexec
 
-    # temporary dev cruft
+    # workstation packages
+    pkgs.wiremix
+
+    # general dev cruft
     pkgs.pnpm
     pkgs.nodejs_22
     pkgs.wasm-pack
