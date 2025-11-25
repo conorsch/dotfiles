@@ -56,6 +56,7 @@ in
 
     # workstation packages
     pkgs.wiremix
+    pkgs.bluetui
 
     # general dev cruft
     pkgs.pnpm
