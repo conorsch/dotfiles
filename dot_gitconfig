@@ -38,3 +38,8 @@
 ; 	path = ~/.gitconfig-pl
 ; [includeIf "gitdir:~/src/pl/"]
 ; 	path = ~/.gitconfig-pl
+; override email settings on work projects, fpf
+[includeIf "hasconfig:remote.*.url:https://github.com/freedomofpress/**"]
+  path = ~/.gitconfig-fpf
+[includeIf "hasconfig:remote.*.url:git@github.com:freedomofpress/**"]
+  path = ~/.gitconfig-fpf
