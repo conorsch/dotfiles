@@ -67,7 +67,7 @@ in
     pkgs.bottom
     pkgs.cargo-watch
     pkgs.watchexec
-    pkgs.du-dust
+    pkgs.dust
     # pkgs.etym
     pkgs.eza
     pkgs.hyperfine
