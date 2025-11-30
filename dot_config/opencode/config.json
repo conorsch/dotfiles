@@ -4,7 +4,7 @@
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://localhost:11434/v1",
+        "baseURL": "http://tartessos.ruindev.wg:6666/v1",
         "timeout": 60000000
       },
       "models": {
