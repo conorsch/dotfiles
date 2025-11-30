@@ -5,7 +5,7 @@
       "npm": "@ai-sdk/openai-compatible",
       "options": {
         "baseURL": "http://localhost:11434/v1",
-        "timeout": 6000000
+        "timeout": 60000000
       },
       "models": {
         "qwen3-coder:30b": {
