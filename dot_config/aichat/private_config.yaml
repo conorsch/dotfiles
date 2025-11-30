@@ -1,0 +1,19 @@
+# see https://github.com/sigoden/aichat/blob/main/config.example.yaml
+
+model: ollama
+clients:
+- type: openai-compatible
+  name: ollama
+  api_base: http://localhost:11434/v1
+  # api_base: http://tartessos.ruindev.wg:6666/v1
+  # api_key: xxx # optional
+  models:
+    - name: qwen-jawn:latest
+      max_input_tokens: 128000
+    - name: qwen3:30b
+      max_input_tokens: 128000
+    - name: devstral:24b
+      max_input_tokens: 128000
+      supports_function_calling: true
+    - name: qwen3-coder:30b
+      max_input_tokens: 128000
