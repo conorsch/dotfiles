@@ -1,13 +1,13 @@
-Host *
-    StrictHostKeyChecking accept-new
-    IdentityFile "~/.ssh/id_ed25519"
-    PasswordAuthentication no
-    SetEnv TERM=xterm-256color
-    User conor
-
 Host wurk
     Hostname antigonus.ruindev.wg
 
 Host rsync-net-backup
   Hostname de2851.rsync.net
   User de2851
+
+Host *
+    StrictHostKeyChecking accept-new
+    IdentityFile "~/.ssh/id_ed25519"
+    PasswordAuthentication no
+    SetEnv TERM=xterm-256color
+    User conor
