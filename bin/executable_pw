@@ -84,7 +84,7 @@ case "$first_arg" in
         ;;
     list)
         >&2 echo "Stored credentials:"
-        sops --config "$PW_SOPS_FILE" -d "$PW_CREDS_FILE" | jq 'keys' -r
+        sops --config "$PW_SOPS_FILE" -d "$PW_CREDS_FILE" | jq 'keys' | jq '.[]' -r
         ;;
     add)
         t="$2"
