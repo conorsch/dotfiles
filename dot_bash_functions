@@ -123,16 +123,16 @@ presentation-mode() {
 }
 
 # Trying to get used to nvim, but I've been typing "vim" for decades...
-# vim() {
-#     local _editor
-#     if hash nvim > /dev/null 2>&1 ; then
-#         >&2 echo "Launching 'nvim' instead of 'vim'..."
-#         _editor="nvim"
-#     else
-#         _editor="vim"
-#     fi
-#     "$_editor" "$@"
-# }
+vim() {
+    local _editor
+    if hash nvim > /dev/null 2>&1 ; then
+        >&2 echo "Launching 'nvim' instead of 'vim'..."
+        _editor="nvim"
+    else
+        _editor="vim"
+    fi
+    "$_editor" "$@"
+}
 
 # Set up a guitar practice session
 guitar() {
