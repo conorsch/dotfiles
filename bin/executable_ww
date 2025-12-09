@@ -20,5 +20,11 @@ if [[ -e "$output_filename" ]] ; then
   exit 1
 fi
 
-"${EDITOR:-vim}" "$output_filename"
+if [[ -t /dev/stdin ]] ; then
+    _editor="${EDITOR:-vim}"
+else
+    _editor="${EDITOR:-kate}"
+fi
+
+"$_editor" "$output_filename"
 gum log --level=debug "wrote output to $output_filename"
