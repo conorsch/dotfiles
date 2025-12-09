@@ -27,7 +27,7 @@ function nitrogen_restore() {
 # via: https://superuser.com/a/1247117
 function mirror_to_projector() {
     # N.B. display names are hardcoded for Framework 13
-    xrandr --output DisplayPort-2 --rotate normal --auto --scale-from 2256x1504 --output eDP
+    xrandr --output "$secondary_monitor" --rotate normal --auto --scale-from 2256x1504 --output "$primary_monitor"
 }
 
 # Configure the external monitor ('projector') as a 1080p resolution secondary display,
@@ -35,7 +35,7 @@ function mirror_to_projector() {
 function multitask_projector() {
     # N.B. display names are hardcoded for Framework 13
     # xrandr --output eDP --primary --left-of DisplayPort-1 --auto
-    xrandr --output DisplayPort-2 --auto --right-of eDP
+    xrandr --output "$secondary_monitor" --auto --right-of "$primary_monitor"
 }
 
 # Determine how many screens are available. If only one,
