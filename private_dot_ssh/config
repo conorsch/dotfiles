@@ -7,7 +7,8 @@ Host rsync-net-backup
 
 Host *
     StrictHostKeyChecking accept-new
-    IdentityFile "~/.ssh/id_ed25519"
+    # Don't hardcode IdentityFile; some hosts may use ssh-agent
+    # IdentityFile "~/.ssh/id_ed25519"
     PasswordAuthentication no
     SetEnv TERM=xterm-256color
     User conor
