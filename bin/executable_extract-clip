@@ -8,6 +8,11 @@ set -euo pipefail
 MAKE_GIF=0
 # By default, don't open the file for viewing.
 OPEN_FILE=0
+# Fast-forward timestamps (optional)
+FF_START=""
+FF_END=""
+# Array to store positional arguments
+POSITIONAL_ARGS=()
 
 # Arg parsing. First, we'll look for `-g` opts, then do
 # another loop to handle positional args.
@@ -20,6 +25,14 @@ while [[ $# -gt 0 ]]; do
     -o|--open)
       OPEN_FILE=1
       shift
+      ;;
+    --ff-start)
+      FF_START="$2"
+      shift 2
+      ;;
+    --ff-stop)
+      FF_END="$2"
+      shift 2
       ;;
     --*|-*)
       echo "Unknown option $1"
@@ -41,7 +54,14 @@ set -- "${POSITIONAL_ARGS[@]}"
 # We can't use `$#` since that would include e.g. `--gif` as well.
 # if [[ $# -lt 3 ]]; then
 if [[ ${#POSITIONAL_ARGS[@]} -lt 3 ]]; then
-    echo "Usage: $0 <vid.mp4> <start_time> <duration>"
+    echo "Usage: $0 <vid.mp4> <start_time> <duration> [OPTIONS]"
+    echo "Options:"
+    echo "  -g, --gif                Generate a GIF from the clip"
+    echo "  -o, --open               Open the clip after extraction"
+    echo "  --ff-start <timestamp>   Start of fast-forward section (5x speed)"
+    echo "  --ff-stop <timestamp>    End of fast-forward section (5x speed)"
+    echo ""
+    echo "Example: $0 video.mp4 00:01:30 90 --ff-start 00:02:08 --ff-stop 00:02:50"
     exit 1
 fi
 target_video="${1:-}"
@@ -62,9 +82,53 @@ printf 'Extracting video clip...'
 # Consider adding `-c:v copy -c:a copy` for very fast slicing.
 # Stumbles a bit on keyframes, so sometimes there's a judder
 # at the start, but otherwise a timesaver.
-ffmpeg -i "$target_video" -ss "$start_time" -t "$duration" \
-    -loglevel 0 \
-    "$dest_video" > /dev/null
+
+# Check if fast-forward is requested
+if [[ -n "$FF_START" && -n "$FF_END" ]]; then
+    # Function to convert timestamp to seconds
+    time_to_seconds() {
+        local t=$1
+        # Handle HH:MM:SS or MM:SS or just SS
+        if [[ $t =~ ^([0-9]+):([0-9]+):([0-9]+)$ ]]; then
+            echo $((10#${BASH_REMATCH[1]} * 3600 + 10#${BASH_REMATCH[2]} * 60 + 10#${BASH_REMATCH[3]}))
+        elif [[ $t =~ ^([0-9]+):([0-9]+)$ ]]; then
+            echo $((10#${BASH_REMATCH[1]} * 60 + 10#${BASH_REMATCH[2]}))
+        else
+            echo "$t"
+        fi
+    }
+
+    # Convert timestamps to seconds for calculation
+    start_sec=$(time_to_seconds "$start_time")
+    ff_start_sec=$(time_to_seconds "$FF_START")
+    ff_end_sec=$(time_to_seconds "$FF_END")
+    duration_sec=$(time_to_seconds "$duration")
+
+    # Calculate end time of clip
+    end_sec=$((start_sec + duration_sec))
+
+    # Build complex filter for 5x speedup in the middle section
+    # For video: setpts=PTS/5 speeds up 5x
+    # For audio: atempo is limited to 2.0, so we chain: 2.0*2.5=5.0
+    # Use absolute timestamps from the original video in trim filters
+    ffmpeg -i "$target_video" \
+        -filter_complex "\
+        [0:v]trim=start=${start_sec}:end=${ff_start_sec},setpts=PTS-STARTPTS[v1];\
+        [0:a]atrim=start=${start_sec}:end=${ff_start_sec},asetpts=PTS-STARTPTS[a1];\
+        [0:v]trim=start=${ff_start_sec}:end=${ff_end_sec},setpts=(PTS-STARTPTS)/5[v2];\
+        [0:a]atrim=start=${ff_start_sec}:end=${ff_end_sec},asetpts=PTS-STARTPTS,atempo=2.0,atempo=2.5[a2];\
+        [0:v]trim=start=${ff_end_sec}:end=${end_sec},setpts=PTS-STARTPTS[v3];\
+        [0:a]atrim=start=${ff_end_sec}:end=${end_sec},asetpts=PTS-STARTPTS[a3];\
+        [v1][a1][v2][a2][v3][a3]concat=n=3:v=1:a=1[outv][outa]" \
+        -map "[outv]" -map "[outa]" \
+        -loglevel 0 \
+        "$dest_video" > /dev/null
+else
+    # Original simple extraction
+    ffmpeg -i "$target_video" -ss "$start_time" -t "$duration" \
+        -loglevel 0 \
+        "$dest_video" > /dev/null
+fi
 printf ' OK\n'
 
 # Make a gif if requested.
