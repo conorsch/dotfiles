@@ -1,0 +1,18 @@
+# Config file for ghostty. See docs at:
+# https://ghostty.org/docs/config
+#
+# Reload config via ctrl+shift+,
+
+# Config syntax crash course
+# ==========================
+# # The config file consists of simple key-value pairs,
+# # separated by equals signs.
+# font-family = Iosevka
+# window-padding-x = 2
+
+# disable window borders, to gel with i3.
+window-decoration = none
+
+theme = Abernathy
+# TODO: find a nice light theme, and figure out how to toggle
+# theme = dark:Abernatyh,light:Catppuccin Latte
