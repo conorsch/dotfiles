@@ -1,8 +1,13 @@
 #!/bin/bash
 git-review() {
     local target_branch
-    target_branch="${1:-master}"
-    git log --patch --reverse "${target_branch}..HEAD"
+    target_branch="${1:-main}"
+    # Default to comparing against "main" branch, but check against "master"
+    # if the main check fails.
+    if ! git log --patch --reverse "${target_branch}..HEAD" ; then
+        target_branch="${1:-master}"
+        git log --patch --reverse "${target_branch}..HEAD"
+    fi
 }
 
 gmru() {
