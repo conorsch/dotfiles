@@ -134,7 +134,7 @@ printf ' OK\n'
 # Make a gif if requested.
 if [[ $MAKE_GIF -gt 0 ]] ; then
     >&2 echo "Making gif..."
-    gifski --output "${dest_video%.*}.gif" --height 500 --quality 70 "$dest_video"
+    gifski --output "${dest_video%.*}.gif" --height 700 --fps 30 --quality 80 "$dest_video"
 fi
 
 # View file if requested.
