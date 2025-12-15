@@ -4,11 +4,10 @@ set -euo pipefail
 
 
 # Add Flathub remote repository
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-sudo flatpak install -y flathub \
+flatpak install --user -y flathub \
     com.brave.Browser \
-    com.github.eneshecan.WhatsAppForLinux \
     com.logseq.Logseq \
     com.spotify.Client \
     com.valvesoftware.Steam \
@@ -20,8 +19,17 @@ sudo flatpak install -y flathub \
 
 # 1password, via https://support.1password.com/install-linux/#flatpak
 if ! flatpak list | grep -q ^OnePassword ; then
-    sudo flatpak install -y --or-update https://downloads.1password.com/linux/flatpak/1Password.flatpakref
+    flatpak install --user -y --or-update https://downloads.1password.com/linux/flatpak/1Password.flatpakref
 fi
+
+# remove old flatpaks
+for fp in com.github.eneshecan.WhatsAppForLinux ; do
+  if flatpak list | grep -q "$fp" ; then
+    p
+    >&2 echo "Uninstalling: $fp"
+    sudo flatpak uninstall -y "$fp"
+  fi
+done
 
 >&2 echo "Setting up convenient symlinks for flatpaks in PATH..."
 function setup_app_symlink() {
