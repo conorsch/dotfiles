@@ -8,6 +8,11 @@
 # # The config file consists of simple key-value pairs,
 # # separated by equals signs.
 # font-family = Iosevka
+
+# As was the case for Alacritty, setting monospace font family by itself
+# isn't enough; see also `~/.config/fontconfig/fonts.conf`,
+# which forces use of an emoji-capable font.
+font-family = Monospace
 # window-padding-x = 2
 
 # disable window borders, to gel with i3.
