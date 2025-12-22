@@ -44,7 +44,9 @@ fi
 # Set alacritty as default terminal, so it's picked up by i3-sensible-terminal,
 # but only for graphical environments.
 if [ -n "$DISPLAY" ] ; then
-    if hash alacritty > /dev/null 2>&1 ; then
+    if hash ghostty > /dev/null 2>&1 ; then
+        export TERMINAL="ghostty"
+    elif hash alacritty > /dev/null 2>&1 ; then
         export TERMINAL="alacritty"
     fi
 fi
