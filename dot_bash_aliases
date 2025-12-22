@@ -57,3 +57,6 @@ alias hms="home-manager switch"
 alias r="rsync -a --info=progress2 --partial --partial-dir=.rsync-partial"
 alias z="zellij"
 alias zdas="zellij delete-all-sessions --force --yes"
+
+# storing as alias, because I often take a prompt and copy it to different tools, to compare.
+alias opencode-last-query="jq -s '.[-1].input' -r < '${HOME:?}/.local/state/opencode/prompt-history.jsonl' | xclip -selection clipboard -out"
