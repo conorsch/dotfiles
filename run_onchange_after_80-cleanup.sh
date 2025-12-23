@@ -35,3 +35,8 @@ fi
 # Consolidated LLM tooling to "install-llms" script
 rm -vf ~/bin/install-claude
 rm -vf ~/bin/install-opencode
+
+# Purge home-manager config
+if hash home-manager > /dev/null 2>&1 && hash nix > /dev/null 2>&1 ; then
+  nix run home-manager/release-25.05 -- uninstall
+fi

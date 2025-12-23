@@ -1,0 +1,49 @@
+# # Adds the 'hello' command to your environment. It prints a friendly
+# # "Hello, world!" when run.
+# pkgs.hello
+age
+bat
+btop
+bottom
+byobu
+curl
+diceware
+direnv
+dunst
+fd
+fzf
+git
+gum
+htop
+magic-wormhole-rs
+neovim
+# pkgs.ntfy-sh conflicts with home-manager-path/bin/fbsen
+ripgrep
+sops
+starship
+zellij
+gifski
+watchexec
+
+# workstation packages
+wiremix
+bluetui
+
+# general dev cruft
+pnpm
+nodejs_22
+wasm-pack
+
+# cargo pkgs
+bottom
+cargo-watch
+watchexec
+dust
+# pkgs.etym
+eza
+hyperfine
+just
+oha
+tokei
+toml-cli
+watchexec

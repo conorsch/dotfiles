@@ -37,3 +37,4 @@ vim
 xrandr
 xset
 xz
+zellij
