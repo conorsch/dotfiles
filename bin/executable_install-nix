@@ -21,7 +21,7 @@ if ! hash nix > /dev/null 2>&1 ; then
     sudo setenforce 0
     sh <(curl -L https://nixos.org/nix/install)
   else
-    sh <(curl -L https://nixos.org/nix/install) --daemon
+    sh <(curl -L https://nixos.org/nix/install)
   fi
 fi
 
