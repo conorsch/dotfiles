@@ -45,7 +45,6 @@ function configure_hardware_workstation() {
     install_zellij
     configure_alacritty
     install-nix
-    install-home-manager
     install-dev-tools
 }
 
