@@ -1,0 +1,3 @@
+{
+  "apiKeyHelper": "echo $_ANTHROPIC_API_KEY"
+}
