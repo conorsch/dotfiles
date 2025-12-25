@@ -25,6 +25,12 @@ function install_zellij() {
     sudo dnf install -y zellij
 }
 
+# Install the ghostty terminal application, via custom RPM repo.
+function install_ghostty() {
+    sudo dnf copr enable -y scottames/ghostty
+    sudo dnf install -y ghostty
+}
+
 # Edit user configurations for Alacritty terminal emulator.
 function configure_alacritty() {
     >&2 echo "Setting up alacritty..."
@@ -43,6 +49,7 @@ function configure_hardware_workstation() {
     fedora-install-rpm-fusion
     i3-setup
     install_zellij
+    install_ghostty
     configure_alacritty
     install-nix
     install-dev-tools
@@ -62,6 +69,7 @@ function configure_qubes() {
     # fedora-install-rpm-fusion
     # i3-setup
     install_zellij
+    install_ghostty
     configure_alacritty
     install-nix
 }
