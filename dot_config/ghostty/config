@@ -20,4 +20,10 @@ window-decoration = none
 
 theme = Abernathy
 # TODO: find a nice light theme, and figure out how to toggle
+# View available themes via: `ghostty +list-themes`
 # theme = dark:Abernatyh,light:Catppuccin Latte
+
+# copy/paste clipboard settings
+copy-on-select = false
+keybind = performable:ctrl+shift+c=copy_to_clipboard
+keybind = performable:ctrl+shift+v=paste_from_clipboard
