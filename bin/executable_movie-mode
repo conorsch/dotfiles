@@ -2,16 +2,41 @@
 # Script to configure display for watching a movie.
 set -euo pipefail
 
-set -x
+requested_mode="${1:-on}"
 
-# disable automatic screen sleep.
-xset s off -dpms
 
-# kill screenlock
-killall xss-lock || true
+function enable_movie_mode() {
+  # disable automatic screen sleep.
+  xset s off -dpms
 
-# disable warm mode via redshift
-systemctl --user stop redshift
+  # kill screenlock
+  killall xss-lock || true
 
-# configure external displays
-monitor-setup
+  # disable warm mode via redshift
+  systemctl --user stop redshift
+
+  # configure external displays
+  monitor-setup
+}
+
+function disable_movie_mode() {
+  # disable automatic screen sleep.
+  xset s on -dpms
+
+  # TODO: figure out how best to restart xss-lock;
+  # maybe port xss-lock out of i3 and into systemd?
+  # xss-lock || true
+
+  # re-enable warm mode via redshift
+  systemctl --user restart redshift
+
+  # configure external displays
+  monitor-setup
+}
+
+if [[ "$requested_mode" = "on" ]] ; then
+  enable_movie_mode
+elif [[ "$requested_mode" = "off" ]] ; then
+  disable_movie_mode
+fi
+

@@ -1,7 +1,6 @@
 #!/bin/bash
 # dual-monitor configs for various machines
 set -euo pipefail
-set -x
 
 # set up some default vars shared across hosts
 primary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected primary / && say $1')
