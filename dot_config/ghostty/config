@@ -13,6 +13,7 @@
 # isn't enough; see also `~/.config/fontconfig/fonts.conf`,
 # which forces use of an emoji-capable font.
 font-family = Monospace
+font-size = 8
 # window-padding-x = 2
 
 # disable window borders, to gel with i3.
