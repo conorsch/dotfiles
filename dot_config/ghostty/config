@@ -28,7 +28,3 @@ theme = Abernathy
 copy-on-select = false
 keybind = performable:ctrl+shift+c=copy_to_clipboard
 keybind = performable:ctrl+shift+v=paste_from_clipboard
-
-# Don't prmopt for confirmation on window close; the prompt
-# breaks flow on i3.
-confirm-close = false
