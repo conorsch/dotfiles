@@ -28,3 +28,5 @@ theme = Abernathy
 copy-on-select = false
 keybind = performable:ctrl+shift+c=copy_to_clipboard
 keybind = performable:ctrl+shift+v=paste_from_clipboard
+
+confirm-close-surface = false
