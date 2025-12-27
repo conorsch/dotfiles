@@ -53,7 +53,7 @@ fi
 
 # If we're under Qubes, check for split-ssh qvm-service,
 # and export auth sock.
-if [ -n "$QUBES_ENV_SOURCED" ] && [ -e /var/run/qubes-service/split-ssh-client ]; then
+if [ -e /usr/share/qubes/marker-vm ] && [ -e /var/run/qubes-service/split-ssh-client ]; then
   # N.B. the filepath to auth socket must match what's in the qvm-service
   export SSH_AUTH_SOCK="${HOME:?}/.SSH_AGENT_vault"
 fi

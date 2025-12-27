@@ -57,8 +57,8 @@ function configure_hardware_workstation() {
 
 # Handle config specifically for Qubes VMs. Supports both AppVM and TemplateVM types.
 function configure_qubes() {
-    # Check if we're a Qubes VM.
-    if ! hash qubesdb-read >/dev/null 2>&1 ; then
+    # Return error if we're not in a Qubes VM.
+    if [[ ! -e /usr/share/qubes/marker-vm ]] ;
         return 1
     fi
 

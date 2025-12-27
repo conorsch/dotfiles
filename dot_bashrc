@@ -25,13 +25,6 @@ elif [[ -f /usr/share/bash-completion/bash_completion ]] ; then
     source /usr/share/bash-completion/bash_completion
 fi
 
-# Source ssh-agent wrapper, specifically for QubesOS.
-if [[ -z "SSH_CLIENT" ]] ; then
-    if ! printenv | grep -q ^QUBES_ ; then
-        source ~/.bin/ssh-agent-wrapper
-    fi
-fi
-
 # rustlang dev config. Don't assume cargo config exists.
 _rust_env="$HOME/.cargo/env"
 if [[ -e "$_rust_env" ]] ; then
