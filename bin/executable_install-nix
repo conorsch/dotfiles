@@ -31,6 +31,11 @@ if hash home-manager > /dev/null 2>&1 && hash nix > /dev/null 2>&1 ; then
   nix run home-manager/release-25.05 -- uninstall
 fi
 
+# We must also ensure that any ad-hoc packages that were installed
+# are removed, otherwise the flake installation will fail with conflicts.
+nix profile list --json | jq '.elements| keys | .[]'  -r | grep -v '^nix$' \
+  | xargs -r nix profile remove
+
 # The chezmoi dotfiles repo has a top-level `flake.nix` which tracks packages.
 chezmoi_src_dir="${HOME:?}/.local/share/chezmoi"
 if [[ ! -d "$chezmoi_src_dir" ]] ; then
@@ -38,4 +43,5 @@ if [[ ! -d "$chezmoi_src_dir" ]] ; then
   exit 1
 fi
 
-nix profile add "$chezmoi_src_dir"
+>&2 echo "Installing local nix flake for tooling..."
+nix profile install "$chezmoi_src_dir"
