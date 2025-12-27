@@ -19,20 +19,23 @@ if ! hash nix > /dev/null 2>&1 ; then
     >&2 echo "Detected Qubes environment, disabling SELinux"
     sleep 2
     sudo setenforce 0
-    sh <(curl -L https://nixos.org/nix/install)
-  else
-    sh <(curl -L https://nixos.org/nix/install)
   fi
+  sh <(curl -L https://nixos.org/nix/install)
 fi
 
-# Display info on update commands. Don't actually run them, trying to exercise
-# the muscle memory a bit more to learn how nix channels work.
->&2 echo "Here's how to update nix:"
-cat <<EOM
-sudo su
+>&2 echo "Setting up default nix profile with custom packages..."
+# We must ensure home-manager is gone, otherwise its paths will
+# conflict with those created by the profile installation.
+if hash home-manager > /dev/null 2>&1 && hash nix > /dev/null 2>&1 ; then
+  >&2 echo "Detected home-manager installation, uninstalling..."
+  nix run home-manager/release-25.05 -- uninstall
+fi
 
-# nix-env --install --file '<nixpkgs>' --attr nix cacert -I nixpkgs=channel:nixpkgs-unstable
-nix-env --install --file '<nixpkgs>' --attr nix cacert -I nixpkgs=channel:nixpkgs-25.05
-systemctl daemon-reload
-systemctl restart nix-daemon
-EOM
+# The chezmoi dotfiles repo has a top-level `flake.nix` which tracks packages.
+chezmoi_src_dir="${HOME:?}/.local/share/chezmoi"
+if [[ ! -d "$chezmoi_src_dir" ]] ; then
+  >&2 echo "ERROR: chezmoi dir doesn't exist: $chezmoi_src_dir"
+  exit 1
+fi
+
+nix profile add "$chezmoi_src_dir"

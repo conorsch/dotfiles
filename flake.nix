@@ -1,5 +1,6 @@
 {
   description = "Dev shell for managing ruin.dev dotfiles";
+  # name = "ruindev-dotfiles";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
   # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
@@ -17,41 +18,82 @@
           system = "x86_64-linux";
         };
 
+        # Packages only appropriate if headful machine, with monitor and speakers.
+        workstationPkgs = with pkgs; [
+          wiremix
+          bluetui
+
+          # general dev cruft
+          pnpm
+          nodejs_22
+          wasm-pack
+
+          # devops
+          ansible
+          cargo-watch
+          gifski
+          go
+          hyperfine
+          kubectl
+          oha
+          python313Packages.pytest
+          python313Packages.pytest-testinfra
+          python313Packages.pytest-xdist
+          shellcheck
+          sops
+          watchexec
+        ];
+
 
         # Defining package list outside of devshell, so it can be used in devshell & container image.
         tooling = with pkgs; [
           age
-          ansible
+          aichat
           bashInteractive
+          bat
+          bottom
+          btop
+          byobu
           coreutils
+          curl
+          diceware
+          direnv
+          dunst
+          dust
           etym.packages.${system}.default
+          eza
           fd
           file
+          fzf
+          git
           glibcLocales
-          go
           gum
+          htop
+          magic-wormhole-rs
           jq
           just
-          kubectl
+          neovim
           ntfy-sh
           perl
-          python313Packages.pytest
-          python313Packages.pytest-testinfra
-          python313Packages.pytest-xdist
+          ripgrep
           rsync
           ruff
-          shellcheck
-          sops
+          starship
+          tokei
+          toml-cli
           xz
           yamllint
           yq
+          zellij
         ];
+
       in
       {
         devShells.default = pkgs.mkShell {
           name = "ruin.dev dotfiles";
           # nativeBuildInputs = [ pkgs.bashInteractive ];
-          buildInputs = tooling;
+          # TODO: make installation of workstationPkgs conditional.
+          buildInputs = tooling ++ workstationPkgs;
         };
 
         # Add container output
@@ -73,7 +115,10 @@
           };
         };
 
-        # Make the devShell the default package
-        packages.default = self.devShells.${system}.default.inputDerivation;
+        # Make a proper installable package with all tools
+        packages.default = pkgs.buildEnv {
+          name = "ruin-dev-tools";
+          paths = tooling ++ workstationPkgs;
+        };
       });
 }
