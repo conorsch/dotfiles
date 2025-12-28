@@ -1,6 +1,9 @@
 Host wurk
     Hostname antigonus.ruindev.wg
 
+Host tart
+    Hostname tartessos.ruindev.wg
+
 Host rsync-net-backup
   Hostname de2851.rsync.net
   User de2851
