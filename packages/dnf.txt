@@ -17,6 +17,7 @@ ImageMagick
 ipython3
 just
 libsq3-devel
+myrepos
 neovim
 nfs-utils
 nitrogen

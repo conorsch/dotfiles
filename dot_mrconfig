@@ -1,0 +1,67 @@
+[DEFAULT]
+# ~/.mrconfig - Example configuration for myrepos (mr)
+# This demonstrates various options and patterns for managing multiple repositories
+#
+# parallelize updates
+jobs = 5
+
+# Default settings applied to all repos unless overridden
+# Show detailed output
+git_update = git fetch
+git_status = git status -sb
+
+# Timeout for commands (in seconds)
+timeout = 300
+
+# Custom command to pre-warm build caches
+build = 
+  echo "building nix env for repo"
+  test -e flake.nix && nix build
+
+# Should this run on every repo?
+# fixup =
+#   git branch --set-upstream-to=origin/main main
+
+# Personal repos
+[src/fleet]
+checkout = git clone 'git@adolin.ruindev.wg:/mnt/Valhalla/git-repos/fleet' 'fleet'
+group = personal
+build = echo "skipping import nix build"
+# "skip=lazy" means that the repo won't be checked out, only updated if it's already there.
+skip = lazy
+
+# dotfiles
+[.local/share/chezmoi]
+checkout = git clone 'https://codeberg.org/conorsch/dotfiles' 'chezmoi'
+group = personal
+skip = lazy
+
+[src/personal/etym]
+checkout = git clone 'https://github.com/conorsch/etym' 'etym'
+group = personal
+
+[src/personal/hexagon]
+checkout = git clone 'https://github.com/conorsch/hexagon' 'hexagon'
+group = personal
+
+# PL repos
+[src/pl/penumbra]
+checkout = git clone 'https://github.com/penumbra-zone/penumbra' 'penumbra'
+group = pl
+
+[src/pl/reindexer]
+checkout = git clone 'https://github.com/penumbra-zone/reindexer' 'reindexer'
+group = pl
+
+# FPF repos
+[src/fpf/securedrop]
+checkout = git clone 'https://github.com/freedomofpress/securedrop' 'securedrop'
+group = fpf
+
+[src/fpf/securedrop-workstation]
+checkout = git clone 'https://github.com/freedomofpress/securedrop-workstation' 'securedrop-workstation'
+group = fpf
+
+[src/fpf/securedrop-client]
+checkout = git clone 'https://github.com/freedomofpress/securedrop-client' 'securedrop-client'
+group = fpf
