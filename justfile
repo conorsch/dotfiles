@@ -8,4 +8,4 @@ lint:
 
 # apply only workstation configs
 workstation:
-  bash run_onchange_after_50-workstation.sh
+  bash bin/executable_install-workstation

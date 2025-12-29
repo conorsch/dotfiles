@@ -41,37 +41,23 @@ function configure_alacritty() {
     fi
   }
 
-# Expect a bare metal Fedora Workstation install, with ability to customize
-# RPM repos and such.
+# Install packages appropriate only for a bare metal Fedora Workstation setup,
+# with ability to customize RPM repos and such. Not appropriate for a VM, where e.g.
+# a full i3 environment is not necessary.
 function configure_hardware_workstation() {
     # These are helper scripts also installed by chezmoi/dotfiles.
     fedora-install-flatpaks
     fedora-install-rpm-fusion
     i3-setup
+}
+
+# Handle the core dev tools setup for "workstation" role.
+function configure_workstation() {
     install_zellij
     install_ghostty
     configure_alacritty
     install-nix
     install-dev-tools
-}
-
-# Handle config specifically for Qubes VMs. Supports both AppVM and TemplateVM types.
-function configure_qubes() {
-    # Return error if we're not in a Qubes VM.
-    if [[ ! -e /usr/share/qubes/marker-vm ]] ; then
-        return 1
-    fi
-
-    # This value will likely be `AppVM` or `TemplateVM`.
-    # qubes_vm_type="$(qubesdb-read /qubes-vm-type)"
-
-    # fedora-install-flatpaks
-    # fedora-install-rpm-fusion
-    # i3-setup
-    install_zellij
-    install_ghostty
-    configure_alacritty
-    install-nix
 }
 
 # Run laptop-specific configs, for battery monitoring.
@@ -90,7 +76,6 @@ main() {
     hostnamectl_json="$(hostnamectl status --json pretty)"
     chassis="$(jq -r .Chassis <<< "$hostnamectl_json")"
     hostname="$(jq -r .Hostname <<< "$hostnamectl_json")"
-    kernel_release="$(jq -r .KernelRelease <<< "$hostnamectl_json")"
     # Hardcode primary workstation name, which often hosts ssh sessions.
     # DISPLAY won't be set, but still consider it a workstation.
     if [[ "$hostname" = "Antigonus" ]] ; then
@@ -103,16 +88,9 @@ main() {
     # Skips hardware servers.
     elif [[ "$chassis" = "desktop" ]] && [[ -n "${DISPLAY:-}" ]] ; then
         configure_hardware_workstation
-    # If we're in a VM running a Qubes kernel, consider that a workstation, too.
-    elif [[ "$chassis" = "vm" ]] && [[ "$kernel_release"  =~ ^.*qubes.*$ ]] ; then
-        >&2 echo "Detected Qubes VM"
-        configure_qubes
-    # If we're in a non-Qubes VM, probably a cloud machine, so don't assume a workstation.
-    elif [[ "$chassis" = "vm" ]] && [[ "$kernel_release"  =~ ^.*qubes.*$ ]] ; then
-        >&2 echo "Detected VM, skipping workstation configs"
-    else
-        >&2 echo "Machine type '${chassis}' not a workstation, skipping workstation configs"
     fi
+
+    configure_workstation
 }
 
 main
