@@ -10,8 +10,14 @@
       nixpkgs.follows = "nixpkgs";
     };
   };
+  inputs.gaming-vids = {
+    url = "path:./tools/gaming-vids";
+    inputs = {
+      nixpkgs.follows = "nixpkgs";
+    };
+  };
 
-  outputs = { self, nixpkgs, flake-utils, etym }:
+  outputs = { self, nixpkgs, flake-utils, etym, gaming-vids }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -22,6 +28,9 @@
         workstationPkgs = with pkgs; [
           wiremix
           bluetui
+
+          # media tooling
+          gaming-vids.packages.${system}.default
 
           # general dev cruft
           pnpm
@@ -43,7 +52,6 @@
           sops
           watchexec
         ];
-
 
         # Defining package list outside of devshell, so it can be used in devshell & container image.
         tooling = with pkgs; [

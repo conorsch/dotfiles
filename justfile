@@ -5,6 +5,7 @@ lint:
         rg '^# shellcheck \w+=\w+' -l ) \
         | sort -u \
         | xargs -r shellcheck
+    nix flake check --all-systems
 
 # apply only workstation configs
 workstation:

@@ -1,3 +1,8 @@
+# This config file specifies paths that should be excluded
+# from chezmoi's dotfiles handling; anything in this list
+# will *not* be naively copied to HOME.
+
+# general dev tooling for dotfiles repo
 Makefile
 README.md
 bin/chezmoi
@@ -11,3 +16,6 @@ flake.nix
 flake.lock
 home.nix
 result
+
+# additional tooling, to be built by nix
+tools/
