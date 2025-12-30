@@ -36,6 +36,9 @@ fi
 rm -vf ~/bin/install-claude
 rm -vf ~/bin/install-opencode
 
+# Remove dangling reference to nix builds
+test -L ~/result && rm -vf ~/result
+
 # Purge home-manager config
 if hash home-manager > /dev/null 2>&1 && hash nix > /dev/null 2>&1 ; then
   nix run home-manager/release-25.05 -- uninstall
