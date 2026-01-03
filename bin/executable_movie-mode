@@ -9,8 +9,9 @@ function enable_movie_mode() {
   # disable automatic screen sleep.
   xset s off -dpms
 
-  # kill screenlock
-  killall xss-lock || true
+  # stop screenlock service
+  # TODO: is this necessary? disabling dpms should be sufficient, no?
+  systemctl --user stop xss-lock
 
   # disable warm mode via redshift
   systemctl --user stop redshift
@@ -23,9 +24,8 @@ function disable_movie_mode() {
   # disable automatic screen sleep.
   xset s on -dpms
 
-  # TODO: figure out how best to restart xss-lock;
-  # maybe port xss-lock out of i3 and into systemd?
-  # xss-lock || true
+  # restart screenlock service
+  systemctl --user start xss-lock
 
   # re-enable warm mode via redshift
   systemctl --user restart redshift

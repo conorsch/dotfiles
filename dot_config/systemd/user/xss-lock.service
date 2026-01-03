@@ -1,0 +1,14 @@
+[Unit]
+Description=Screen locker using xss-lock
+After=default.target
+
+[Service]
+Type=simple
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/xss-lock --transfer-sleep-lock -- %h/bin/fuzzy-lock
+TimeoutStopSec=60
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

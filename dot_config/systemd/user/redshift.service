@@ -1,0 +1,18 @@
+[Unit]
+Description=Redshift for warm colors at night
+After=default.target
+
+[Service]
+# User=%i
+Type=simple
+Environment=DISPLAY=:0
+# The default color temp values are: `Daytime: 6500K, night: 4500K`
+# which would be `-t 6500:4500` but I like night warmer, so using
+# `-t 6500:3700` instead.
+ExecStart=/usr/bin/redshift -t 6500:3700 -r -P
+TimeoutStopSec=60
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -49,6 +49,10 @@ function configure_hardware_workstation() {
     fedora-install-flatpaks
     fedora-install-rpm-fusion
     i3-setup
+
+    # GUI apps
+    systemctl --user enable --now redshift
+    systemctl --user enable --now syncthing
 }
 
 # Handle the core dev tools setup for "workstation" role.
@@ -66,8 +70,6 @@ function configure_laptop() {
     # scripts and user-level systemd services are in place.
     systemctl --user daemon-reload
     systemctl --user enable --now battery-monitor battery-monitor.timer
-    # Also restart, in case the script itself changed.
-    systemctl --user restart battery-monitor battery-monitor.timer
 }
 
 # Primary script entrypoint. Basically a big switch statement
