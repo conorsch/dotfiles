@@ -1,17 +1,18 @@
 Host wurk
-    Hostname antigonus.ruindev.wg
+  Hostname antigonus.ruindev.wg
 
 Host tart
-    Hostname tartessos.ruindev.wg
+  Hostname tartessos.ruindev.wg
 
 Host rsync-net-backup
   Hostname de2851.rsync.net
   User de2851
 
 Host *
-    StrictHostKeyChecking accept-new
-    # Don't hardcode IdentityFile; some hosts may use ssh-agent
-    # IdentityFile "~/.ssh/id_ed25519"
-    PasswordAuthentication no
-    SetEnv TERM=xterm-256color
-    User conor
+  StrictHostKeyChecking accept-new
+  # Don't hardcode IdentityFile; some hosts may use ssh-agent
+  # does k0ctl require this?
+  # IdentityFile "~/.ssh/id_ed25519"
+  PasswordAuthentication no
+  # SetEnv TERM=xterm-256color
+  User conor
