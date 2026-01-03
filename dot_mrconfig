@@ -44,6 +44,19 @@ group = personal
 checkout = git clone 'https://github.com/conorsch/hexagon' 'hexagon'
 group = personal
 
+# Social jawns
+[src/k0s]
+checkout = git clone 'https://github.com/k0sproject/k0s' 'k0s'
+group = social
+
+[src/k0sctl]
+checkout = git clone 'https://github.com/k0sproject/k0sctl' 'k0sctl'
+group = social
+
+[src/innernet]
+checkout = git clone 'https://github.com/tonarino/innernet' 'innernet'
+group = social
+
 # PL repos
 [src/pl/penumbra]
 checkout = git clone 'https://github.com/penumbra-zone/penumbra' 'penumbra'
