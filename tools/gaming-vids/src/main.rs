@@ -18,9 +18,29 @@ struct Args {
     #[arg(long, default_value = "adolin.ruindev.wg")]
     media_server: String,
 
+    /// Directory paths for searching for media to upload from Windows.
+    #[arg(long)]
+    windows_media_paths: Option<Vec<String>>,
+
     /// Whether to verify file checksums when copying from remote
     #[arg(long)]
     checksum: bool,
+}
+
+fn get_default_windows_media_paths() -> Vec<String> {
+    // Check for Windows captures directory
+    let windows_gamebar_dir = format!(
+        "/mnt/c/Users/{}/Videos/Captures",
+        std::env::var("USER").unwrap_or_else(|_| "conor".to_string())
+    );
+    let nvidia_shadow_dir = format!(
+        "/mnt/c/Users/{}/Videos/NVIDIA",
+        std::env::var("USER").unwrap_or_else(|_| "conor".to_string())
+    );
+    vec![windows_gamebar_dir, nvidia_shadow_dir]
+        .into_iter()
+        .filter(|path| std::path::Path::new(path).exists())
+        .collect()
 }
 
 #[derive(Subcommand)]
@@ -53,7 +73,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
     match args.command {
-        Some(Commands::Upload) => upload(args.time_range).await?,
+        Some(Commands::Upload) => {
+            let paths = args
+                .windows_media_paths
+                .unwrap_or_else(get_default_windows_media_paths);
+            upload(args.time_range, paths).await?
+        }
         Some(Commands::Reorganize) => reorganize(args.media_server).await?,
         Some(Commands::Sync) => {
             reorganize(args.media_server).await?;
@@ -73,7 +98,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-async fn upload(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
+async fn upload(
+    time_range: String,
+    windows_media_paths: Vec<String>,
+) -> Result<(), Box<dyn std::error::Error>> {
     info!("uploading clips from WSL (time_range: {})", time_range);
 
     let sh = Shell::new()?;
@@ -87,22 +115,21 @@ async fn upload(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
         std::process::exit(1);
     }
 
-    // Check for Windows captures directory
-    let windows_dir = format!(
-        "/mnt/c/Users/{}/Videos/Captures",
-        std::env::var("USER").unwrap_or_else(|_| "conor".to_string())
-    );
+    // Validate that at least one directory exists
+    let existing_paths: Vec<String> = windows_media_paths
+        .into_iter()
+        .filter(|path| std::path::Path::new(path).exists())
+        .collect();
 
-    info!("Looking for videos in: {}", windows_dir);
-
-    if !std::path::Path::new(&windows_dir).exists() {
-        error!("vids dir not found: {}", windows_dir);
+    if existing_paths.is_empty() {
+        error!("No valid video directories found");
         std::process::exit(2);
     }
 
-    // Find all recent files first
+    // Find all recent files from all directories
     info!("Finding recent videos (changed within {})", time_range);
-    let find_output = cmd!(sh, "fd . {windows_dir} --changed-within {time_range}").output()?;
+    let find_output =
+        cmd!(sh, "fd . {existing_paths...} --changed-within {time_range}").output()?;
 
     if !find_output.status.success() {
         error!("Failed to find videos");
@@ -141,6 +168,15 @@ async fn upload(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
     }
 
     info!("Upload completed successfully - {} file(s) uploaded", total);
+
+    // Send notification with hostname
+    let hostname_output = cmd!(sh, "hostname").output()?;
+    let hostname = String::from_utf8(hostname_output.stdout)?
+        .trim()
+        .to_string();
+    let message = format!("Videos uploaded from {}", hostname);
+    cmd!(sh, "ruin-shout {message}").run()?;
+
     Ok(())
 }
 

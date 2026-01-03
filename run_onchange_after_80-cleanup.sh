@@ -41,6 +41,7 @@ test -L ~/result && rm -vf ~/result
 
 # Remove bash scripts that have been written as rust CLIs
 rm -vf ~/bin/gaming-vids
+rm -vf ~/bin/ntfy-send
 
 # Purge home-manager config
 if hash home-manager > /dev/null 2>&1 && hash nix > /dev/null 2>&1 ; then

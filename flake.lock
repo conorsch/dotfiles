@@ -101,7 +101,7 @@
       },
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-E4EuBaICGyQMuVXCV4jVsrm0NcyVE3LKThHhhxUGI5A=",
+        "narHash": "sha256-tsNOBxPrZxc5SABiIETfJHlCpwHz7iMkipOvmh/FkO8=",
         "path": "./tools/gaming-vids",
         "type": "path"
       },
