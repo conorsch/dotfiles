@@ -1,0 +1,46 @@
+#!/bin/bash
+# Rips an audio CD album to FLAC files.
+set -euo pipefail
+
+
+# Initialize vars, so we can prompt dynamically.
+album_name=""
+artist_name=""
+
+# If an arg was given, use that as album name and skip prompting.
+if [[ $# -eq 1 ]]; then
+  album_name="${1:-}"
+else
+  # If no args, then prompt for details
+  artist_name="$(gum input --prompt "Artist name: " --placeholder "Enter name of artist")"
+  album_name="$(gum input --prompt "Album name: " --placeholder "Enter name of album")"
+fi
+
+# Set up paths
+ripping_dest_dir="${HOME:?}/music/ripping"
+if [[ -n "$artist_name" ]] ; then
+  album_dir="${ripping_dest_dir}/${artist_name} - ${album_name}"
+else
+  album_dir="${ripping_dest_dir}/${album_name}"
+fi
+mkdir -p "$album_dir"
+
+# Change dir because cdparanoia always writes to CWD.
+pushd "${album_dir}" > /dev/null 2>&1
+
+# If ctrl+c is given, `gum spin` won't terminate the child process.
+trap 'killall -9 cdparanoia' SIGINT
+
+# Rip.
+gum log --level info --time datetime "Ripping album -> '$album_dir'"
+gum spin --title "Step 1/2: Ripping CD to WAV..." -- \
+  cdparanoia -B
+gum log ""
+gum spin --title "Step 2/2: Converting files to FLAC..." -- \
+  fd -t f -e wav . "$album_dir" -X flac --best
+
+# Clean up
+fd -t f -e wav . "$album_dir" -X rm
+gum log --level info --time datetime "Ripped album: '$album_name' -> '$album_dir'"
+# Long-running batch process, so inform via widget
+ntfy-send "Finished ripping album: '$album_name'" > /dev/null
