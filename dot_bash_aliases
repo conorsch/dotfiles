@@ -5,6 +5,7 @@
 alias gc="git commit"
 alias gd="git diff"
 alias ga="git add"
+alias gf="git commit -am fix"
 alias gits="git status"
 alias gpoh="git push origin HEAD"
 alias glns="git log --name-status"
