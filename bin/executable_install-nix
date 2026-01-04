@@ -33,8 +33,11 @@ fi
 
 # We must also ensure that any ad-hoc packages that were installed
 # are removed, otherwise the flake installation will fail with conflicts.
-nix profile list --json | jq '.elements| keys | .[]'  -r | grep -v '^nix$' \
-  | xargs -r nix profile remove
+# This is mostly about legacy cleanup; we should expect at least "nix"
+# and "chezmoi" entries. Disabling via comment, but leaving in-place
+# for ad-hoc fixes, if some machine has a dirty default nix profile.
+# nix profile list --json | jq '.elements| keys | .[]'  -r | grep -v '^nix$' \
+#   | xargs -r nix profile remove
 
 # The chezmoi dotfiles repo has a top-level `flake.nix` which tracks packages.
 chezmoi_src_dir="${HOME:?}/.local/share/chezmoi"
