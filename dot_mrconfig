@@ -44,7 +44,11 @@ group = personal
 checkout = git clone 'https://github.com/conorsch/hexagon' 'hexagon'
 group = personal
 
-# Social jawns
+# Social projects of interest
+[src/chabeau]
+checkout = git clone 'https://github.com/permacommons/chabeau' 'chabeau'
+group = social
+
 [src/k0s]
 checkout = git clone 'https://github.com/k0sproject/k0s' 'k0s'
 group = social
