@@ -1,6 +1,6 @@
 [package]
 name = "gaming-vids"
-version = "0.1.1"
+version = "0.1.2-alpha.0"
 edition = "2021"
 
 [dependencies]
@@ -14,3 +14,4 @@ thiserror = "1.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 xshell = "0.2"
+chrono = "0.4"

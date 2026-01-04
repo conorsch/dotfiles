@@ -11,7 +11,7 @@ struct Args {
     command: Option<Commands>,
 
     /// How recent the videos must be to be included
-    #[arg(long, default_value = "1d", alias = "changed_within")]
+    #[arg(long, default_value = "1d", alias = "changed-within")]
     time_range: String,
 
     /// Media server hostname for remote operations
@@ -59,6 +59,8 @@ enum Commands {
     /// List local video files
     #[clap(alias = "recent")]
     List,
+    /// Archive all Windows media files to a tar file
+    Archive,
 }
 
 #[tokio::main]
@@ -86,6 +88,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Some(Commands::Review) => review(args.time_range).await?,
         Some(Commands::List) => list(args.time_range).await?,
+        Some(Commands::Archive) => {
+            let paths = args
+                .windows_media_paths
+                .unwrap_or_else(get_default_windows_media_paths);
+            archive(paths).await?
+        }
         None => {
             // Default sequence: reorganize -> sync -> review
             info!("Running default sequence: reorganize -> sync -> review");
@@ -159,7 +167,7 @@ async fn upload(
 
         info!("Uploading {}/{}: {}", i + 1, total, filename);
 
-        let upload_result = cmd!(sh, "ruin-give {file}").run();
+        let upload_result = cmd!(sh, "ruin-give {file}").quiet().run();
 
         if upload_result.is_err() {
             error!("Failed to upload: {}", filename);
@@ -175,7 +183,7 @@ async fn upload(
         .trim()
         .to_string();
     let message = format!("Videos uploaded from {}", hostname);
-    cmd!(sh, "ruin-shout {message}").run()?;
+    cmd!(sh, "ruin-shout {message}").quiet().run()?;
 
     Ok(())
 }
@@ -279,6 +287,53 @@ async fn list(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
 
     let list_cmd = format!("fd -t f -e mp4 . {vids_path} --changed-within {time_range} | sort -n");
     cmd!(sh, "sh -c {list_cmd}").run()?;
+
+    Ok(())
+}
+
+async fn archive(windows_media_paths: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
+    info!("creating archive of all Windows media files");
+
+    let sh = Shell::new()?;
+
+    // Check if we're in WSL
+    let output = cmd!(sh, "hostnamectl status --json pretty").output()?;
+
+    let stdout = String::from_utf8(output.stdout)?;
+    if !stdout.contains("WSL") {
+        error!("archive mode only supported under WSL");
+        std::process::exit(1);
+    }
+
+    // Validate that at least one directory exists
+    let existing_paths: Vec<String> = windows_media_paths
+        .into_iter()
+        .filter(|path| std::path::Path::new(path).exists())
+        .collect();
+
+    if existing_paths.is_empty() {
+        error!("No valid video directories found");
+        std::process::exit(2);
+    }
+
+    // Create timestamp for archive name
+    let timestamp = chrono::Local::now().format("%Y%m%d-%H%M%S");
+    let archive_name = format!("gaming-vids-archive-{}.tar", timestamp);
+
+    info!("Creating archive: {}", archive_name);
+
+    // Create tar archive of all files in the directories
+    cmd!(sh, "tar -cf {archive_name} {existing_paths...}").run()?;
+
+    // Get archive size and display it
+    let size_output = cmd!(sh, "du -h {archive_name}").output()?;
+    let size_info = String::from_utf8(size_output.stdout)?;
+    let size = size_info.split_whitespace().next().unwrap_or("unknown");
+
+    info!(
+        "Archive created successfully: {} (size: {})",
+        archive_name, size
+    );
 
     Ok(())
 }
