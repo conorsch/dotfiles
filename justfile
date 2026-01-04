@@ -9,7 +9,9 @@ lint:
     # nix flake check --all-systems
     nix flake check
     # Check for outdated local flake info
-    nix flake update gaming-vids && git diff --quiet ./flake.lock
+    nix flake update gaming-vids \
+      && nix flake update ripping-tools \
+      && git diff --quiet ./flake.lock
 
 # apply only workstation configs
 workstation:

@@ -1,14 +1,16 @@
-# Run shellcheck
+# Run cargo check
 lint:
   fd -t f -X file --mime \
     | perl -F: -lanE '$F[1] =~ /text\/x-shellscript/ and say $F[0]' \
     | xargs -r shellcheck
   gum format -t emoji "All scripts passed lint :rocket:"
+  cargo check
+  cargo fmt
 
 # Copy local rip dir to remote
 push:
-  rsync -a --info=progress2 "$HOME/music/ripping" "/mnt/Valhalla/Media/incoming/new-music/"
+  cargo run -- push
 
 # Rip an album
 rip:
-  ./rip-album
+  cargo run -- rip

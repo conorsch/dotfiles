@@ -16,8 +16,14 @@
       nixpkgs.follows = "nixpkgs";
     };
   };
+  inputs.ripping-tools = {
+    url = "path:./tools/ripping-tools";
+    inputs = {
+      nixpkgs.follows = "nixpkgs";
+    };
+  };
 
-  outputs = { self, nixpkgs, flake-utils, etym, gaming-vids }:
+  outputs = { self, nixpkgs, flake-utils, etym, gaming-vids, ripping-tools }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -31,6 +37,7 @@
 
           # media tooling
           gaming-vids.packages.${system}.default
+          ripping-tools.packages.${system}.default
 
           # general dev cruft
           pnpm
