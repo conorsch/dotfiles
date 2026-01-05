@@ -82,3 +82,19 @@ group = fpf
 [src/fpf/securedrop-client]
 checkout = git clone 'https://github.com/freedomofpress/securedrop-client' 'securedrop-client'
 group = fpf
+
+[src/fpf/securedrop-workstation-keyring]
+checkout = git clone 'https://github.com/freedomofpress/securedrop-workstation-keyring' 'securedrop-workstation-keyring'
+group = fpf
+
+[src/fpf/webcat]
+checkout = git clone 'https://github.com/freedomofpress/webcat' 'webcat'
+group = fpf
+
+[src/fpf/webcat-infra-chain]
+checkout = git clone 'https://github.com/freedomofpress/webcat-infra-chain' 'webcat-infra-chain'
+group = fpf
+
+[src/fpf/securedrop-protocol]
+checkout = git clone 'https://github.com/freedomofpress/securedrop-protocol' 'securedrop-protocol'
+group = fpf
