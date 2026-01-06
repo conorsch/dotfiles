@@ -8,7 +8,16 @@ set -x
 
 sudo qubes-dom0-update -y
 sudo qubes-dom0-update -y qubes-repo-contrib
-sudo qubes-dom0-update -y i3 i3-settings-qubes rofi redshift nitrogen fd-find ripgrep just
+sudo qubes-dom0-update -y \
+  fd-find \
+  i3 \
+  i3-settings-qubes \
+  just \
+  nitrogen \
+  picom \
+  redshift \
+  ripgrep \
+  rofi
 
 sudo qvm-template install fedora-42 debian-13
 
