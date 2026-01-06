@@ -28,5 +28,13 @@ theme = Abernathy
 copy-on-select = false
 keybind = performable:ctrl+shift+c=copy_to_clipboard
 keybind = performable:ctrl+shift+v=paste_from_clipboard
+# app-notifications = no-clipboard-copy
+app-notifications = no-clipboard-copy
 
+# don't prompt on i3 window kill
 confirm-close-surface = false
+
+# performance tweaks, via https://michaelbommarito.com/wiki/programming/tools/ghostty-configuration/
+gtk-single-instance = desktop
+# ~100mb per terminal
+scrollback-limit = 100000000
