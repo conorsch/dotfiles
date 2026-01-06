@@ -8,8 +8,24 @@ if [[ "$(hostname)" != "dom0" ]] ; then
   exit 1
 fi
 
+# copy dotfiles
 DOTFILES_DEV_VM="personal"
 DOTFILES_DEV_DIR="/home/user/.local/share/chezmoi"
-qvm-run -p "$DOTFILES_DEV_VM" "tar -c --exclude-vcs -C '${DOTFILES_DEV_DIR}/dom0' ." > /tmp/dotfiles.tar
-tar -xf /tmp/dotfiles.tar -C ~/
+qvm-run -q -p "$DOTFILES_DEV_VM" "tar -c --exclude-vcs -C '${DOTFILES_DEV_DIR}/dom0' ." > /tmp/dotfiles.tar
+tar -xf /tmp/dotfiles.tar -C "${HOME:?}"
+
+# copy desktop pics, only once.
+if ! test -d "${HOME:?}/desktoppics" ; then
+  echo "Copying desktoppics pics..."
+  # clone desktop pics in domU if necessary
+  if ! qvm-run -q "$DOTFILES_DEV_VM" "test -d '/home/user/src/desktoppics'" ; then
+    qvm-run -q -p "$DOTFILES_DEV_VM" "mkdir -p src && git clone https://github.com/conorsch/desktoppics src/desktoppics"
+  fi
+
+  # copy pics to dom0
+  qvm-run -q -p "$DOTFILES_DEV_VM" "tar -c --exclude-vcs -C '/home/user/src/desktoppics'" > /tmp/desktoppics.tar
+  mkdir "${HOME:?}/desktoppics"
+  tar -xf /tmp/desktoppics.tar -C "${HOME:?}/desktoppics" .
+fi
+
 echo "Done! All dotfiles copied to dom0"
