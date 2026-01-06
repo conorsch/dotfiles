@@ -23,7 +23,7 @@ if ! test -d "${HOME:?}/desktoppics" ; then
   fi
 
   # copy pics to dom0
-  qvm-run -q -p "$DOTFILES_DEV_VM" "tar -c --exclude-vcs -C '/home/user/src/desktoppics'" > /tmp/desktoppics.tar
+  qvm-run -q -p "$DOTFILES_DEV_VM" "tar -c --exclude-vcs -C '/home/user/src/desktoppics' ." > /tmp/desktoppics.tar
   mkdir "${HOME:?}/desktoppics"
   tar -xf /tmp/desktoppics.tar -C "${HOME:?}/desktoppics" .
 fi
