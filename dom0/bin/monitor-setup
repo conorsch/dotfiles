@@ -1,15 +1,21 @@
 #!/bin/bash
 # dual-monitor configs for various machines
 # add configs by hostname
-set -e
-set -u
-set -o pipefail
+set -euo pipefail
 
 # Set up monitor names dynamically. Each computer has a different display
 # name for the integrated monitor. The downside of dynamic lookup is that
 # the script isn't idempotent: it flip-flops between displays.
-primary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected primary / && say $1')
-secondary_monitor=$(xrandr | perl -nE '/^([\w-]+) connected (?!primary)/ && say $1')
+# primary_monitor="$(xrandr | perl -nE '/^([\w-]+) connected primary / && say $1')"
+#
+# "eDPI-1" is how the integrated high-res display appears on a Framework 13.
+primary_monitor="eDP-1"
+# secondary_monitor="$(xrandr | perl -nE '/^([\w-]+) connected (?!primary)/ && say $1')"
+# secondary_monitor="HDMI-1"
+#
+# "DP-2" is how the 4K Samsung monitor appears to QubesOS when attached over HDMI
+# on a Framework 13.
+secondary_monitor="DP-2"
 
 if [[ -z "${secondary_monitor}" ]] && [[ "${1:-}" != "solo" ]] ; then
     echo "No secondary monitor found."
@@ -18,19 +24,27 @@ fi
 
 secondary_side="right"
 # size="1920x1080"
-size="2560x1440"
+# size="2560x1440"
+size="3840x2160"
 
 xrandr --auto
-#primary_monitor="eDP1"
 xrandr --output "${primary_monitor}" --primary
+
+
+#set -x
+#xrandr --output "${secondary_monitor}" --off
+# xrandr --output "${primary_monitor}" --primary --rotate normal --mode "$size"
+#xrandr --output "${primary_monitor}" --primary --rotate normal --mode "$size"
+#exit 0
+
 if [[ $# -ne 0 && "$1" == "no-rotate" ]] ; then
-   #xrandr --output "${secondary_monitor}" "--${secondary_side}-of" "${primary_monitor}" --rotate normal
-   xrandr --output "${secondary_monitor}" --primary --mode "$size"
+   # xrandr --output "${secondary_monitor}" "--${secondary_side}-of" "${primary_monitor}" --rotate normal
+   xrandr --output "${secondary_monitor}" --primary --mode "$size" --rotate normal
    xrandr --output "${primary_monitor}" --off
 elif [[ $# -ne 0 && "$1" == "solo" ]] ; then
    set +e
    xrandr --output "${secondary_monitor}" --off
-   xrandr --output "${primary_monitor}" --primary
+   xrandr --output "${primary_monitor}" --primary --rotate normal --mode "$size"
    set -e
 else
    xrandr --output "${secondary_monitor}" --mode "$size"

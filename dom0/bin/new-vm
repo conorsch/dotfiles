@@ -1,0 +1,28 @@
+#!/bin/bash
+# convenience script to create Qubes VMs for testing.
+set -euo pipefail
+set -x
+
+vm_name="${1:-}"
+shift 1
+
+
+# qvm-create "$vm_name" --label blue --standalone --template fedora-42
+qvm-create "$vm_name" --label orange --template dev-f42
+
+qvm-prefs "$vm_name" vcpus 5
+qvm-prefs "$vm_name" memory 2000
+qvm-prefs "$vm_name" maxmem 8000
+
+# TODO: figure out why resizing root volume prevents GUI apps from working?
+# Try increasing the qrexec timeout to account for fs resizing on next boot
+# That works!!
+#
+# Hmm, does the resize job run on *every* boot?
+qvm-prefs "$vm_name" qrexec_timeout 300
+# qvm-volume resize "${vm_name}:root" 50G
+
+qvm-volume resize "${vm_name}:private" 50G
+qvm-prefs "$vm_name" netvm sys-firewall
+qvm-start "$vm_name"
+qvm-run "$vm_name" "sudo dnf install -y alacritty"

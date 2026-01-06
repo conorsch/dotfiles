@@ -1,0 +1,24 @@
+#!/bin/bash
+# Utility to push dotfiles from dom0 to domU in Qubes OS.
+set -euo pipefail
+
+
+if [[ "$(hostname)" != "dom0" ]] ; then
+  >&2 echo "ERROR: this script should only be run from dom0"
+  exit 1
+fi
+
+DOTFILES_DEV_VM="personal"
+DOTFILES_DEV_DIR="/home/user/.local/share/chezmoi"
+dotfiles_tarball_basename="dom0-dotfiles-export.tar"
+
+tar -cf "/tmp/$dotfiles_tarball_basename" -C ~/ \
+	.config/rofi .config/i3 .config/redshift.conf bin .bashrc .bash_profile .bashrc.d
+
+# Ensure there's no pre-existing file, otherwise transfer to domU will fail.
+qvm-run -q "$DOTFILES_DEV_VM" "rm -f 'QubesIncoming/dom0/${dotfiles_tarball_basename}'"
+qvm-move-to-vm "$DOTFILES_DEV_VM" "/tmp/$dotfiles_tarball_basename"
+# Move out of QubesIncoming into domU's dotfiles repo
+qvm-run -p "$DOTFILES_DEV_VM" "mv -v 'QubesIncoming/dom0/${dotfiles_tarball_basename}' '${DOTFILES_DEV_DIR}/dom0/${dotfiles_tarball_basename}'"
+echo "Done! All dom0 dotfiles copied to domU"
+exit 0

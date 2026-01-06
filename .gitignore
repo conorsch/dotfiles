@@ -6,3 +6,8 @@ dot_config/systemd/user/timers.target.wants/
 result
 .envrc
 .envrc.example
+
+# artifacts
+*.tar
+*.bin
+*.gz

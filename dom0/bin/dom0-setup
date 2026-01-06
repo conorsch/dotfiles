@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# QubesOS script to bootstrap dom0 config
+set -euo pipefail
+set -x
+
+
+
+
+sudo qubes-dom0-update -y
+sudo qubes-dom0-update -y qubes-repo-contrib
+sudo qubes-dom0-update -y i3 i3-settings-qubes rofi redshift nitrogen fd-find ripgrep just
+
+sudo qvm-template install fedora-42 debian-13
+
+# Set up services
+qvm-service fleet innernet-ruindev --enable
+qvm-service personal innernet-ruindev --enable
+
+qvm-service fleet split-ssh --enable
+qvm-service personal split-ssh --enable

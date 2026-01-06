@@ -5,7 +5,10 @@ This repo is a [chezmoi] dotfiles repo, for sychronizing dotfiles across multipl
 ## Requirements
 
  - git
+ - bash
  - curl
+
+ Works on Fedora Workstation, Debian Stable, and Qubes OS dom0.
 
 ## Installation
 
@@ -15,16 +18,9 @@ This repo is a [chezmoi] dotfiles repo, for sychronizing dotfiles across multipl
 
 That's it.
 
-## Environment variables
+## dom0
 
-Override these to customize git identity:
-
-```
-GIT_EMAIL
-GIT_NAME
-```
-
-Additional env vars can be set in `~/.bash_env_extra`,
-which is NOT version controlled.
+For Qubes OS dotfiles, there's a `dom0/` subdir that's hardcoded: no chezmoi fanciness,
+just filepaths suitable for tarballs.
 
 [chezmoi]:https://www.chezmoi.io

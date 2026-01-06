@@ -1,0 +1,15 @@
+#!/bin/bash
+# Utility to fetch dotfiles to dom0 in Qubes OS.
+set -euo pipefail
+
+
+if [[ "$(hostname)" != "dom0" ]] ; then
+  >&2 echo "ERROR: this script should only be run from dom0"
+  exit 1
+fi
+
+DOTFILES_DEV_VM="personal"
+DOTFILES_DEV_DIR="/home/user/.local/share/chezmoi"
+qvm-run -p "$DOTFILES_DEV_VM" "tar -c --exclude-vcs -C '${DOTFILES_DEV_DIR}/dom0' ." > /tmp/dotfiles.tar
+tar -xf /tmp/dotfiles.tar -C ~/
+echo "Done! All dotfiles copied to dom0"

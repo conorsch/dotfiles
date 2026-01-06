@@ -1,0 +1,15 @@
+#!/bin/bash
+# Wrapper script to halt and restart a Qubes VM.
+set -euo pipefail
+
+
+if [[ $# -lt 1 ]] ; then
+	>&2 echo "Usage: $0 <vm_name> [vm_name...]"
+	exit 1
+fi
+
+>&2 echo "Shutting down VMs: $* ..."
+# Force option is necessary for e.g. sys-net
+qvm-shutdown --wait --force "$@"
+>&2 echo "Booting VMs: $* ..."
+qvm-start "$@"
