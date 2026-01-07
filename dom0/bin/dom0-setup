@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # QubesOS script to bootstrap dom0 config
 set -euo pipefail
-set -x
 
 
+# Enable Qubes contributors repository.
+if ! rpm -qa | grep -q "^qubes-repo-contrib" ; then
+  sudo qubes-dom0-update -y qubes-repo-contrib
+fi
 
-
-sudo qubes-dom0-update -y
-sudo qubes-dom0-update -y qubes-repo-contrib
 sudo qubes-dom0-update -y \
   fd-find \
   i3 \
@@ -17,13 +17,20 @@ sudo qubes-dom0-update -y \
   picom \
   redshift \
   ripgrep \
-  rofi
+  rofi \
+  xinput
 
 sudo qvm-template install fedora-42 debian-13
 
-# Set up services
-qvm-service fleet innernet-ruindev --enable
-qvm-service personal innernet-ruindev --enable
+# Look up touchpad device ID
+touchpad_id="$(xinput list | grep -i touchpad | perl -nE '/id=(\d+)/ and say ')"
 
-qvm-service fleet split-ssh --enable
-qvm-service personal split-ssh --enable
+# Checking for non-zero string shouldn't be necessary; if no touchpad
+# string is found, error on grep pipe should bail us out.
+if [[ -z "$touchpad_id" ]] ; then
+	>&2 echo "ERROR: touchpad id not found"
+	exit 1
+fi
+
+# We assume that the "libinput Tapping Enabled" property exists.
+xinput set-prop "$touchpad_id" "libinput Tapping Enabled" 1
