@@ -23,7 +23,7 @@ sudo qubes-dom0-update -y \
 sudo qvm-template install fedora-42 debian-13
 
 # Look up touchpad device ID
-touchpad_id="$(xinput list | grep -i touchpad | perl -nE '/id=(\d+)/ and say ')"
+touchpad_id="$(xinput list | grep -i touchpad | perl -nE '/id=(\d+)/ and say $1')"
 
 # Checking for non-zero string shouldn't be necessary; if no touchpad
 # string is found, error on grep pipe should bail us out.
