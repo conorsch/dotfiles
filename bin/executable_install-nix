@@ -1,26 +1,24 @@
 #!/usr/bin/env bash
-# Helper script to install Nix, from the community installer,
-# in daemon mode. Storing as a custom script on PATH to make it
-# easy to call from different contexts, e.g. to rerun interactively
-# to update.
+# Helper script to install Nix, from the community installer.
+# Prefers the single-user method, rather than multi-user.
+# Supports Debian, Fedora, and QubesOS VMs.
+#
+# The script installs nix, but doesn't upgrade it; to upgrade the version
+# of nix on a given machine, see docs at:
+#
+# https://nix.dev/manual/nix/2.25/installation/upgrading
 set -euo pipefail
-
-
->&2 echo "Setting up nix..."
-
-# Qubes requires special-casing: disable SELinux, since Nix will error out if it's enabled,
-# and then use the single-user installation style.
 
 
 # Install nix: https://nixos.org/download/ ; skip if nix on PATH.
 if ! hash nix > /dev/null 2>&1 ; then
-  # Check whether we're running inside Qubes
-  if qubesdb-read /qubes-vm-type > /dev/null 2>&1 ; then
-    >&2 echo "Detected Qubes environment, disabling SELinux"
+  if hash getenforce > /dev/null 2>&1 && [[ "$(getenforce)" != "Disabled" ]] ; then
+    >&2 echo "WARNING: SELinux was enforced, disabling it..."
     sleep 2
     sudo setenforce 0
   fi
-  sh <(curl -L https://nixos.org/nix/install)
+  >&2 echo "Installing nix..."
+  sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --no-daemon
 fi
 
 >&2 echo "Setting up default nix profile with custom packages..."

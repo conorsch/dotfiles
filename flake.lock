@@ -118,15 +118,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-iIueZ32YeGPCSbP+0WipRSgdVI+vQfaIO6cKZylLzT4=",
         "path": "./tools/gaming-vids",
         "type": "path"
       },
       "original": {
         "path": "./tools/gaming-vids",
         "type": "path"
-      }
+      },
+      "parent": []
     },
     "nixpkgs": {
       "locked": {
@@ -152,15 +151,14 @@
         ]
       },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-AqNI9YMio1QzJOsJm0kzKYvkhv++67872iyAnB7zwuQ=",
         "path": "./tools/ripping-tools",
         "type": "path"
       },
       "original": {
         "path": "./tools/ripping-tools",
         "type": "path"
-      }
+      },
+      "parent": []
     },
     "root": {
       "inputs": {
