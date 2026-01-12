@@ -49,6 +49,7 @@
           cargo-watch
           gifski
           go
+          go-grip
           hyperfine
           kubectl
           oha
