@@ -4,9 +4,9 @@ This repo is a [chezmoi] dotfiles repo, for sychronizing dotfiles across multipl
 
 ## Requirements
 
- - git
- - bash
- - curl
+ - `git`
+ - `bash`
+ - `curl`
 
  Works on Fedora Workstation, Debian Stable, and Qubes OS dom0.
 
