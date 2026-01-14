@@ -43,6 +43,19 @@ test -L ~/result && rm -vf ~/result
 rm -vf ~/bin/gaming-vids
 rm -vf ~/bin/ntfy-send
 
+# Uninstall deprecated/revoked flatpaks.
+set -a old_flatpaks
+old_flatpaks=(
+  "com.github.eneshecan.WhatsAppForLinux.Locale"
+)
+if hash flatpak > /dev/null 2>&1 ; then
+  for f in "${old_flatpaks[@]}" ; do
+    if flatpak list | grep -q "$f" ; then
+      flatpak remove -y "$f"
+    fi
+  done
+fi
+
 # Purge home-manager config
 if hash home-manager > /dev/null 2>&1 && hash nix > /dev/null 2>&1 ; then
   nix run home-manager/release-25.05 -- uninstall
