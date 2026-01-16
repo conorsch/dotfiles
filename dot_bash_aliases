@@ -61,3 +61,12 @@ alias zdas="zellij delete-all-sessions --force --yes"
 
 # storing as alias, because I often take a prompt and copy it to different tools, to compare.
 alias opencode-last-query="jq -s '.[-1].input' -r < '${HOME:?}/.local/state/opencode/prompt-history.jsonl' | xclip -selection clipboard -out"
+
+# git project aliases, used for jumping into a nested path quickly.
+alias sdw="workon securedrop-workstation"
+alias sdw2="workon securedrop-workstation-2"
+alias sdw-kr="workon securedrop-workstation-keyring"
+alias sd="workon securedrop"
+alias sdc="workon securedrop-client"
+alias wci="workon webcat-infra-chain"
+alias wc="workon webcat"
