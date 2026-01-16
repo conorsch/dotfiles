@@ -17,3 +17,9 @@ import = [
 [terminal.shell]
 program = "/usr/bin/bash"   # Use the command `whereis bash` or `which bash` to verify the location of your bash executable
 args = ["-l"]
+
+# Support shift+enter for newline in Claude Code.
+[[keyboard.bindings]]
+key = "Return"
+mods = "Shift"
+chars = "\u001b\r"
