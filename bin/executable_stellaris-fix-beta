@@ -1,0 +1,10 @@
+#!/bin/bash
+# fix stellaris open cetus beta on linux
+# refs https://steamcommunity.com/app/281990/discussions/0/750542279460056739/
+
+set -euo pipefail
+
+
+cd "${HOME:?}/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/common/SteamLinuxRuntime/var/steam-runtime/pinned_libs_64" || exit 1
+ln -s -f /usr/lib64/libcurl.so.4 libcurl.so.3
+ln -s -f /usr/lib64/libcurl.so.4 libcurl.so.4
