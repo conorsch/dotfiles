@@ -16,7 +16,7 @@ set $right l
 # is used in the bar {} block below.
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 12
+font pango:DejaVu Sans Mono 10
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -240,6 +240,8 @@ exec --no-startup-id qubes-i3-xdg-autostart
 # See specific config for window transparency in ~/.config/picom/picom.conf
 # exec_always --no-startup-id picom --no-fading-openclose --corner-radius 10 --backend glx --active-opacity "0.8" --frame-opacity "0.7" --inactive-opacity "0.8"
 exec_always --no-startup-id picom --backend glx
+# configure tap-to-touch on laptops
+exec_always --no-startup-id dom0-touchpad
 # exec_always --no-startup-id picom
 
 # Set desktop bg via nitrogen

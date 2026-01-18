@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# QubesOS script to configure tap-to-touch.
+# This config isn't durable, so must be run on every boot.
+set -euo pipefail
+
+# Look up touchpad device ID
+touchpad_id="$(xinput list | grep -i touchpad | perl -nE '/id=(\d+)/ and say $1')"
+
+# Checking for non-zero string shouldn't be necessary; if no touchpad
+# string is found, error on grep pipe should bail us out.
+if [[ -z "$touchpad_id" ]] ; then
+	>&2 echo "ERROR: touchpad id not found"
+	exit 1
+fi
+
+# We assume that the "libinput Tapping Enabled" property exists.
+xinput set-prop "$touchpad_id" "libinput Tapping Enabled" 1
