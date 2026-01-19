@@ -42,6 +42,13 @@
             "context": 100000,
             "output": 32000
           }
+        },
+        "devstral-small-2:latest": {
+          "tools": true,
+          "limit": {
+            "context": 100000,
+            "output": 32000
+          }
         }
       }
     }
