@@ -45,4 +45,9 @@ if [[ ! -d "$chezmoi_src_dir" ]] ; then
 fi
 
 >&2 echo "Installing local nix flake for tooling..."
-nix profile install "$chezmoi_src_dir"
+if nix profile list | grep -q "chezmoi" ; then
+  >&2 echo "Flake already installed, upgrading..."
+  nix profile upgrade chezmoi
+else
+  nix profile install "$chezmoi_src_dir"
+fi
