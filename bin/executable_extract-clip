@@ -140,5 +140,5 @@ fi
 # View file if requested.
 if [[ $OPEN_FILE -gt 0 ]] ; then
     >&2 echo "Opening file..."
-    vlc "$dest_video"
+    vlc "$dest_video" > /dev/null 2>&1
 fi
