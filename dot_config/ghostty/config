@@ -38,3 +38,6 @@ confirm-close-surface = false
 gtk-single-instance = desktop
 # ~100mb per terminal
 scrollback-limit = 100000000
+
+# harcode bash integration, to minimize blocking via "auto" setting
+shell-integration = bash
