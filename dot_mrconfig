@@ -98,3 +98,7 @@ group = fpf
 [src/fpf/securedrop-protocol]
 checkout = git clone 'https://github.com/freedomofpress/securedrop-protocol' 'securedrop-protocol'
 group = fpf
+
+[src/fpf/webcat-cli]
+checkout = git clone 'https://github.com/freedomofpress/webcat-cli' 'webcat-cli'
+group = fpf
