@@ -20,7 +20,9 @@ if [[ -e "$output_filename" ]] ; then
   exit 1
 fi
 
-if [[ -t /dev/stdin ]] ; then
+# support invocations via cli or rofi: if stdin is a terminal,
+# start a terminal editor. otherwise, use a graphical editor.
+if [[ -t 0 ]] ; then
     _editor="${EDITOR:-vim}"
 else
     _editor="${EDITOR:-kate}"
