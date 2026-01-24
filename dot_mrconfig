@@ -70,6 +70,22 @@ group = pl
 checkout = git clone 'https://github.com/penumbra-zone/reindexer' 'reindexer'
 group = pl
 
+[src/pl/ibc-monitor]
+checkout = git clone 'https://github.com/penumbra-zone/ibc-monitor' 'ibc-monitor'
+group = pl
+
+[src/pl/devops]
+checkout = git clone 'https://github.com/penumbra-zone/devops' 'devops'
+group = pl
+
+[src/pl/penv]
+checkout = git clone 'https://github.com/penumbra-zone/penv' 'penv'
+group = pl
+
+[src/pl/penumbers]
+checkout = git clone 'https://github.com/penumbra-zone/penumbers' 'penumbers'
+group = pl
+
 # FPF repos
 [src/fpf/securedrop]
 checkout = git clone 'https://github.com/freedomofpress/securedrop' 'securedrop'
