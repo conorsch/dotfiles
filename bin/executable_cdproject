@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# developer script to switch to the top-level of a git repo quickly.
+# inspired by the old virtualenv logic, which had a "cdproject" alias.
+set -euo pipefail
+
+
+git_repo_level="$(git rev-parse --show-toplevel)"
+exec cd "$git_repo_level" || exit 1
