@@ -2,7 +2,12 @@ use clap::{Parser, Subcommand};
 use tracing::{error, info};
 use xshell::{cmd, Shell};
 
+/// Remote directory path on media server, accessed as a local mount, and therefore
+/// assumed to be locally mounted.
 const MEDIA_SERVER_DIR: &str = "/mnt/Valhalla/Media/incoming/gaming";
+
+/// transfer.sh URL for uploading video files
+const REMOTE_UPLOAD_BASE_URL: &str = "https://ruin.dev/give";
 
 #[derive(Parser)]
 #[command(name = "gaming-vids")]
@@ -89,9 +94,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .unwrap_or_else(get_default_windows_media_paths);
             upload(args.time_range, paths).await?
         }
-        Some(Commands::Reorganize) => reorganize(args.media_server).await?,
+        Some(Commands::Reorganize) => reorganize(args.media_server, args.time_range).await?,
         Some(Commands::Sync) => {
-            reorganize(args.media_server).await?;
+            reorganize(args.media_server, args.time_range.clone()).await?;
             sync(args.time_range, args.checksum).await?;
         }
         Some(Commands::Review) => review(args.time_range).await?,
@@ -106,13 +111,42 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         None => {
             // Default sequence: reorganize -> sync -> review
             info!("Running default sequence: reorganize -> sync -> review");
-            reorganize(args.media_server.clone()).await?;
+            reorganize(args.media_server.clone(), args.time_range.clone()).await?;
             sync(args.time_range.clone(), args.checksum).await?;
             review(args.time_range).await?;
         }
     }
 
     Ok(())
+}
+
+/// Upload a single file to the remote server
+fn upload_file(file_path: &str) -> Result<String, Box<dyn std::error::Error>> {
+    let file_path_obj = std::path::Path::new(file_path);
+
+    // Get the basename and URL-encode it
+    let filename = file_path_obj
+        .file_name()
+        .and_then(|f| f.to_str())
+        .ok_or("Failed to get filename")?;
+
+    let encoded_filename = urlencoding::encode(filename);
+    let upload_url = format!("{}/{}", REMOTE_UPLOAD_BASE_URL, encoded_filename);
+
+    // Read file contents
+    let file_contents = std::fs::read(file_path)?;
+
+    // Upload file using reqwest blocking client
+    let client = reqwest::blocking::Client::new();
+    let response = client.put(&upload_url).body(file_contents).send()?;
+
+    // Check for HTTP errors (raise for status)
+    let response = response.error_for_status()?;
+
+    // Get the response URL/body
+    let response_text = response.text()?;
+
+    Ok(response_text.trim().to_string())
 }
 
 async fn upload(
@@ -145,8 +179,11 @@ async fn upload(
 
     // Find all recent files from all directories
     info!("Finding recent videos (changed within {})", time_range);
-    let find_output =
-        cmd!(sh, "fd . {existing_paths...} --changed-within {time_range}").output()?;
+    let find_output = cmd!(
+        sh,
+        "fd -t f . {existing_paths...} --changed-within {time_range}"
+    )
+    .output()?;
 
     if !find_output.status.success() {
         error!("Failed to find videos");
@@ -176,11 +213,14 @@ async fn upload(
 
         info!("Uploading {}/{}: {}", i + 1, total, filename);
 
-        let upload_result = cmd!(sh, "ruin-give {file}").quiet().run();
-
-        if upload_result.is_err() {
-            error!("Failed to upload: {}", filename);
-            std::process::exit(1);
+        match upload_file(file) {
+            Ok(response_url) => {
+                info!("Uploaded successfully: {}", response_url);
+            }
+            Err(e) => {
+                error!("Failed to upload {}: {}", filename, e);
+                std::process::exit(1);
+            }
         }
     }
 
@@ -197,10 +237,13 @@ async fn upload(
     Ok(())
 }
 
-async fn reorganize(media_server: String) -> Result<(), Box<dyn std::error::Error>> {
+async fn reorganize(
+    media_server: String,
+    time_range: String,
+) -> Result<(), Box<dyn std::error::Error>> {
     info!(
-        "reorganizing uploaded clips on remote server: {}",
-        media_server
+        "reorganizing uploaded clips on remote server: {} (time_range: {})",
+        media_server, time_range
     );
 
     let sh = Shell::new()?;
@@ -212,7 +255,7 @@ async fn reorganize(media_server: String) -> Result<(), Box<dyn std::error::Erro
     let source_dir = "/mnt/Valhalla/container-volumes-nfs/transfer";
 
     let reorganize_cmd = format!(
-        "mkdir -p {dest_dir} && fd -t f -e mp4 . {source_dir} -x ln -f {{}} {dest_dir}/{{/}}"
+        "mkdir -p {dest_dir} && fd -t f -e mp4 . {source_dir} --changed-within {time_range} -x ln -f {{}} {dest_dir}/{{/}}"
     );
 
     cmd!(sh, "ssh {media_server} {reorganize_cmd}").run()?;
@@ -262,7 +305,7 @@ async fn sync(time_range: String, checksum: bool) -> Result<(), Box<dyn std::err
     // Copy all tar files from media directory to local directory
     info!("Syncing tar archives from {} to {}", media_dir, vids_path);
     let sync_tar_cmd = format!(
-        "fd -t f -e tar . {media_dir} -X rsync -a --info=progress2 {checksum_opt} {{}} {vids_path}"
+        "fd -t f -e tar . {media_dir} --changed-within {time_range} -X rsync -a --info=progress2 {checksum_opt} {{}} {vids_path}"
     );
     cmd!(sh, "sh -c {sync_tar_cmd}").run()?;
 
