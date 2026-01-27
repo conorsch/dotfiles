@@ -2,6 +2,8 @@ use clap::{Parser, Subcommand};
 use tracing::{error, info};
 use xshell::{cmd, Shell};
 
+const MEDIA_SERVER_DIR: &str = "/mnt/Valhalla/Media/incoming/gaming";
+
 #[derive(Parser)]
 #[command(name = "gaming-vids")]
 #[command(version = env!("CARGO_PKG_VERSION"))]
@@ -61,6 +63,12 @@ enum Commands {
     List,
     /// Archive all Windows media files to a tar file
     Archive,
+    /// Print the directory path for gaming videos
+    Cd {
+        /// Use the local review directory instead of the media server directory
+        #[arg(short, long)]
+        review: bool,
+    },
 }
 
 #[tokio::main]
@@ -94,6 +102,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .unwrap_or_else(get_default_windows_media_paths);
             archive(paths).await?
         }
+        Some(Commands::Cd { review }) => cd(review).await?,
         None => {
             // Default sequence: reorganize -> sync -> review
             info!("Running default sequence: reorganize -> sync -> review");
@@ -199,7 +208,7 @@ async fn reorganize(media_server: String) -> Result<(), Box<dyn std::error::Erro
     // Media server script to import uploaded gaming vids, for editing.
     // Assumes that files have already been uploaded via ruin.dev/give/,
     // then reorganizes via hardlinks to an import directory.
-    let dest_dir = "/mnt/Valhalla/Media/incoming/gaming";
+    let dest_dir = MEDIA_SERVER_DIR;
     let source_dir = "/mnt/Valhalla/container-volumes-nfs/transfer";
 
     let reorganize_cmd = format!(
@@ -228,7 +237,7 @@ async fn sync(time_range: String, checksum: bool) -> Result<(), Box<dyn std::err
     let sh = Shell::new()?;
 
     // Check if media directory is mounted
-    let media_dir = "/mnt/Valhalla/Media/incoming/gaming";
+    let media_dir = MEDIA_SERVER_DIR;
     if !std::path::Path::new(media_dir).exists() {
         info!("Media directory not mounted, attempting to mount");
         // Try to mount media directory
@@ -287,6 +296,28 @@ async fn list(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
 
     let list_cmd = format!("fd -t f -e mp4 . {vids_path} --changed-within {time_range} | sort -n");
     cmd!(sh, "sh -c {list_cmd}").run()?;
+
+    Ok(())
+}
+
+async fn cd(review: bool) -> Result<(), Box<dyn std::error::Error>> {
+    // Determine target directory based on review flag
+    let target_dir = if review {
+        // Use local vids directory for review
+        local_vids_dir().display().to_string()
+    } else {
+        // Use media server directory by default
+        MEDIA_SERVER_DIR.to_string()
+    };
+
+    // Check if the target directory exists
+    if !std::path::Path::new(&target_dir).exists() {
+        error!("Target directory does not exist: {}", target_dir);
+        std::process::exit(1);
+    }
+
+    // Print the directory path to stdout (for use with shell: cd $(gaming-vids cd))
+    println!("{}", target_dir);
 
     Ok(())
 }
