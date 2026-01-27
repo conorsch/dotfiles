@@ -19,6 +19,8 @@
 	excludesFile = ~/.gitignore
 [advice]
 	addEmptyPathspec = false
+[checkout]
+  defaultRemote = origin
 [credential "https://github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
