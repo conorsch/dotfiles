@@ -62,7 +62,7 @@ emoji-test() {
 # leveraging the muscle memory but relying on direnv.
 workon() {
     local project_namespaces project_name
-    declare -a project_namespaces=(fpf misc personal pl)
+    declare -a project_namespaces=(fpf misc personal pl pantograph)
     project_name="${1:-}"
     shift 1
     if [[ "$project_name" = "chezmoi" ]] || [[ "$project_name" = "dotfiles" ]]; then
