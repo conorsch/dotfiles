@@ -95,6 +95,7 @@
           rsync
           ruff
           starship
+          statix
           tokei
           toml-cli
           xz
