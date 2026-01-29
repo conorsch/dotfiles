@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Convenience script for finding "time-tracking" files
+# used for documenting hours for various work clients.
+# Helps to have the "tt" alias at my fingertips, so I can
+# log hours in realtime, conveniently.
+set -euo pipefail
+
+DOCS_DIR="${HOME}/Sync/docs"
+
+# Check if the directory exists
+if [[ ! -d "$DOCS_DIR" ]]; then
+    echo "Error: Directory '$DOCS_DIR' does not exist." >&2
+    exit 1
+fi
+
+# Search for time-tracking.md files
+mapfile -t files < <(fd --type f '^time-tracking\.md$' "$DOCS_DIR" 2>/dev/null)
+
+# Check if any files were found
+if [[ ${#files[@]} -eq 0 ]]; then
+    echo "Error: No 'time-tracking.md' files found in '$DOCS_DIR'." >&2
+    exit 1
+fi
+
+# If only one file, use it directly; otherwise let user select with fzf
+if [[ ${#files[@]} -eq 1 ]]; then
+    selected="${files[0]}"
+else
+    selected=$(printf '%s\n' "${files[@]}" | fzf --prompt="Select time-tracking file: ")
+fi
+
+# Check if user cancelled fzf selection
+if [[ -z "$selected" ]]; then
+    echo "No file selected." >&2
+    exit 1
+fi
+
+# Output the selected file (or open it - adjust as needed)
+echo "$selected"
