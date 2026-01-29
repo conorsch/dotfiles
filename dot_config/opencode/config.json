@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "model": "ollama/qwen-jawn:latest",
   "provider": {
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
