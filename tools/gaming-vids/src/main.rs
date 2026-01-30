@@ -63,9 +63,13 @@ enum Commands {
     /// Review videos by playing them
     #[clap(alias = "play")]
     Review,
-    /// List local video files
-    #[clap(alias = "recent")]
-    List,
+    /// List video files
+    #[clap(alias = "recent", alias = "ls")]
+    List {
+        /// List files on the remote server instead of locally
+        #[arg(short, long)]
+        remote: bool,
+    },
     /// Archive all Windows media files to a tar file
     Archive,
     /// Print the directory path for gaming videos
@@ -100,7 +104,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             sync(args.time_range, args.checksum).await?;
         }
         Some(Commands::Review) => review(args.time_range).await?,
-        Some(Commands::List) => list(args.time_range).await?,
+        Some(Commands::List { remote }) => list(args.time_range, remote).await?,
         Some(Commands::Archive) => {
             let paths = args
                 .windows_media_paths
@@ -331,20 +335,27 @@ async fn review(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-async fn list(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
-    info!("listing recent clips (time_range: {})", time_range);
+async fn list(time_range: String, remote: bool) -> Result<(), Box<dyn std::error::Error>> {
+    let target_dir = if remote {
+        MEDIA_SERVER_DIR.to_string()
+    } else {
+        local_vids_dir().display().to_string()
+    };
+
+    info!(
+        "listing recent clips in {} (time_range: {})",
+        target_dir, time_range
+    );
 
     let sh = Shell::new()?;
 
-    let vids_path = local_vids_dir().display().to_string();
-
     // Check if directory exists
-    if !local_vids_dir().exists() {
-        info!("No videos directory found at: {}", vids_path);
+    if !std::path::Path::new(&target_dir).exists() {
+        info!("No videos directory found at: {}", target_dir);
         return Ok(());
     }
 
-    let list_cmd = format!("fd -t f -e mp4 . {vids_path} --changed-within {time_range} | sort -n");
+    let list_cmd = format!("fd -t f -e mp4 . {target_dir} --changed-within {time_range} | sort -n");
     cmd!(sh, "sh -c {list_cmd}").run()?;
 
     Ok(())
