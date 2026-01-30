@@ -15,6 +15,21 @@
         "type": "github"
       }
     },
+    "crane_2": {
+      "locked": {
+        "lastModified": 1769737823,
+        "narHash": "sha256-DrBaNpZ+sJ4stXm+0nBX7zqZT9t9P22zbk6m5YhQxS4=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "b2f45c3830aa96b7456a4c4bc327d04d7a43e1ba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
     "etym": {
       "inputs": {
         "crane": "crane",
@@ -127,6 +142,24 @@
       },
       "parent": []
     },
+    "homelab": {
+      "inputs": {
+        "crane": "crane_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": "rust-overlay_2"
+      },
+      "locked": {
+        "path": "./tools/homelab",
+        "type": "path"
+      },
+      "original": {
+        "path": "./tools/homelab",
+        "type": "path"
+      },
+      "parent": []
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1768621446,
@@ -165,6 +198,7 @@
         "etym": "etym",
         "flake-utils": "flake-utils_2",
         "gaming-vids": "gaming-vids",
+        "homelab": "homelab",
         "nixpkgs": "nixpkgs",
         "ripping-tools": "ripping-tools"
       }
@@ -182,6 +216,27 @@
         "owner": "oxalica",
         "repo": "rust-overlay",
         "rev": "5359a4fdc3fa9baa2edcf49758d404dfeeca7743",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "rust-overlay_2": {
+      "inputs": {
+        "nixpkgs": [
+          "homelab",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769742225,
+        "narHash": "sha256-roSD/OJ3x9nF+Dxr+/bLClX3U8FP9EkCQIFpzxKjSUM=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "bcdd8d37594f0e201639f55889c01c827baf5c75",
         "type": "github"
       },
       "original": {
