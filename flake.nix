@@ -16,6 +16,12 @@
       nixpkgs.follows = "nixpkgs";
     };
   };
+  inputs.homelab = {
+    url = "path:./tools/homelab";
+    inputs = {
+      nixpkgs.follows = "nixpkgs";
+    };
+  };
   inputs.ripping-tools = {
     url = "path:./tools/ripping-tools";
     inputs = {
@@ -23,7 +29,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils, etym, gaming-vids, ripping-tools }:
+  outputs = { self, nixpkgs, flake-utils, etym, gaming-vids, homelab, ripping-tools }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
