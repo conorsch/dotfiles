@@ -1,32 +1,21 @@
 {
   description = "Dev shell for managing ruin.dev dotfiles";
   # name = "ruindev-dotfiles";
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.etym = {
-    url = "github:conorsch/etym";
-    inputs = {
-      nixpkgs.follows = "nixpkgs";
-    };
-  };
-  inputs.gaming-vids = {
-    url = "path:./tools/gaming-vids";
-    inputs = {
-      nixpkgs.follows = "nixpkgs";
-    };
-  };
-  inputs.homelab = {
-    url = "path:./tools/homelab";
-    inputs = {
-      nixpkgs.follows = "nixpkgs";
-    };
-  };
-  inputs.ripping-tools = {
-    url = "path:./tools/ripping-tools";
-    inputs = {
-      nixpkgs.follows = "nixpkgs";
-    };
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+
+    etym.url = "github:conorsch/etym";
+    etym.inputs.nixpkgs.follows = "nixpkgs";
+
+    # sub-flakes managed in the tools/ dir
+    gaming-vids.url = "path:./tools/gaming-vids";
+    gaming-vids.inputs.nixpkgs.follows = "nixpkgs";
+    homelab.url = "path:./tools/homelab";
+    homelab.inputs.nixpkgs.follows = "nixpkgs";
+    ripping-tools.url = "path:./tools/ripping-tools";
+    ripping-tools.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { self, nixpkgs, flake-utils, etym, gaming-vids, homelab, ripping-tools }:
@@ -67,6 +56,13 @@
           watchexec
         ];
 
+        subFlakes = [
+          etym.packages.${system}.default
+          gaming-vids.packages.${system}.default
+          homelab.packages.${system}.default
+          ripping-tools.packages.${system}.default
+        ];
+
         # Defining package list outside of devshell, so it can be used in devshell & container image.
         tooling = with pkgs; [
           age
@@ -82,7 +78,6 @@
           direnv
           dunst
           dust
-          etym.packages.${system}.default
           eza
           fd
           file
@@ -116,7 +111,7 @@
           name = "ruin.dev dotfiles";
           # nativeBuildInputs = [ pkgs.bashInteractive ];
           # TODO: make installation of workstationPkgs conditional.
-          buildInputs = tooling ++ workstationPkgs;
+          buildInputs = tooling ++ workstationPkgs ++ subFlakes;
         };
 
         # Add container output
@@ -141,7 +136,7 @@
         # Make a proper installable package with all tools
         packages.default = pkgs.buildEnv {
           name = "ruin-dev-tools";
-          paths = tooling ++ workstationPkgs;
+          paths = tooling ++ workstationPkgs ++ subFlakes;
         };
       });
 }
