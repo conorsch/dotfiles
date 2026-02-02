@@ -30,10 +30,6 @@
           wiremix
           bluetui
 
-          # media tooling
-          gaming-vids.packages.${system}.default
-          ripping-tools.packages.${system}.default
-
           # general dev cruft
           pnpm
           nodejs_22
