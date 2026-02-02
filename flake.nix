@@ -31,8 +31,9 @@
           bluetui
 
           # general dev cruft
-          pnpm
+          gh
           nodejs_22
+          pnpm
           wasm-pack
 
           # devops
