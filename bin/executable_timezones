@@ -3,12 +3,20 @@
 # in ascending order by localtime in that tz.
 set -euo pipefail
 
+# If using a nix devshell, the required timezone data dirs may not
+# be configured, so hardcode a path that's true at the (non-nix) OS level.
+export TZDIR="${TZDIR:-/usr/share/zoneinfo}"
+if [[ ! -e "$TZDIR" ]] ; then
+  gum log --level error "TZDIR not found: $TZDIR"
+  exit 1
+fi
 
 # To list all valid timezones, run `timedatectl list-timezones`.
 declare -a watched_timezones
 watched_timezones=(
   America/Los_Angeles
   America/New_York
+  Australia/Melbourne
   Asia/Bangkok
   Asia/Kolkata
   Asia/Shanghai
