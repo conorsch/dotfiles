@@ -302,14 +302,14 @@ async fn sync(time_range: String, checksum: bool) -> Result<(), Box<dyn std::err
     let vids_path = local_vids_dir().display().to_string();
     info!("Syncing videos from {} to {}", media_dir, vids_path);
     let sync_cmd = format!(
-        "fd -t f -e mp4 . {media_dir} --changed-within {time_range} -X rsync -a --info=progress2 {checksum_opt} {{}} {vids_path}"
+        "fd -t f -e mp4 . {media_dir} --changed-within {time_range} -X rsync -ah --info=progress2 {checksum_opt} {{}} {vids_path}"
     );
     cmd!(sh, "sh -c {sync_cmd}").run()?;
 
     // Copy all tar files from media directory to local directory
     info!("Syncing tar archives from {} to {}", media_dir, vids_path);
     let sync_tar_cmd = format!(
-        "fd -t f -e tar . {media_dir} --changed-within {time_range} -X rsync -a --info=progress2 {checksum_opt} {{}} {vids_path}"
+        "fd -t f -e tar . {media_dir} --changed-within {time_range} -X rsync -ah --info=progress2 {checksum_opt} {{}} {vids_path}"
     );
     cmd!(sh, "sh -c {sync_tar_cmd}").run()?;
 
