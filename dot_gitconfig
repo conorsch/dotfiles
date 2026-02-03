@@ -19,6 +19,7 @@
 	excludesFile = ~/.gitignore
 [advice]
 	addEmptyPathspec = false
+	skippedCherryPicks = false
 [checkout]
   defaultRemote = origin
 [credential "https://github.com"]
