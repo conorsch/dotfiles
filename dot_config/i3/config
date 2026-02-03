@@ -21,6 +21,9 @@ bindsym $mod+Return exec i3-sensible-terminal
 # get top preference.
 bindsym $mod+d exec --no-startup-id rofi -show run -matching regex -sort
 
+# Use rofi for cycling open windows, too
+bindsym $mod+Tab exec rofi -show window
+
 # kill focused window
 bindsym $mod+Shift+q kill
 
