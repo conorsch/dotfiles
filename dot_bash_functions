@@ -110,13 +110,14 @@ dark() {
 # Warm the build caches on a Rust project.
 cargo-everything() {
     for c in build check clippy ; do
-        printf 'Running cargo %s... ' "$c"
-        cargo --quiet "$c"
-        printf 'OK\n'
-        printf 'Running cargo %s (release)... ' "$c"
-        cargo --quiet "$c" --release
-        printf 'OK\n'
+        msg="Running cargo $c"
+        gum spin --spinner meter --title "$msg" -- \
+          cargo --quiet "$c"
+        msg="Running cargo $c (release)"
+        gum spin --spinner meter --title "$msg" -- \
+          cargo --quiet "$c" --release
     done
+    gum format -t emoji ":rainbow: Done! Rust cache is warm. :bread:"
 }
 
 # Set terminal-config for screen-sharing and/or demo-recording.
