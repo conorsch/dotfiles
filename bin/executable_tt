@@ -6,6 +6,7 @@
 set -euo pipefail
 
 DOCS_DIR="${HOME}/Sync/docs"
+EDITOR="${EDITOR:-vim}"
 
 # Check if the directory exists
 if [[ ! -d "$DOCS_DIR" ]]; then
@@ -36,4 +37,4 @@ if [[ -z "$selected" ]]; then
 fi
 
 # Output the selected file (or open it - adjust as needed)
-echo "$selected"
+"$EDITOR" "$selected"
