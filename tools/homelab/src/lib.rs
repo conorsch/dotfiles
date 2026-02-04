@@ -1,6 +1,7 @@
 //! Homelab library - common configuration values and utilities.
 
 pub mod gatus;
+pub mod repo;
 
 /// Path to incoming media directory.
 pub const MEDIA_DIR: &str = "/mnt/Valhalla/Media/incoming";
@@ -22,3 +23,12 @@ pub const MEDIA_SERVER_ADDRESS: &str = "adolin.ruindev.wg";
 
 /// Innernet network name.
 pub const INNERNET_NETWORK: &str = "ruindev.wg";
+
+/// RuinDev Gitea instance URL.
+pub const RUINDEV_URL: &str = "https://git.ruin.dev";
+
+/// Codeberg user URL.
+pub const CODEBERG_URL: &str = "https://codeberg.org/conorsch";
+
+/// GitHub user URL.
+pub const GITHUB_URL: &str = "https://github.com/conorsch";

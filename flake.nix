@@ -39,6 +39,7 @@
           # devops
           ansible
           cargo-watch
+          forgejo-cli
           gifski
           go
           go-grip
@@ -50,6 +51,7 @@
           python313Packages.pytest-xdist
           shellcheck
           sops
+          tea
           watchexec
         ];
 
