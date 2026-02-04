@@ -12,6 +12,7 @@ use walkdir::WalkDir;
 use xshell::{cmd, Shell};
 
 use homelab::gatus::{fetch_statuses, filter_endpoints};
+use homelab::repo::RepoCommands;
 use homelab::{
     GATUS_API_URL, INNERNET_NETWORK, MEDIA_DIR, MEDIA_SERVER, MEDIA_SERVER_ADDRESS,
     MEDIA_SERVER_GIT_REPOS_PATH, MEDIA_SERVER_TRANSFER_UPLOAD_URL,
@@ -28,12 +29,8 @@ struct Cli {
 enum Commands {
     /// Manage git repositories.
     Repo {
-        /// List existing repositories.
-        #[arg(short, long)]
-        list: bool,
-
-        /// Name of the repository to create.
-        name: Option<String>,
+        #[command(subcommand)]
+        command: RepoCommands,
     },
 
     /// Upload files to transfer.sh or via other methods.
@@ -87,7 +84,7 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Repo { list, name } => cmd_repo(list, name),
+        Commands::Repo { command } => homelab::repo::run(command),
         Commands::Give {
             paths,
             rsync,
@@ -144,62 +141,6 @@ fn cmd_config(bash: bool, toml: bool, json: bool) -> Result<()> {
 
         println!("{table}");
     }
-
-    Ok(())
-}
-
-fn cmd_repo(list: bool, name: Option<String>) -> Result<()> {
-    let repos_path = Path::new(MEDIA_SERVER_GIT_REPOS_PATH);
-
-    if list {
-        if !repos_path.exists() {
-            bail!("Git repos path does not exist: {}", repos_path.display());
-        }
-
-        let mut repos: Vec<_> = fs::read_dir(repos_path)?
-            .filter_map(|e| e.ok())
-            .filter(|e| e.path().is_dir())
-            .map(|e| e.file_name().to_string_lossy().to_string())
-            .collect();
-
-        repos.sort();
-
-        if repos.is_empty() {
-            println!("No repositories found.");
-        } else {
-            println!("{}", "Repositories:".bold());
-            for repo in repos {
-                println!("  {}", repo);
-            }
-        }
-        return Ok(());
-    }
-
-    let Some(name) = name else {
-        bail!("Repository name required. Use -l/--list to list repositories.");
-    };
-
-    let repo_path = repos_path.join(&name);
-
-    if repo_path.exists() {
-        println!(
-            "{} Repository already exists: {}",
-            "✓".green(),
-            repo_path.display()
-        );
-        return Ok(());
-    }
-
-    let sh = Shell::new()?;
-    fs::create_dir_all(&repo_path)?;
-    sh.change_dir(&repo_path);
-    cmd!(sh, "git init --bare").run()?;
-
-    println!(
-        "{} Created bare repository: {}",
-        "✓".green(),
-        repo_path.display()
-    );
 
     Ok(())
 }
