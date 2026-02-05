@@ -115,9 +115,11 @@ cargo-everything() {
         msg="Running cargo $c"
         gum spin --spinner meter --title "$msg" -- \
           cargo --quiet "$c"
+        gum format -t emoji ":white_check_mark: $msg"
         msg="Running cargo $c (release)"
         gum spin --spinner meter --title "$msg" -- \
           cargo --quiet "$c" --release
+        gum format -t emoji ":white_check_mark: $msg"
     done
     gum format -t emoji ":rainbow: Done! Rust cache is warm. :bread:"
 }
