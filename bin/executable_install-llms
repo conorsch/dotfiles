@@ -11,10 +11,17 @@ if ! hash pnpm > /dev/null 2>&1 ; then
 fi
 
 gum log --level info "Installing claude code..."
-pnpm install -g @anthropic-ai/claude-code
+# Legacy: remove pnpm-installed claude-code
+if [[ -n "$(pnpm list -g @anthropic-ai/claude-code)" ]] ; then
+  gum log --level debug "Uninstalling pnpm-managed claude-code..."
+  pnpm remove -g @anthropic-ai/claude-code
+fi
+if ! hash claude > /dev/null 2>&1 ; then
+  curl -fsSL https://claude.ai/install.sh | bash
+fi
 
 gum log --level info "Installing crush..."
-pnpm install -g @charmland/crush
+pnpm install -q -g @charmland/crush
 
 gum log --level debug "Installing ollama..."
 # The ollama installer is not idempotent, so let's display the version
