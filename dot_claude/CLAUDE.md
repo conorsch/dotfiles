@@ -13,6 +13,15 @@ My backend Linux sysadmin skills are solid, and I prefer to work in Rust, rather
     - reuses package declarations concisely, across build specifications and devshells;
     - declares a container target, leveraging the build logic to emit an OCI-compliant image.
 
+## CLI interface
+
+Where appropriate, when commands write to stdout, add an optional `--json` or `-o json` flag,
+to emit structured data, parseable by other CLI tools.
+
+I enjoy detailed logging via `tracing_subscriber`; by default, only `RUST_LOG=info` should be set,
+but additional debugging logs should be accessible by opting into `RUST_LOG=debug`. Add a `-v` flag that
+enables debugging logs.
+
 ### Testing
 
 - Always ensure that "cargo check" passes after making changes; revise the change if it fails.
