@@ -12,7 +12,7 @@ use xshell::{cmd, Shell};
 #[command(about = "Tool for organizing and reviewing gaming clips")]
 struct Args {
     #[command(subcommand)]
-    command: Option<Commands>,
+    command: Commands,
 
     /// How recent the videos must be to be included
     #[arg(long, default_value = "1d", alias = "changed-within")]
@@ -51,9 +51,9 @@ fn get_default_windows_media_paths() -> Vec<String> {
 enum Commands {
     /// Upload game clips from Windows WSL
     Upload,
-    /// Reorganize videos on the remote server
-    #[clap(alias = "reorg")]
-    Reorganize,
+    /// Organize videos on the remote server
+    #[clap(alias = "org", alias = "reorg", alias = "reorganize")]
+    Organize,
     /// Sync videos to local directory
     #[clap(alias = "synchronize")]
     Sync,
@@ -69,6 +69,19 @@ enum Commands {
     },
     /// Archive all Windows media files to a tar file
     Archive,
+    /// Publish recent clips to public gaming directory
+    Publish {
+        /// Show which files would be published without actually copying
+        #[arg(long)]
+        dry_run: bool,
+
+        /// Substring for selecting files to publish
+        ///
+        /// The "clip" substring denotes that the script "extract-clip" was run on it;
+        /// selecting for it means that we're only publishing clips that have already been edited.
+        #[arg(long, default_value = "clip")]
+        substring: String,
+    },
     /// Print the directory path for gaming videos
     Cd {
         /// Use the local review directory instead of the media server directory
@@ -89,33 +102,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
     match args.command {
-        Some(Commands::Upload) => {
+        Commands::Upload => {
             let paths = args
                 .windows_media_paths
                 .unwrap_or_else(get_default_windows_media_paths);
             upload(args.time_range, paths).await?
         }
-        Some(Commands::Reorganize) => reorganize(args.media_server, args.time_range).await?,
-        Some(Commands::Sync) => {
+        Commands::Organize => reorganize(args.media_server, args.time_range).await?,
+        Commands::Sync => {
             reorganize(args.media_server, args.time_range.clone()).await?;
             sync(args.time_range, args.checksum).await?;
         }
-        Some(Commands::Review) => review(args.time_range).await?,
-        Some(Commands::List { remote }) => list(args.time_range, remote).await?,
-        Some(Commands::Archive) => {
+        Commands::Review => review(args.time_range).await?,
+        Commands::List { remote } => list(args.time_range, remote).await?,
+        Commands::Archive => {
             let paths = args
                 .windows_media_paths
                 .unwrap_or_else(get_default_windows_media_paths);
             archive(paths).await?
         }
-        Some(Commands::Cd { review }) => cd(review).await?,
-        None => {
-            // Default sequence: reorganize -> sync -> review
-            info!("Running default sequence: reorganize -> sync -> review");
-            reorganize(args.media_server.clone(), args.time_range.clone()).await?;
-            sync(args.time_range.clone(), args.checksum).await?;
-            review(args.time_range).await?;
+        Commands::Publish { dry_run, substring } => {
+            publish(args.time_range, substring, dry_run).await?
         }
+        Commands::Cd { review } => cd(review).await?,
     }
 
     Ok(())
@@ -261,7 +270,7 @@ async fn reorganize(
 
     cmd!(sh, "ssh {media_server} {reorganize_cmd}").run()?;
 
-    info!("Reorganize completed successfully");
+    info!("Organize completed successfully");
     Ok(())
 }
 
@@ -299,16 +308,11 @@ async fn sync(time_range: String, checksum: bool) -> Result<(), Box<dyn std::err
     let vids_path = local_vids_dir().display().to_string();
     info!("Syncing videos from {} to {}", media_dir, vids_path);
     let sync_cmd = format!(
-        "fd -t f -e mp4 . {media_dir} --changed-within {time_range} -X rsync -ah --info=progress2 {checksum_opt} {{}} {vids_path}"
+        // "fd -t f -e mp4 . {media_dir} --changed-within {time_range} -X rsync -ah --info=progress2 {checksum_opt} {{}} {vids_path}"
+        // We include .tar files as well, since they're likely bundles of gaming-vids uploaded together.
+        "fd -t f -e mp4 -e tar . {media_dir} --changed-within {time_range} -X rsync -ah --info=progress2 {checksum_opt} {{}} {vids_path}"
     );
     cmd!(sh, "sh -c {sync_cmd}").run()?;
-
-    // Copy all tar files from media directory to local directory
-    info!("Syncing tar archives from {} to {}", media_dir, vids_path);
-    let sync_tar_cmd = format!(
-        "fd -t f -e tar . {media_dir} --changed-within {time_range} -X rsync -ah --info=progress2 {checksum_opt} {{}} {vids_path}"
-    );
-    cmd!(sh, "sh -c {sync_tar_cmd}").run()?;
 
     info!("Sync completed successfully");
     Ok(())
@@ -354,6 +358,34 @@ async fn list(time_range: String, remote: bool) -> Result<(), Box<dyn std::error
 
     let list_cmd = format!("fd -t f -e mp4 . {target_dir} --changed-within {time_range} | sort -n");
     cmd!(sh, "sh -c {list_cmd}").run()?;
+
+    Ok(())
+}
+
+/// Publish recent clips from CWD to the public gaming directory.
+async fn publish(
+    time_range: String,
+    substring: String,
+    dry_run: bool,
+) -> Result<(), Box<dyn std::error::Error>> {
+    info!(
+        "publishing recent clips to {} (time_range: {})",
+        PUBLIC_GAMING_DIR, time_range
+    );
+
+    let sh = Shell::new()?;
+
+    let fd_filter = format!("fd -t f -e mp4 -e gif {substring} . --changed-within {time_range}");
+
+    if dry_run {
+        info!("Dry run: listing files that would be published");
+        cmd!(sh, "sh -c {fd_filter}").run()?;
+    } else {
+        let publish_cmd =
+            format!("{fd_filter} -X rsync -ah --info=progress2 {{}} {PUBLIC_GAMING_DIR}");
+        cmd!(sh, "sh -c {publish_cmd}").run()?;
+        info!("Publish completed successfully");
+    }
 
     Ok(())
 }
