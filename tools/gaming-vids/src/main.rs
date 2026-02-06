@@ -6,6 +6,9 @@ use homelab::{
 use tracing::{error, info};
 use xshell::{cmd, Shell};
 
+/// Substring indicating a file has been processed by "extract-clip".
+const CLIP_SUBSTRING: &str = "clip";
+
 #[derive(Parser)]
 #[command(name = "gaming-vids")]
 #[command(version = env!("CARGO_PKG_VERSION"))]
@@ -58,7 +61,6 @@ enum Commands {
     #[clap(alias = "synchronize")]
     Sync,
     /// Review videos by playing them
-    #[clap(alias = "play")]
     Review,
     /// List video files
     #[clap(alias = "recent", alias = "ls")]
@@ -79,8 +81,15 @@ enum Commands {
         ///
         /// The "clip" substring denotes that the script "extract-clip" was run on it;
         /// selecting for it means that we're only publishing clips that have already been edited.
-        #[arg(long, default_value = "clip")]
+        #[arg(long, default_value = CLIP_SUBSTRING)]
         substring: String,
+    },
+    /// Watch recent videos in VLC
+    #[clap(alias = "play")]
+    Watch {
+        /// Only include clips (files containing "clip" in their name)
+        #[arg(short, long)]
+        clips: bool,
     },
     /// Print the directory path for gaming videos
     Cd {
@@ -124,6 +133,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::Publish { dry_run, substring } => {
             publish(args.time_range, substring, dry_run).await?
         }
+        Commands::Watch { clips } => watch(args.time_range, clips).await?,
         Commands::Cd { review } => cd(review).await?,
     }
 
@@ -191,7 +201,7 @@ async fn upload(
     info!("Finding recent videos (changed within {})", time_range);
     let find_output = cmd!(
         sh,
-        "fd -t f . {existing_paths...} --changed-within {time_range}"
+        "fd -t f -e mp4 . {existing_paths...} --changed-within {time_range}"
     )
     .output()?;
 
@@ -387,6 +397,27 @@ async fn publish(
         info!("Publish completed successfully");
     }
 
+    Ok(())
+}
+
+/// Watch recent videos from CWD in VLC.
+async fn watch(time_range: String, clips: bool) -> Result<(), Box<dyn std::error::Error>> {
+    info!("watching recent videos (time_range: {})", time_range);
+
+    let sh = Shell::new()?;
+
+    let clip_filter = if clips {
+        CLIP_SUBSTRING.to_string()
+    } else {
+        String::new()
+    };
+
+    let watch_cmd = format!(
+        "fd -t f -e mp4 '{clip_filter}' . --changed-within {time_range} | sort -n | xargs -r -d '\\n' vlc 2>/dev/null"
+    );
+    cmd!(sh, "sh -c {watch_cmd}").run()?;
+
+    info!("Watch completed");
     Ok(())
 }
 
