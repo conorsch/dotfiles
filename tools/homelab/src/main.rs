@@ -1,4 +1,5 @@
 use std::fs::{self, File};
+use std::io::{self, IsTerminal, Read as _};
 use std::path::{Path, PathBuf};
 
 use anyhow::{bail, Context, Result};
@@ -15,7 +16,7 @@ use homelab::gatus::{fetch_statuses, filter_endpoints};
 use homelab::repo::RepoCommands;
 use homelab::{
     GATUS_API_URL, INNERNET_NETWORK, MEDIA_DIR, MEDIA_SERVER, MEDIA_SERVER_ADDRESS,
-    MEDIA_SERVER_GIT_REPOS_PATH, MEDIA_SERVER_TRANSFER_UPLOAD_URL,
+    MEDIA_SERVER_GIT_REPOS_PATH, MEDIA_SERVER_TRANSFER_UPLOAD_URL, NTFY_URL,
 };
 
 #[derive(Parser)]
@@ -63,6 +64,13 @@ enum Commands {
         domain: Option<String>,
     },
 
+    /// Send a notification to the self-hosted ntfy server.
+    #[command(alias = "ntfy", alias = "holler")]
+    Shout {
+        /// Message to send (reads from stdin if omitted).
+        message: Vec<String>,
+    },
+
     /// Print configuration values.
     #[command(alias = "env")]
     Config {
@@ -91,9 +99,43 @@ fn main() -> Result<()> {
             wormhole,
             tar,
         } => cmd_give(paths, rsync, wormhole, tar),
+        Commands::Shout { message } => cmd_shout(message),
         Commands::Status { site, domain } => cmd_status(site, domain),
         Commands::Config { bash, toml, json } => cmd_config(bash, toml, json),
     }
+}
+
+fn cmd_shout(message: Vec<String>) -> Result<()> {
+    let body = if message.is_empty() {
+        if io::stdin().is_terminal() {
+            bail!("No message provided. Pass arguments or pipe via stdin.");
+        }
+        let mut buf = String::new();
+        io::stdin()
+            .read_to_string(&mut buf)
+            .context("Failed to read from stdin")?;
+        let trimmed = buf.trim().to_string();
+        if trimmed.is_empty() {
+            bail!("No message provided");
+        }
+        trimmed
+    } else {
+        message.join(" ")
+    };
+
+    let client = reqwest::blocking::Client::new();
+    let response = client
+        .post(NTFY_URL)
+        .body(body)
+        .send()
+        .context("Failed to send notification to ntfy")?;
+
+    if !response.status().is_success() {
+        bail!("ntfy returned error status: {}", response.status());
+    }
+
+    println!("{} Notification sent", "✓".green());
+    Ok(())
 }
 
 fn cmd_config(bash: bool, toml: bool, json: bool) -> Result<()> {

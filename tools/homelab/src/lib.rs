@@ -32,3 +32,6 @@ pub const CODEBERG_URL: &str = "https://codeberg.org/conorsch";
 
 /// GitHub user URL.
 pub const GITHUB_URL: &str = "https://github.com/conorsch";
+
+/// Self-hosted ntfy notification endpoint.
+pub const NTFY_URL: &str = "https://ntfy.ruin.dev/jawn";
