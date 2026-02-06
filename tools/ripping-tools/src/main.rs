@@ -1,6 +1,7 @@
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
 use dialoguer::{Input, Select};
+use homelab::{MEDIA_MUSIC_LIBRARY_DIR, MEDIA_RIPPING_DIR, MEDIA_SERVER_ADDRESS};
 use std::path::PathBuf;
 use xshell::{Shell, cmd};
 
@@ -35,7 +36,7 @@ enum Commands {
     /// Synchronize select albums from remote storage to local storage
     Sync {
         /// Source directory containing music library
-        #[arg(short, long, default_value = "/mnt/Valhalla/Media/Heimchen")]
+        #[arg(short, long, default_value = MEDIA_MUSIC_LIBRARY_DIR)]
         source: PathBuf,
 
         /// Destination directory for synchronized music
@@ -49,14 +50,14 @@ enum Commands {
     /// Push local ripping directory to remote media server
     Push {
         /// Media server address
-        #[arg(short, long, default_value = "adolin.ruindev.wg")]
+        #[arg(short, long, default_value = MEDIA_SERVER_ADDRESS)]
         server: String,
 
         /// Destination path on remote server
         #[arg(
             short,
             long,
-            default_value = "/mnt/Valhalla/Media/incoming/new-music/ripping"
+            default_value = MEDIA_RIPPING_DIR
         )]
         dest: String,
 
@@ -74,7 +75,7 @@ enum Commands {
         #[arg(
             short,
             long,
-            default_value = "/mnt/Valhalla/Media/incoming/new-music/ripping"
+            default_value = MEDIA_RIPPING_DIR
         )]
         source: PathBuf,
 
@@ -253,10 +254,7 @@ fn rip_album(artist_name: Option<String>, album_name: String, year: Option<u16>)
     );
 
     // Send notification
-    let _ = cmd!(sh, "ntfy-send")
-        .arg(format!("Finished ripping album: '{}'", album_name))
-        .ignore_stdout()
-        .run();
+    let _ = homelab::shout(&format!("Finished ripping album: '{}'", album_name));
 
     Ok(())
 }

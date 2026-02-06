@@ -1,8 +1,9 @@
 [package]
 name = "homelab"
-version = "0.1.0"
+version.workspace = true
 edition = "2021"
 description = "admin tool for managing homelab infrastructure at ruin.dev"
+license.workspace = true
 
 [lib]
 path = "src/lib.rs"
@@ -12,16 +13,16 @@ name = "homelab"
 path = "src/main.rs"
 
 [dependencies]
-anyhow = "1"
-chrono = { version = "0.4", features = ["serde"] }
-clap = { version = "4", features = ["derive"] }
-comfy-table = "7"
-colored = "3"
-flate2 = "1"
-reqwest = { version = "0.12", features = ["blocking", "json"] }
-serde = { version = "1", features = ["derive"] }
-serde_json = "1"
-tar = "0.4"
-walkdir = "2"
-xshell = "0.2"
-dialoguer = "0.11"
+anyhow.workspace = true
+chrono = { workspace = true, features = ["serde"] }
+clap.workspace = true
+colored.workspace = true
+comfy-table.workspace = true
+dialoguer.workspace = true
+flate2.workspace = true
+reqwest = { workspace = true, default-features = true, features = ["blocking", "json"] }
+serde.workspace = true
+serde_json.workspace = true
+tar.workspace = true
+walkdir.workspace = true
+xshell.workspace = true
