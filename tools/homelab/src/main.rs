@@ -16,7 +16,7 @@ use homelab::gatus::{fetch_statuses, filter_endpoints};
 use homelab::repo::RepoCommands;
 use homelab::{
     GATUS_API_URL, INNERNET_NETWORK, MEDIA_DIR, MEDIA_SERVER, MEDIA_SERVER_ADDRESS,
-    MEDIA_SERVER_GIT_REPOS_PATH, MEDIA_SERVER_TRANSFER_UPLOAD_URL, NTFY_URL,
+    MEDIA_SERVER_GIT_REPOS_PATH, MEDIA_SERVER_TRANSFER_UPLOAD_URL,
 };
 
 #[derive(Parser)]
@@ -123,17 +123,7 @@ fn cmd_shout(message: Vec<String>) -> Result<()> {
         message.join(" ")
     };
 
-    let client = reqwest::blocking::Client::new();
-    let response = client
-        .post(NTFY_URL)
-        .body(body)
-        .send()
-        .context("Failed to send notification to ntfy")?;
-
-    if !response.status().is_success() {
-        bail!("ntfy returned error status: {}", response.status());
-    }
-
+    homelab::shout(&body)?;
     println!("{} Notification sent", "✓".green());
     Ok(())
 }

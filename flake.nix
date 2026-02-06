@@ -9,16 +9,12 @@
     etym.url = "github:conorsch/etym";
     etym.inputs.nixpkgs.follows = "nixpkgs";
 
-    # sub-flakes managed in the tools/ dir
-    gaming-vids.url = "path:./tools/gaming-vids";
-    gaming-vids.inputs.nixpkgs.follows = "nixpkgs";
-    homelab.url = "path:./tools/homelab";
-    homelab.inputs.nixpkgs.follows = "nixpkgs";
-    ripping-tools.url = "path:./tools/ripping-tools";
-    ripping-tools.inputs.nixpkgs.follows = "nixpkgs";
+    # workspace flake for all personal CLI tools
+    ruindev-tools.url = "path:./tools";
+    ruindev-tools.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, etym, gaming-vids, homelab, ripping-tools }:
+  outputs = { self, nixpkgs, flake-utils, etym, ruindev-tools }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -57,9 +53,7 @@
 
         subFlakes = [
           etym.packages.${system}.default
-          gaming-vids.packages.${system}.default
-          homelab.packages.${system}.default
-          ripping-tools.packages.${system}.default
+          ruindev-tools.packages.${system}.default
         ];
 
         # Defining package list outside of devshell, so it can be used in devshell & container image.

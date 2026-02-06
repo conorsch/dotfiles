@@ -1,13 +1,10 @@
 use clap::{Parser, Subcommand};
+use homelab::{
+    MEDIA_GAMING_DIR, MEDIA_SERVER_ADDRESS, MEDIA_SERVER_TRANSFER_UPLOAD_URL, PUBLIC_GAMING_DIR,
+    TRANSFER_VOLUME_DIR,
+};
 use tracing::{error, info};
 use xshell::{cmd, Shell};
-
-/// Remote directory path on media server, accessed as a local mount, and therefore
-/// assumed to be locally mounted.
-const MEDIA_SERVER_DIR: &str = "/mnt/Valhalla/Media/incoming/gaming";
-
-/// transfer.sh URL for uploading video files
-const REMOTE_UPLOAD_BASE_URL: &str = "https://ruin.dev/give";
 
 #[derive(Parser)]
 #[command(name = "gaming-vids")]
@@ -22,7 +19,7 @@ struct Args {
     time_range: String,
 
     /// Media server hostname for remote operations
-    #[arg(long, default_value = "adolin.ruindev.wg")]
+    #[arg(long, default_value = MEDIA_SERVER_ADDRESS)]
     media_server: String,
 
     /// Directory paths for searching for media to upload from Windows.
@@ -135,7 +132,7 @@ fn upload_file(file_path: &str) -> Result<String, Box<dyn std::error::Error>> {
         .ok_or("Failed to get filename")?;
 
     let encoded_filename = urlencoding::encode(filename);
-    let upload_url = format!("{}/{}", REMOTE_UPLOAD_BASE_URL, encoded_filename);
+    let upload_url = format!("{}{}", MEDIA_SERVER_TRANSFER_UPLOAD_URL, encoded_filename);
 
     // Read file contents
     let file_contents = std::fs::read(file_path)?;
@@ -236,7 +233,7 @@ async fn upload(
         .trim()
         .to_string();
     let message = format!("Videos uploaded from {}", hostname);
-    cmd!(sh, "ruin-shout {message}").quiet().run()?;
+    homelab::shout(&message)?;
 
     Ok(())
 }
@@ -255,8 +252,8 @@ async fn reorganize(
     // Media server script to import uploaded gaming vids, for editing.
     // Assumes that files have already been uploaded via ruin.dev/give/,
     // then reorganizes via hardlinks to an import directory.
-    let dest_dir = MEDIA_SERVER_DIR;
-    let source_dir = "/mnt/Valhalla/container-volumes-nfs/transfer";
+    let dest_dir = MEDIA_GAMING_DIR;
+    let source_dir = TRANSFER_VOLUME_DIR;
 
     let reorganize_cmd = format!(
         "mkdir -p {dest_dir} && fd -t f -e mp4 . {source_dir} --changed-within {time_range} -x ln -f {{}} {dest_dir}/{{/}}"
@@ -284,7 +281,7 @@ async fn sync(time_range: String, checksum: bool) -> Result<(), Box<dyn std::err
     let sh = Shell::new()?;
 
     // Check if media directory is mounted
-    let media_dir = MEDIA_SERVER_DIR;
+    let media_dir = MEDIA_GAMING_DIR;
     if !std::path::Path::new(media_dir).exists() {
         info!("Media directory not mounted, attempting to mount");
         // Try to mount media directory
@@ -337,7 +334,7 @@ async fn review(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
 
 async fn list(time_range: String, remote: bool) -> Result<(), Box<dyn std::error::Error>> {
     let target_dir = if remote {
-        MEDIA_SERVER_DIR.to_string()
+        MEDIA_GAMING_DIR.to_string()
     } else {
         local_vids_dir().display().to_string()
     };
@@ -368,7 +365,7 @@ async fn cd(review: bool) -> Result<(), Box<dyn std::error::Error>> {
         local_vids_dir().display().to_string()
     } else {
         // Use media server directory by default
-        MEDIA_SERVER_DIR.to_string()
+        MEDIA_GAMING_DIR.to_string()
     };
 
     // Check if the target directory exists
