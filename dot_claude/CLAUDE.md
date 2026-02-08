@@ -27,13 +27,21 @@ enables debugging logs.
 - Always ensure that "cargo check" passes after making changes; revise the change if it fails.
 - Always run "cargo fmt" to ensure that local edits are reformatted correctly.
 
+### Reading documentation
+
+Always check for a `README.md` file whenever you begin work, and read it if found.
+Similarly, if a project contains a `docs/` subdirectory, ingest all of its contents
+to educate yourself about the project.
+
 ## Permission and user interaction
 
-- In general, you may run the following commands without prompting for permission:
-  - `cargo build`
-  - `cargo check` 
-  - `cargo fmt`
-  - `cargo clippy`
-  - `nix flake check`
-  - `nix build`
-- For other commands, always ask the user for explicit permission.
+In general, you may run the following commands without prompting for permission:
+
+  * `cargo build`
+  * `cargo check`
+  * `cargo fmt`
+  * `cargo clippy`
+  * `nix flake check`
+  * `nix build`
+
+For other commands, always ask the user for explicit permission.
