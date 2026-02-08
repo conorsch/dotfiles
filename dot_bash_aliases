@@ -39,7 +39,6 @@ alias apb="ansible-playbook --diff"
 alias dcd="doctl compute droplet"
 alias gp="kubectl get pods -A"
 alias jp="jetporch"
-alias k="kubectl"
 alias nd="nix develop"
 alias tf="terraform"
 
