@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# script wrapper for dev convenience, to map "k" to a convenient catch-all
+# for managing kubernetes clusters:
+#
+#   1. "k" becomes "kubectl" if any args are supplied, e.g. "k get pods";
+#   2. otherwise, "k" becomes "k9s" to display a tui
+#
+set -euo pipefail
+
+# set kubectl as default
+program_name="kubectl"
+
+# however, if no args, then pull up a cluster tui via k9s
+if [[ $# -lt 1 ]] ; then
+  program_name="k9s"
+fi
+
+gum log --level=debug --time datetime "interpreting 'k' as '$program_name'"
+exec "$program_name" "$@"
