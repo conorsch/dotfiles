@@ -34,6 +34,14 @@ struct Args {
     checksum: bool,
 }
 
+/// Check if the current system is running under WSL
+fn is_wsl() -> Result<bool, Box<dyn std::error::Error>> {
+    let sh = Shell::new()?;
+    let output = cmd!(sh, "hostnamectl status --json pretty").output()?;
+    let stdout = String::from_utf8(output.stdout)?;
+    Ok(stdout.contains("WSL"))
+}
+
 fn get_default_windows_media_paths() -> Vec<String> {
     // Check for Windows captures directory
     let windows_gamebar_dir = format!(
@@ -53,7 +61,11 @@ fn get_default_windows_media_paths() -> Vec<String> {
 #[derive(Subcommand)]
 enum Commands {
     /// Upload game clips from Windows WSL
-    Upload,
+    Upload {
+        /// Show which files would be uploaded without actually uploading
+        #[arg(long)]
+        dry_run: bool,
+    },
     /// Organize videos on the remote server
     #[clap(alias = "org", alias = "reorg", alias = "reorganize")]
     Organize,
@@ -111,11 +123,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
     match args.command {
-        Commands::Upload => {
+        Commands::Upload { dry_run } => {
             let paths = args
                 .windows_media_paths
                 .unwrap_or_else(get_default_windows_media_paths);
-            upload(args.time_range, paths).await?
+            upload(args.time_range, paths, dry_run).await?
         }
         Commands::Organize => reorganize(args.media_server, args.time_range).await?,
         Commands::Sync => {
@@ -172,16 +184,21 @@ fn upload_file(file_path: &str) -> Result<String, Box<dyn std::error::Error>> {
 async fn upload(
     time_range: String,
     windows_media_paths: Vec<String>,
+    dry_run: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    info!("uploading clips from WSL (time_range: {})", time_range);
+    if dry_run {
+        info!(
+            "dry-run: listing clips from WSL (time_range: {})",
+            time_range
+        );
+    } else {
+        info!("uploading clips from WSL (time_range: {})", time_range);
+    }
 
     let sh = Shell::new()?;
 
     // Check if we're in WSL
-    let output = cmd!(sh, "hostnamectl status --json pretty").output()?;
-
-    let stdout = String::from_utf8(output.stdout)?;
-    if !stdout.contains("WSL") {
+    if !is_wsl()? {
         error!("upload mode only supported under WSL");
         std::process::exit(1);
     }
@@ -224,6 +241,15 @@ async fn upload(
 
     info!("Found {} video(s) to upload", total);
 
+    if dry_run {
+        // Just list the files that would be uploaded
+        for file in files.iter() {
+            println!("{}", file);
+        }
+        info!("Dry run completed - {} file(s) would be uploaded", total);
+        return Ok(());
+    }
+
     // Upload each file with progress logging
     for (i, file) in files.iter().enumerate() {
         let filename = std::path::Path::new(file)
@@ -246,11 +272,8 @@ async fn upload(
 
     info!("Upload completed successfully - {} file(s) uploaded", total);
 
-    // Send notification with hostname
-    let hostname_output = cmd!(sh, "hostname").output()?;
-    let hostname = String::from_utf8(hostname_output.stdout)?
-        .trim()
-        .to_string();
+    // Send notification with hostname from env var
+    let hostname = std::env::var("HOSTNAME").unwrap_or_else(|_| "unknown".to_string());
     let message = format!("Videos uploaded from {}", hostname);
     homelab::shout(&message)?;
 
@@ -347,6 +370,33 @@ async fn review(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
 }
 
 async fn list(time_range: String, remote: bool) -> Result<(), Box<dyn std::error::Error>> {
+    let sh = Shell::new()?;
+
+    // When running under WSL and not listing remote, check Windows media directories
+    if !remote && is_wsl()? {
+        let windows_media_paths = get_default_windows_media_paths();
+
+        if windows_media_paths.is_empty() {
+            info!("No Windows media directories found");
+            return Ok(());
+        }
+
+        info!(
+            "listing recent clips from Windows media directories (time_range: {})",
+            time_range
+        );
+
+        // List files from all Windows media directories
+        let list_cmd = format!(
+            "fd -t f -e mp4 . {} --changed-within {} | sort -n",
+            windows_media_paths.join(" "),
+            time_range
+        );
+        cmd!(sh, "sh -c {list_cmd}").run()?;
+
+        return Ok(());
+    }
+
     let target_dir = if remote {
         MEDIA_GAMING_DIR.to_string()
     } else {
@@ -357,8 +407,6 @@ async fn list(time_range: String, remote: bool) -> Result<(), Box<dyn std::error
         "listing recent clips in {} (time_range: {})",
         target_dir, time_range
     );
-
-    let sh = Shell::new()?;
 
     // Check if directory exists
     if !std::path::Path::new(&target_dir).exists() {
@@ -449,10 +497,7 @@ async fn archive(windows_media_paths: Vec<String>) -> Result<(), Box<dyn std::er
     let sh = Shell::new()?;
 
     // Check if we're in WSL
-    let output = cmd!(sh, "hostnamectl status --json pretty").output()?;
-
-    let stdout = String::from_utf8(output.stdout)?;
-    if !stdout.contains("WSL") {
+    if !is_wsl()? {
         error!("archive mode only supported under WSL");
         std::process::exit(1);
     }
