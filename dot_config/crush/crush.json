@@ -2,10 +2,16 @@
   "$schema": "https://charm.land/crush.json",
   "providers": {
     "ollama": {
-      "type": "openai",
-      "base_url": "http://localhost:11434/v1/",
+      "type": "openai-compat",
+      "base_url": "http://tartessos.ruindev.wg:6666/v1/",
       "name": "Ollama",
       "models": [
+        {
+          "name": "Qwen Jawn 30B",
+          "id": "qwen-jawn:latest",
+          "context_window": 256000,
+          "default_max_tokens": 20000
+        },
         {
           "name": "Qwen 3 Coder 30B",
           "id": "qwen3-coder:30b",
