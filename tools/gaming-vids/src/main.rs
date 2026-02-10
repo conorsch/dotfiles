@@ -327,7 +327,7 @@ async fn sync(time_range: String, checksum: bool) -> Result<(), Box<dyn std::err
     if !std::path::Path::new(media_dir).exists() {
         info!("Media directory not mounted, attempting to mount");
         // Try to mount media directory
-        let mount_output = cmd!(sh, "media-mount").output()?;
+        let mount_output = cmd!(sh, "homelab media-mount").output()?;
 
         if !mount_output.status.success() {
             error!("Failed to mount media directory");

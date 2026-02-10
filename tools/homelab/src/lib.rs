@@ -3,7 +3,11 @@
 use anyhow::{bail, Context, Result};
 
 pub mod gatus;
+pub mod media_mount;
 pub mod repo;
+
+/// Top-level mount point for the Valhalla share.
+pub const MEDIA_MOUNT_POINT: &str = "/mnt/Valhalla";
 
 /// Path to incoming media directory.
 pub const MEDIA_DIR: &str = "/mnt/Valhalla/Media/incoming";
