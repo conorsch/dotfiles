@@ -13,6 +13,7 @@ use walkdir::WalkDir;
 use xshell::{cmd, Shell};
 
 use homelab::gatus::{fetch_statuses, filter_endpoints};
+use homelab::media_mount::Protocol;
 use homelab::repo::RepoCommands;
 use homelab::{
     GATUS_API_URL, INNERNET_NETWORK, MEDIA_DIR, MEDIA_SERVER, MEDIA_SERVER_ADDRESS,
@@ -71,6 +72,17 @@ enum Commands {
         message: Vec<String>,
     },
 
+    /// Mount the shared media directory from the homelab server.
+    MediaMount {
+        /// Mount protocol to use.
+        #[arg(short, long, value_enum, default_value_t = Protocol::Sshfs)]
+        protocol: Protocol,
+
+        /// Local mount point path.
+        #[arg(short, long, default_value = homelab::MEDIA_MOUNT_POINT)]
+        mount_point: String,
+    },
+
     /// Print configuration values.
     #[command(alias = "env")]
     Config {
@@ -99,6 +111,10 @@ fn main() -> Result<()> {
             wormhole,
             tar,
         } => cmd_give(paths, rsync, wormhole, tar),
+        Commands::MediaMount {
+            protocol,
+            mount_point,
+        } => homelab::media_mount::run(protocol, &mount_point),
         Commands::Shout { message } => cmd_shout(message),
         Commands::Status { site, domain } => cmd_status(site, domain),
         Commands::Config { bash, toml, json } => cmd_config(bash, toml, json),

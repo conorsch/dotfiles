@@ -46,6 +46,12 @@ rm -vf ~/bin/ntfy-send
 # Clean up inadvertently committed TODO.md
 rm -vf ~/TODO.md
 
+# Clean up old copies of "media-mount" script
+rm -vf ~/bin/media-mount
+if [[ -w /usr/local/bin/media-mount ]] ; then
+  rm -vf /usr/local/bin/media-mount
+fi
+
 # Uninstall deprecated/revoked flatpaks.
 set -a old_flatpaks
 old_flatpaks=(
