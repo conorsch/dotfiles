@@ -49,9 +49,9 @@ workspace_auto_back_and_forth no
 exec --no-startup-id dex-autostart --autostart --environment i3
 
 # Start picom, for window transparency
-# Sometime in 2024-10, the `--backend` argument for picom became mandatory.
-# Let's use `xrender` because it's reliable; the `glx` backend shows glitchy artifacts.
-exec --no-startup-id picom --backend xrender
+# As of 2026-01, switched from `xrender` to `glx` backend, in an attempt
+# to reduce flicker while switching workspaces.
+exec --no-startup-id picom --backend glx
 
 # Restore desktop picture
 exec --no-startup-id nitrogen --restore
