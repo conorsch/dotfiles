@@ -43,6 +43,9 @@ test -L ~/result && rm -vf ~/result
 rm -vf ~/bin/gaming-vids
 rm -vf ~/bin/ntfy-send
 
+# Clean up inadvertently committed TODO.md
+rm -vf ~/TODO.md
+
 # Uninstall deprecated/revoked flatpaks.
 set -a old_flatpaks
 old_flatpaks=(
