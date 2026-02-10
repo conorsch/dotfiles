@@ -1,7 +1,0 @@
-- [ ] gaming-vids 
-  - [x] don't upload dirs
-  - [ ] silence ruin-give output by default, if 1
-  - [ ] raise error on upload 5xx
-- [ ] add "homelab" script
-  - [ ] has "upload" ("give" alias) to upload to ruin.dev/give
-  - [ ] 
