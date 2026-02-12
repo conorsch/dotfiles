@@ -45,6 +45,23 @@ function how_many_monitors() {
 
 # Primary entrypoint.
 function main() {
+    if [[ $# -lt 1 ]] ; then
+      arandr_dir="${HOME:?}/.screenlayout"
+      if [[ ! -d "$arandr_dir" ]] ; then
+        gum log --level error "no setting requested, and arandr dir not found"
+        exit 1
+      fi
+      # search for existing configs saved via arandr
+      arandr_script="$(fd -t x . "$arandr_dir" | fzf --height 5)"
+      if [[ -z "$arandr_script" ]] ; then
+        gum log --level error "no arandr setup selected"
+        exit 1
+      fi
+      bash "$arandr_script"
+      nitrogen_restore
+      exit 0
+    fi
+
     if [[ "$(how_many_monitors)" = 1 ]] ; then
         sane_defaults
         >&2 echo "Only one monitor detected, resetting to default state"
@@ -57,4 +74,4 @@ function main() {
     nitrogen_restore
 }
 
-main
+main "$@"
