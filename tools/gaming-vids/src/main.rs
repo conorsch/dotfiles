@@ -363,7 +363,7 @@ async fn review(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
     let review_cmd = format!(
         "fd -t f -e mp4 . {vids_path} --changed-within {time_range} | sort -n | xargs -r -d '\\n' vlc 2>/dev/null"
     );
-    cmd!(sh, "sh -c {review_cmd}").run()?;
+    cmd!(sh, "bash -l -c {review_cmd}").run()?;
 
     info!("Review completed");
     Ok(())
