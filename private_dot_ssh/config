@@ -16,3 +16,5 @@ Host *
   PasswordAuthentication no
   # SetEnv TERM=xterm-256color
   User conor
+  # ghostty compat
+  SetEnv TERM=xterm-256color
