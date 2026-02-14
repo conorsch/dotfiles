@@ -1,7 +1,4 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
+# Sway config — ported from i3 config
 # Read `man 5 sway` for a complete reference.
 
 ### Variables
@@ -14,60 +11,91 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term gnome-terminal
-# Your preferred application launcher
-# Note: pass the final command to swaymsg so that the resulting window can be opened
-# on the original workspace that the command was run on.
-set $menu dmenu_path | dmenu | xargs swaymsg exec --
+set $term ghostty
+# Application launcher: rofi in Wayland mode
+# Requires the `rofi-wayland` package (not X11 rofi).
+# Alternatively, replace with: wofi --show=drun
+set $menu rofi -show run -matching regex -sort | xargs swaymsg exec --
+
+# Font for window titles (ported from i3)
+font pango:monospace 8
 
 ### Output configuration
 #
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-# output * bg /usr/share/backgrounds/default.png fill
 output * bg "/home/conor/src/desktoppics/fire hydrant rusted.jpg" fill
+# nitrogen is X11-only; sway handles wallpaper natively via `output * bg`.
 
-# Audio controls
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+# HiDPI scaling is managed by ~/bin/sway-scale (1x or 2x).
+# Scale-dependent settings live in ~/.config/sway/config.d/scale.conf
 
-# Display brightness
+# Render XWayland (X11) apps at native resolution instead of upscaling.
+# Apps will be sharp but small — Wayland-native apps are unaffected.
+# Start XWayland eagerly so DISPLAY is set early.
+# DISPLAY propagation to D-Bus/systemd is handled by:
+# xwayland-display.path + xwayland-display.service
+# See: https://github.com/ValveSoftware/steam-for-linux/issues/10554
+xwayland force
+
+### Appearance
+#
+# Gaps between tiled windows (ported from i3)
+gaps outer 0
+gaps inner 1
+smart_gaps off
+smart_borders on
+
+# Remove title bars, no border (ported from i3: new_window 1pixel + default_border pixel 0)
+default_border pixel 0
+# For debugging: enable window title pars, to aid in debugging "for_window" settings below
+# default_border normal
+hide_edge_borders both
+
+# Float Firefox dialogs (Wayland doesn't auto-detect dialog windows like X11)
+# app_id on Wayland is "org.mozilla.firefox", not "firefox"
+for_window [app_id="org.mozilla.firefox" title="^Firefox - Choose User Profile$"] floating enable
+# Set both floating and a reasonable window size for the "open file" dialog in Firefox;
+# the 960x640 size works well on high-DPI Framework 13. For 4K displays, consider a percentage scheme:
+# for_window [app_id="org.mozilla.firefox" title="^Open File"] floating enable, resize set width 66 ppt height 66 ppt
+for_window [app_id="org.mozilla.firefox" title="^Open File"] floating enable, resize set 960 640
+
+# Disable workspace back-and-forth on repeated key press
+workspace_auto_back_and_forth no
+
+### Audio controls
+#
+# i3volume is X11-specific; using pactl directly instead.
+# Consider swayosd for on-screen volume notifications (Wayland-native).
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+### Display brightness
+#
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set-brightness +7%
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set-brightness 7%-
-#
-# Example configuration:
-#
-#   output HDMI-A-1 resolution 1920x1080 position 1920,0
-#
-# You can get the names of your outputs by running: swaymsg -t get_outputs
 
 ### Idle configuration
 #
-# Example configuration:
-#
+# Replaces xss-lock + i3lock from i3 config.
+# Uncomment and adjust to taste:
 # exec swayidle -w \
 #          timeout 300 'swaylock -f -c 000000' \
 #          timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
 #          before-sleep 'swaylock -f -c 000000'
-#
-# This will lock your screen after 300 seconds of inactivity, then turn off
-# your displays after another 300 seconds, and turn your screens back on when
-# resumed. It will also lock your screen before your computer goes to sleep.
 
 ### Input configuration
 #
-# Example configuration:
-#
-#   input "2:14:SynPS/2_Synaptics_TouchPad" {
-#       dwt enabled
-#       tap enabled
-#       natural_scroll enabled
-#       middle_emulation enabled
-#   }
-#
-# You can get the names of your inputs by running: swaymsg -t get_inputs
-# Read `man 5 sway-input` for more information about this section.
+input "type:keyboard" {
+    xkb_options caps:escape,ralt:compose,compose:ralt
+}
+
+# Touchpad — replaces ~/bin/touchpad-config (xinput is X11-only)
+input "type:touchpad" {
+    tap enabled
+    natural_scroll disabled
+    dwt enabled
+}
 
 ### Key bindings
 #
@@ -79,18 +107,33 @@ bindsym --locked XF86MonBrightnessDown exec brightnessctl set-brightness 7%-
     # Kill focused window
     bindsym $mod+Shift+q kill
 
-    # Start your launcher
+    # Start your launcher (rofi)
     bindsym $mod+d exec $menu
+
+    # Cycle open windows with rofi (ported from i3)
+    # Requires rofi-wayland. If unavailable, consider: swayr next-window
+    bindsym $mod+Tab exec rofi -show window
+
+    # Lock screen
+    # DIFFERENCE: ~/bin/fuzzy-lock is likely i3lock-based (X11).
+    # Replace with swaylock or a swaylock-based wrapper.
+    # e.g.: bindsym $mod+control+l exec swaylock -f -c 000000
+    bindsym $mod+control+l exec swaylock -f -c 000000
+
+    # Screenshots (grimshot — replaces scrot from i3)
+    bindsym $mod+p exec grimshot save output
+    bindsym $mod+Shift+p exec grimshot save area
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
     floating_modifier $mod normal
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
+    # DIFFERENCE: i3 supports in-place restart ($mod+Shift+r restart) which
+    # preserves layout/session. Sway does NOT support in-place restart;
+    # `reload` is the closest equivalent — it re-reads config but cannot
+    # upgrade the sway binary without restarting the session.
     bindsym $mod+Shift+r reload
 
     # Exit sway (logs you out of your Wayland session)
@@ -120,43 +163,50 @@ bindsym --locked XF86MonBrightnessDown exec brightnessctl set-brightness 7%-
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right
 #
-# Workspaces:
+# Workspaces (named, ported from i3):
 #
+    set $ws1 "1:term"
+    set $ws2 "2:work"
+    set $ws3 "3:personal"
+    set $ws4 "4:meetings"
+    set $ws5 "5:code"
+    set $ws6 "6:spare"
+    set $ws7 "7:creds"
+    set $ws8 "8:media"
+    set $ws9 "9:comms"
+    set $ws10 "10:term"
+
     # Switch to workspace
-    bindsym $mod+1 workspace number 1
-    bindsym $mod+2 workspace number 2
-    bindsym $mod+3 workspace number 3
-    bindsym $mod+4 workspace number 4
-    bindsym $mod+5 workspace number 5
-    bindsym $mod+6 workspace number 6
-    bindsym $mod+7 workspace number 7
-    bindsym $mod+8 workspace number 8
-    bindsym $mod+9 workspace number 9
-    bindsym $mod+0 workspace number 10
+    bindsym $mod+1 workspace number $ws1
+    bindsym $mod+2 workspace number $ws2
+    bindsym $mod+3 workspace number $ws3
+    bindsym $mod+4 workspace number $ws4
+    bindsym $mod+5 workspace number $ws5
+    bindsym $mod+6 workspace number $ws6
+    bindsym $mod+7 workspace number $ws7
+    bindsym $mod+8 workspace number $ws8
+    bindsym $mod+9 workspace number $ws9
+    bindsym $mod+0 workspace number $ws10
     # Move focused container to workspace
-    bindsym $mod+Shift+1 move container to workspace number 1
-    bindsym $mod+Shift+2 move container to workspace number 2
-    bindsym $mod+Shift+3 move container to workspace number 3
-    bindsym $mod+Shift+4 move container to workspace number 4
-    bindsym $mod+Shift+5 move container to workspace number 5
-    bindsym $mod+Shift+6 move container to workspace number 6
-    bindsym $mod+Shift+7 move container to workspace number 7
-    bindsym $mod+Shift+8 move container to workspace number 8
-    bindsym $mod+Shift+9 move container to workspace number 9
-    bindsym $mod+Shift+0 move container to workspace number 10
-    # Note: workspaces can have any name you want, not just numbers.
-    # We just use 1-10 as the default.
+    bindsym $mod+Shift+1 move container to workspace number $ws1
+    bindsym $mod+Shift+2 move container to workspace number $ws2
+    bindsym $mod+Shift+3 move container to workspace number $ws3
+    bindsym $mod+Shift+4 move container to workspace number $ws4
+    bindsym $mod+Shift+5 move container to workspace number $ws5
+    bindsym $mod+Shift+6 move container to workspace number $ws6
+    bindsym $mod+Shift+7 move container to workspace number $ws7
+    bindsym $mod+Shift+8 move container to workspace number $ws8
+    bindsym $mod+Shift+9 move container to workspace number $ws9
+    bindsym $mod+Shift+0 move container to workspace number $ws10
 #
 # Layout stuff:
 #
-    # You can "split" the current object of your focus with
-    # $mod+b or $mod+v, for horizontal and vertical splits
-    # respectively.
+    # Split horizontal/vertical
     bindsym $mod+b splith
     bindsym $mod+v splitv
 
-    # Switch the current container between different layout styles
-    bindsym $mod+s layout stacking
+    # Sticky toggle (ported from i3 — replaces default $mod+s stacking layout)
+    bindsym $mod+s sticky toggle
     bindsym $mod+w layout tabbed
     bindsym $mod+e layout toggle split
 
@@ -174,23 +224,15 @@ bindsym --locked XF86MonBrightnessDown exec brightnessctl set-brightness 7%-
 #
 # Scratchpad:
 #
-    # Sway has a "scratchpad", which is a bag of holding for windows.
-    # You can send windows there and get them back later.
-
     # Move the currently focused window to the scratchpad
     bindsym $mod+Shift+minus move scratchpad
 
     # Show the next scratchpad window or hide the focused scratchpad window.
-    # If there are multiple scratchpad windows, this command cycles through them.
     bindsym $mod+minus scratchpad show
 #
 # Resizing containers:
 #
 mode "resize" {
-    # left will shrink the containers width
-    # right will grow the containers width
-    # up will shrink the containers height
-    # down will grow the containers height
     bindsym $left resize shrink width 10px
     bindsym $down resize grow height 10px
     bindsym $up resize shrink height 10px
@@ -205,23 +247,43 @@ mode "resize" {
     # Return to default mode
     bindsym Return mode "default"
     bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
 }
 bindsym $mod+r mode "resize"
 
+### Startup applications
+#
+# DIFFERENCE: dex-autostart is X11-oriented. On sway, XDG autostart can be
+# handled by the systemd --user target `sway-session.target` or by dex if
+# the .desktop files are Wayland-compatible.
+# exec dex-autostart --autostart --environment sway
+
+# picom is NOT needed — Wayland composites natively. No equivalent required.
+
+# NetworkManager applet — needs --indicator flag for Wayland tray support
+exec nm-applet --indicator
+
+# Bluetooth applet
+exec blueman-applet
+
+# Startup terminal on workspace 1
+exec swaymsg 'workspace 1:term; exec ghostty'
+
+### Bar
+#
+# Using waybar (Wayland-native bar).
+# DIFFERENCE: i3bar transparency (#00000099 background) and scroll-wheel
+# disable (button4/button5 nop) must be configured in waybar's own config
+# and CSS files (~/.config/waybar/config and ~/.config/waybar/style.css),
+# not here. See notes below.
+bar swaybar_command waybar
+
+### Warm light / night shift
+#
+# Managed by systemd: wlsunset.service (Wayland) / redshift.service (X11)
+# Do not exec wlsunset here — the systemd service handles it.
 
 include /etc/sway/config.d/*
 
-
-# or input <identifier>
-input "type:keyboard" {
-    xkb_options caps:escape,ralt:compose,compose:ralt
-}
-
-# gammastep for warm light
-exec gammastep
-# pretty status bar
-bar swaybar_command waybar
-
-# wlsunset is like redshift for swaywm
-# 37,122 is SF
-exec wlsunset -l 37.4639 -L 122.2459
+# swayfx-specific overrides (remove or rename file to disable when using stock sway)
+include ~/.config/sway/config.d/*

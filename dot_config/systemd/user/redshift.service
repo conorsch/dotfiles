@@ -1,6 +1,8 @@
 [Unit]
-Description=Redshift for warm colors at night
+Description=Redshift for warm colors at night (X11 only)
 After=default.target
+# Don't start under Wayland — wlsunset.service handles that
+ConditionEnvironment=!WAYLAND_DISPLAY
 
 [Service]
 # User=%i

@@ -1,3 +1,5 @@
+@development-tools
+ImageMagick
 age
 alacritty
 bat
@@ -6,14 +8,13 @@ brightnessctl
 byobu
 clang-devel
 curl
-@development-tools
 diceware
 direnv
 dunst
 fd-find
 git
+grimshot
 i3
-ImageMagick
 ipython3
 just
 libsq3-devel

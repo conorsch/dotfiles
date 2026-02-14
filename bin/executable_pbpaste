@@ -1,0 +1,10 @@
+#!/bin/sh
+# Clipboard paste — works under Wayland, X11, or neither (macOS passthrough)
+if [ -n "$WAYLAND_DISPLAY" ]; then
+    exec wl-paste "$@"
+elif [ -n "$DISPLAY" ]; then
+    exec xclip -selection clipboard -o "$@"
+else
+    echo "pbpaste: no display server detected" >&2
+    exit 1
+fi

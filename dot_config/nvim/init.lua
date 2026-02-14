@@ -14,3 +14,7 @@ require("config.lazy")
 -- For reasons I don't understand, the colorscheme subtly changes
 -- after Rust LSP finishes initializing, which is jarring.
 -- vim.cmd("colorscheme acidcupcake")
+
+-- Set background color to transparent, to support terminal transparency under Wayland.
+vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
+vim.api.nvim_set_hl(0, "NormalNC", { bg = "NONE" })

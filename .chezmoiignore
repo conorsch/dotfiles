@@ -19,3 +19,6 @@ result
 
 # additional tooling, to be built by nix
 tools/
+
+# swayfx config; documenting it in-repo, but not using it currently
+dot_config/sway/config.d/swayfx.conf
