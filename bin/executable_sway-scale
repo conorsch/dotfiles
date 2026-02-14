@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+# Toggle sway HiDPI scaling between 1x (native) and 2x (compositor-scaled).
+#
+# 1x: output * scale 1, per-toolkit 2x scaling (GDK_SCALE, QT_SCALE_FACTOR).
+#     X11 apps (Steam) see full 2880x1920. Wayland apps scale via toolkit.
+#
+# 2x: sway auto-detects scale 2. Wayland apps are perfect. X11 apps see
+#     1440x960 (blurry). Steam needs STEAM_FORCE_DESKTOPUI_SCALING=2.
+#
+# Usage: sway-scale 1x | 2x [--json]
+
+set -euo pipefail
+
+SWAY_CONFIG="$HOME/.config/sway/config"
+SCALE_CONF="$HOME/.config/sway/config.d/scale.conf"
+WAYBAR_CONFIG="$HOME/.config/waybar/config"
+WAYBAR_STYLE="$HOME/.config/waybar/style.css"
+GHOSTTY_CONFIG="$HOME/.config/ghostty/config"
+JSON=false
+
+for arg in "$@"; do
+    case "$arg" in
+        --json|-o) JSON=true ;;
+    esac
+done
+
+apply_1x() {
+    # Sway: scale 1 + per-toolkit HiDPI compensation
+    cat > "$SCALE_CONF" <<'EOF'
+# Managed by ~/bin/sway-scale — do not edit manually.
+# Current: 1x (native resolution, per-app scaling)
+output * scale 1
+
+# Per-toolkit HiDPI scaling (compensates for scale 1 on HiDPI panel)
+# GTK: integer 2x scale; GDK_DPI_SCALE=0.5 prevents font double-scaling
+exec dbus-update-activation-environment --systemd GDK_SCALE=2 GDK_DPI_SCALE=0.5 QT_SCALE_FACTOR=2
+
+# Cursor size: 48 = 24 (default) * 2
+seat * xcursor_theme default 48
+EOF
+
+    # Sway font: double for native resolution
+    sed -i 's/^font pango:monospace [0-9]*/font pango:monospace 16/' "$SWAY_CONFIG"
+
+    # Waybar: double font and height
+    sed -i 's/font-size: [0-9]*px/font-size: 18px/' "$WAYBAR_STYLE"
+    sed -i 's/"height": [0-9]*,/"height": 60,/' "$WAYBAR_CONFIG"
+
+    # ghostty bigger font
+    sed -i 's/^font-size = .*/font-size = 16/' "$GHOSTTY_CONFIG"
+
+    # Steam: no forced scaling needed at native resolution
+    flatpak override --user --unset-env=STEAM_FORCE_DESKTOPUI_SCALING \
+        com.valvesoftware.Steam 2>/dev/null || true
+}
+
+apply_2x() {
+    # Sway: let auto-detection handle scale 2
+    cat > "$SCALE_CONF" <<'EOF'
+# Managed by ~/bin/sway-scale — do not edit manually.
+# Current: 2x (compositor-scaled HiDPI)
+# Sway auto-detects scale 2 from the panel; no output scale override needed.
+EOF
+
+    # Sway font: normal size for logical resolution
+    sed -i 's/^font pango:monospace [0-9]*/font pango:monospace 8/' "$SWAY_CONFIG"
+
+    # Waybar: normal font and height
+    sed -i 's/font-size: [0-9]*px/font-size: 9px/' "$WAYBAR_STYLE"
+    sed -i 's/"height": [0-9]*,/"height": 30,/' "$WAYBAR_CONFIG"
+
+    # Ghostty smaller config
+    sed -i 's/^font-size = .*/font-size = 8/' "$GHOSTTY_CONFIG"
+
+    # Steam: force 2x UI scaling to compensate for XWayland logical resolution
+    flatpak override --user --env=STEAM_FORCE_DESKTOPUI_SCALING=2 \
+        com.valvesoftware.Steam 2>/dev/null || true
+}
+
+result() {
+    local scale="$1"
+    if $JSON; then
+        cat <<ENDJSON
+{"scale":"$scale","sway_config":"$SWAY_CONFIG","scale_conf":"$SCALE_CONF","waybar_config":"$WAYBAR_CONFIG","waybar_style":"$WAYBAR_STYLE","action":"restart sway session to apply"}
+ENDJSON
+    else
+        echo "Configured for $scale. Restart your sway session to apply."
+        echo ""
+        echo "  Modified:"
+        echo "    $SCALE_CONF"
+        echo "    $SWAY_CONFIG (font size)"
+        echo "    $WAYBAR_STYLE (font size)"
+        echo "    $WAYBAR_CONFIG (bar height)"
+        echo "    Flatpak Steam override"
+    fi
+}
+
+case "${1:-}" in
+    1x) apply_1x; result "1x" ;;
+    2x) apply_2x; result "2x" ;;
+    *)
+        echo "Usage: sway-scale 1x | 2x [--json]"
+        echo ""
+        echo "  1x  Native resolution (2880x1920), per-app toolkit scaling"
+        echo "      X11 apps (Steam) get full resolution — sharp"
+        echo ""
+        echo "  2x  Compositor scaling (1440x960 logical), auto-detected"
+        echo "      Wayland apps perfect, X11 apps blurry (1440x960)"
+        echo ""
+        echo "Requires a sway session restart to take effect."
+        exit 1
+        ;;
+esac

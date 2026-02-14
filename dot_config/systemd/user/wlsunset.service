@@ -1,0 +1,14 @@
+[Unit]
+Description=Warm color temperature for Wayland (wlsunset)
+After=sway-session.target
+
+[Service]
+Type=simple
+# SF Bay Area coordinates; same color temp range as redshift.service
+# Default wlsunset temps are 4000K-6500K; override to match redshift's 3700K night
+ExecStart=/usr/bin/wlsunset -l 37.4639 -L 122.2459 -t 3700 -T 6500
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=sway-session.target

@@ -41,3 +41,7 @@ scrollback-limit = 100000000
 
 # harcode bash integration, to minimize blocking via "auto" setting
 shell-integration = bash
+
+# enable terminal transparency. for i3, transparency is handled by picom compositor;
+# sway does not support compositors, though, so terminal app must do it.
+background-opacity = 0.85

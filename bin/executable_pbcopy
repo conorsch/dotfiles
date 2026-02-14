@@ -1,0 +1,10 @@
+#!/bin/sh
+# Clipboard copy — works under Wayland, X11, or neither (macOS passthrough)
+if [ -n "$WAYLAND_DISPLAY" ]; then
+    exec wl-copy "$@"
+elif [ -n "$DISPLAY" ]; then
+    exec xclip -selection clipboard "$@"
+else
+    echo "pbcopy: no display server detected" >&2
+    exit 1
+fi

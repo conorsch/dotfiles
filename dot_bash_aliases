@@ -69,7 +69,3 @@ alias sd="workon securedrop"
 alias sdc="workon securedrop-client"
 alias wci="workon webcat-infra-chain"
 alias wci2="workon webcat-infra-chain-2"
-
-# clipboard aliases stolen from macos
-alias pbcopy="xclip -selection clipboard"
-alias pbpaste="xclip -selection clipboard -out"

@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch for XWayland socket to appear
+PartOf=sway-session.target
+
+[Path]
+DirectoryNotEmpty=/tmp/.X11-unix
+
+[Install]
+WantedBy=sway-session.target

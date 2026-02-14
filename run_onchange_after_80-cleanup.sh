@@ -52,6 +52,9 @@ if [[ -w /usr/local/bin/media-mount ]] ; then
   rm -vf /usr/local/bin/media-mount
 fi
 
+# Purge unused swayfx config (errors on sway)
+rm -vf ~/.config/sway/config.d/swayfx.conf
+
 # Uninstall deprecated/revoked flatpaks.
 set -a old_flatpaks
 old_flatpaks=(

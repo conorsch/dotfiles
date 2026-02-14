@@ -1,0 +1,6 @@
+[Unit]
+Description=Propagate DISPLAY to D-Bus/systemd after XWayland starts
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'DISPLAY=:$(ls /tmp/.X11-unix/ | head -1 | tr -d X) dbus-update-activation-environment --systemd DISPLAY'

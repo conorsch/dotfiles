@@ -31,6 +31,14 @@ function install_ghostty() {
     sudo dnf install -y ghostty
 }
 
+# Install the swayfx WM, a fork of sway, for tiling support under Wayland.
+# Ignore dead-code lint for shellcheck, because it's not currently used.
+# shellcheck disable=SC2329
+function install_swayfx() {
+    sudo dnf copr enable -y swayfx/swayfx
+    sudo dnf install -y swayfx
+}
+
 # Edit user configurations for Alacritty terminal emulator.
 function configure_alacritty() {
     >&2 echo "Setting up alacritty..."
@@ -59,6 +67,8 @@ function configure_hardware_workstation() {
 function configure_workstation() {
     install_zellij
     install_ghostty
+    # don't install swayfx by default; get used to sway first.
+    # install_swayfx
     configure_alacritty
     install-nix
     install-dev-tools
