@@ -1,13 +1,18 @@
+/* Gruvbox Dark theme */
+/* bg: #282828  bg1: #3c3836  bg2: #504945  bg3: #665c54  bg4: #7c6f64 */
+/* fg: #ebdbb2  fg4: #a89984                                             */
+/* red: #cc241d  green: #98971a  yellow: #d79921  blue: #458588          */
+/* purple: #b16286  aqua: #689d6a  orange: #d65d0e                       */
+
 * {
     font-family: 'Noto Sans Mono', 'Font Awesome 6 Free', 'Font Awesome 6 Brands', monospace;
     font-size: 9px;
 }
 
 window#waybar {
-    /* Semi-transparent black background, ported from i3bar #00000099 */
-    background-color: rgba(0, 0, 0, 0.6);
-    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
-    color: #ffffff;
+    background-color: rgba(10, 10, 10, 0.95);
+    border-bottom: 3px solid #1d2021;
+    color: #d5c4a1;
     transition-property: background-color;
     transition-duration: .5s;
 }
@@ -24,31 +29,31 @@ button {
 
 button:hover {
     background: inherit;
-    box-shadow: inset 0 -3px #ffffff;
+    box-shadow: inset 0 -3px #d5c4a1;
 }
 
 #workspaces button {
     padding: 0 5px;
     background-color: transparent;
-    color: #ffffff;
+    color: #d5c4a1;
 }
 
 #workspaces button:hover {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(29, 32, 33, 0.8);
 }
 
 #workspaces button.focused {
-    background-color: #64727D;
-    box-shadow: inset 0 -3px #ffffff;
+    background-color: #1d2021;
+    box-shadow: inset 0 -3px #d5c4a1;
 }
 
 #workspaces button.urgent {
-    background-color: #eb4d4b;
+    background-color: #cc241d;
 }
 
 #mode {
-    background-color: #64727D;
-    box-shadow: inset 0 -3px #ffffff;
+    background-color: #1d2021;
+    box-shadow: inset 0 -3px #d5c4a1;
 }
 
 #clock,
@@ -68,7 +73,7 @@ button:hover {
 #scratchpad,
 #power-profiles-daemon {
     padding: 0 10px;
-    color: #ffffff;
+    color: #d5c4a1;
 }
 
 #window,
@@ -85,29 +90,27 @@ button:hover {
 }
 
 #clock {
-    background-color: #64727D;
+    color: #7c6f64;
 }
 
 #battery {
-    background-color: #ffffff;
-    color: #000000;
+    color: #a89984;
 }
 
 #battery.charging, #battery.plugged {
-    color: #ffffff;
-    background-color: #26A65B;
+    color: #8ec07c;
 }
 
 @keyframes blink {
     to {
-        background-color: #ffffff;
-        color: #000000;
+        background-color: #cc241d;
+        color: #ebdbb2;
     }
 }
 
 #battery.critical:not(.charging) {
-    background-color: #f53c3c;
-    color: #ffffff;
+    background-color: #1d2021;
+    color: #fb4934;
     animation-name: blink;
     animation-duration: 0.5s;
     animation-timing-function: steps(12);
@@ -120,61 +123,57 @@ button:hover {
 }
 
 #power-profiles-daemon.performance {
-    background-color: #f53c3c;
-    color: #ffffff;
+    color: #fb4934;
 }
 
 #power-profiles-daemon.balanced {
-    background-color: #2980b9;
-    color: #ffffff;
+    color: #83a598;
 }
 
 #power-profiles-daemon.power-saver {
-    background-color: #2ecc71;
-    color: #000000;
+    color: #b8bb26;
 }
 
 #cpu {
-    background-color: #2ecc71;
-    color: #000000;
+    color: #8ec07c;
 }
 
 #memory {
-    background-color: #9b59b6;
+    color: #d3869b;
 }
 
 #backlight {
-    background-color: #90b1b1;
+    color: #a89984;
 }
 
 #network {
-    background-color: #2980b9;
+    color: #83a598;
 }
 
 #network.disconnected {
-    background-color: #f53c3c;
+    background-color: #1d2021;
+    color: #fb4934;
 }
 
 #pulseaudio {
-    background-color: #f1c40f;
-    color: #000000;
+    color: #fabd2f;
 }
 
 #pulseaudio.muted {
-    background-color: #90b1b1;
-    color: #2a5c45;
+    color: #504945;
 }
 
 #temperature {
-    background-color: #f0932b;
+    color: #fe8019;
 }
 
 #temperature.critical {
-    background-color: #eb4d4b;
+    background-color: #1d2021;
+    color: #fb4934;
 }
 
 #tray {
-    background-color: #2980b9;
+    color: #7c6f64;
 }
 
 #tray > .passive {
@@ -183,20 +182,20 @@ button:hover {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: #eb4d4b;
+    background-color: #1d2021;
+    color: #fb4934;
 }
 
 #idle_inhibitor {
-    background-color: #2d3436;
+    color: #504945;
 }
 
 #idle_inhibitor.activated {
-    background-color: #ecf0f1;
-    color: #2d3436;
+    color: #7c6f64;
 }
 
 #scratchpad {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(29, 32, 33, 0.8);
 }
 
 #scratchpad.empty {
