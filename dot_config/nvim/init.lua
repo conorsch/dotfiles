@@ -13,7 +13,7 @@ require("config.lazy")
 -- The "acidcupcake" theme was copied wholesale from the vim colorscheme.
 -- For reasons I don't understand, the colorscheme subtly changes
 -- after Rust LSP finishes initializing, which is jarring.
--- vim.cmd("colorscheme acidcupcake")
+vim.cmd("colorscheme acidcupcake")
 
 -- Set background color to transparent, to support terminal transparency under Wayland.
 vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
