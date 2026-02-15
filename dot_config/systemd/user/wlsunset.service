@@ -6,7 +6,7 @@ After=sway-session.target
 Type=simple
 # SF Bay Area coordinates; same color temp range as redshift.service
 # Default wlsunset temps are 4000K-6500K; override to match redshift's 3700K night
-ExecStart=/usr/bin/wlsunset -l 37.4639 -L 122.2459 -t 3700 -T 6500
+ExecStart=/usr/bin/wlsunset -l 37.77 -L -122.43 -t 3700 -T 6500
 Restart=always
 RestartSec=5
 
