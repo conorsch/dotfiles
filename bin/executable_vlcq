@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Wrapper script to silence VLC's noisy terminal output
+# when invoked via CLI.
+set -euo pipefail
+
+
+vlc_path="/usr/bin/vlc"
+if [[ ! -x "$vlc_path" ]] ; then
+  gum log --level error "VLC not found: $vlc_path"
+  exit 1
+fi
+
+exec "$vlc_path" -q "$@" vlc://quit 2>/dev/null
