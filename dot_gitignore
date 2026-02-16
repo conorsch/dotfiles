@@ -29,3 +29,4 @@ node_modules
 # llm cruft
 .claude/
 .crush/
+.aider*

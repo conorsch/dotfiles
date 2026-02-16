@@ -25,6 +25,7 @@
         workstationPkgs = with pkgs; [
           wiremix
           bluetui
+          aider-chat
 
           # general dev cruft
           gh
