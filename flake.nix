@@ -35,6 +35,7 @@
           # devops
           ansible
           cargo-watch
+          deno
           forgejo-cli
           gifski
           go
