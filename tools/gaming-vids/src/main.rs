@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use colored::Colorize;
 use homelab::{
     MEDIA_GAMING_DIR, MEDIA_SERVER_ADDRESS, MEDIA_SERVER_TRANSFER_UPLOAD_URL, PUBLIC_GAMING_DIR,
     TRANSFER_VOLUME_DIR,
@@ -80,6 +81,10 @@ enum Commands {
         /// List files on the remote server instead of locally
         #[arg(short, long)]
         remote: bool,
+
+        /// Only include clips (files containing "clip" in their name)
+        #[arg(short, long)]
+        clips: bool,
     },
     /// Archive all Windows media files to a tar file
     Archive,
@@ -135,7 +140,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             sync(args.time_range, args.checksum).await?;
         }
         Commands::Review => review(args.time_range).await?,
-        Commands::List { remote } => list(args.time_range, remote).await?,
+        Commands::List { remote, clips } => list(args.time_range, remote, clips).await?,
         Commands::Archive => {
             let paths = args
                 .windows_media_paths
@@ -369,7 +374,41 @@ async fn review(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-async fn list(time_range: String, remote: bool) -> Result<(), Box<dyn std::error::Error>> {
+/// Colorize a video filename for display.
+///
+/// Color rules are matched against the `basename`, but the `display` string
+/// is what gets colorized and returned, so full paths are colored correctly
+/// even when the CWD is not the local vids directory.
+///
+/// Rules:
+///   1. "Valorant*.mp4" (uppercase V, raw captures) → dimmed/gray
+///   2. "valorant*-clip.mp4" (lowercase v, already edited) → blue
+///   3. "valorant*.mp4" without "clip" (lowercase v, needs clipping) → green
+///   4. Everything else → default color
+fn colorize_filename(basename: &str, display: &str) -> String {
+    if basename.starts_with("Valorant") && basename.ends_with(".mp4") {
+        display.dimmed().to_string()
+    } else if basename.starts_with("valorant")
+        && basename.contains("-clip")
+        && basename.ends_with(".mp4")
+    {
+        display.blue().to_string()
+    } else if basename.starts_with("valorant")
+        && !basename.contains("clip")
+        && basename.ends_with(".mp4")
+    {
+        display.green().to_string()
+    } else {
+        display.to_string()
+    }
+}
+
+async fn list(
+    time_range: String,
+    remote: bool,
+    clips: bool,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let clip_filter = if clips { CLIP_SUBSTRING } else { "" };
     let sh = Shell::new()?;
 
     // When running under WSL and not listing remote, check Windows media directories
@@ -388,7 +427,7 @@ async fn list(time_range: String, remote: bool) -> Result<(), Box<dyn std::error
 
         // List files from all Windows media directories
         let list_cmd = format!(
-            "fd -t f -e mp4 . {} --changed-within {} | sort -n",
+            "fd -t f -e mp4 '{clip_filter}' {} --changed-within {} | sort -n",
             windows_media_paths.join(" "),
             time_range
         );
@@ -414,8 +453,36 @@ async fn list(time_range: String, remote: bool) -> Result<(), Box<dyn std::error
         return Ok(());
     }
 
-    let list_cmd = format!("fd -t f -e mp4 . {target_dir} --changed-within {time_range} | sort -n");
-    cmd!(sh, "sh -c {list_cmd}").run()?;
+    let list_cmd = format!(
+        "fd -t f -e mp4 '{clip_filter}' {target_dir} --changed-within {time_range} | sort -n"
+    );
+    let output = cmd!(sh, "sh -c {list_cmd}").output()?;
+    let stdout = String::from_utf8(output.stdout)?;
+
+    // Determine whether to show basenames only (when CWD matches local_vids_dir)
+    let use_basenames = !remote
+        && std::env::current_dir()
+            .ok()
+            .and_then(|cwd| {
+                let vids = local_vids_dir();
+                // Compare canonicalized paths to handle symlinks
+                let cwd_canon = std::fs::canonicalize(&cwd).unwrap_or(cwd);
+                let vids_canon = std::fs::canonicalize(&vids).unwrap_or(vids);
+                Some(cwd_canon == vids_canon)
+            })
+            .unwrap_or(false);
+
+    for line in stdout.lines() {
+        if line.is_empty() {
+            continue;
+        }
+        let basename = std::path::Path::new(line)
+            .file_name()
+            .and_then(|f| f.to_str())
+            .unwrap_or(line);
+        let display_name = if use_basenames { basename } else { line };
+        println!("{}", colorize_filename(basename, display_name));
+    }
 
     Ok(())
 }

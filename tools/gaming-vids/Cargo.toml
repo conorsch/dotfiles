@@ -8,6 +8,7 @@ license.workspace = true
 anyhow.workspace = true
 chrono.workspace = true
 clap.workspace = true
+colored.workspace = true
 dirs.workspace = true
 homelab = { path = "../homelab" }
 reqwest = { workspace = true, features = ["blocking", "rustls-tls"] }

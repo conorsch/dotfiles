@@ -485,6 +485,7 @@ dependencies = [
  "anyhow",
  "chrono",
  "clap",
+ "colored",
  "dirs",
  "homelab",
  "reqwest",
