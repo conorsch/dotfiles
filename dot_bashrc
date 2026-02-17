@@ -38,11 +38,6 @@ fi
 # hush up direnv
 export DIRENV_LOG_FORMAT=""
 
-# Starship shell prompt
-if hash starship > /dev/null 2>&1 ; then
-    eval "$(starship init bash)"
-fi
-
 # penv: penumbra version manager
 if hash penv > /dev/null 2>&1 ; then
     eval "$(penv hook bash)"
@@ -54,6 +49,11 @@ fi
 nix_config="${HOME}/.nix-profile/etc/profile.d/nix.sh"
 if [[ -e "$nix_config" ]] ; then
   . "$nix_config"
+fi
+
+# Starship shell prompt
+if hash starship > /dev/null 2>&1 ; then
+    eval "$(starship init bash)"
 fi
 
 # pnpm
