@@ -19,10 +19,18 @@ font-size = 8
 # disable window borders, to gel with i3.
 window-decoration = none
 
-theme = Abernathy
+# color scheme and theme. "Abernathy" is a bit too gray for bg color;
+# other themes I've tried and didn't outright hate are commented out.
+# theme = Abernathy
+# theme = Argonaut
+# theme = Night Lion V2
+# theme = Oxocarbon
+# theme = Dark+
+# theme = Vercel
+
 # TODO: find a nice light theme, and figure out how to toggle
 # View available themes via: `ghostty +list-themes`
-# theme = dark:Abernatyh,light:Catppuccin Latte
+theme = dark:Abernathy,light:Catppuccin Latte
 
 # copy/paste clipboard settings
 copy-on-select = false
