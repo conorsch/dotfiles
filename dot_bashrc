@@ -56,6 +56,16 @@ if hash starship > /dev/null 2>&1 ; then
     eval "$(starship init bash)"
 fi
 
+# SOPS keyfile used by infra repos, but also by `pw` script
+export SOPS_AGE_KEY_FILE="$HOME/.age/key.txt"
+export FNOX_AGE_KEY_FILE="$SOPS_AGE_KEY_FILE"
+
+# fnox: encryped secrets
+if hash fnox > /dev/null 2>&1 && test -e "$FNOX_AGE_KEY_FILE" ; then
+    export FNOX_SHELL_OUTPUT="none"
+    eval "$(fnox activate bash)"
+fi
+
 # pnpm
 export PNPM_HOME="${HOME}/.local/share/pnpm"
 case ":$PATH:" in

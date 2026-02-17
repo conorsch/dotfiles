@@ -12,9 +12,13 @@
     # workspace flake for all personal CLI tools
     ruindev-tools.url = "path:./tools";
     ruindev-tools.inputs.nixpkgs.follows = "nixpkgs";
+
+    # install fnox https://fnox.jdx.dev/
+    fnox.url = "git+https://codeberg.org/conorsch/fnox-flake";
+    fnox.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, etym, ruindev-tools }:
+  outputs = { self, nixpkgs, flake-utils, etym, ruindev-tools, fnox }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -56,6 +60,7 @@
         subFlakes = [
           etym.packages.${system}.default
           ruindev-tools.packages.${system}.default
+          fnox.packages.${system}.default
         ];
 
         # Defining package list outside of devshell, so it can be used in devshell & container image.
