@@ -55,6 +55,9 @@ fi
 # Purge unused swayfx config (errors on sway)
 rm -vf ~/.config/sway/config.d/swayfx.conf
 
+# Purge old temporary bash history files
+fd -e tmp --hidden --max-depth 1 --min-depth 1 .bash_history ~/ -X rm -v
+
 # Uninstall deprecated/revoked flatpaks.
 set -a old_flatpaks
 old_flatpaks=(
