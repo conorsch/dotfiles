@@ -21,7 +21,7 @@ window-decoration = none
 
 # color scheme and theme. "Abernathy" is a bit too gray for bg color;
 # other themes I've tried and didn't outright hate are commented out.
-# theme = Abernathy
+theme = Abernathy
 # theme = Argonaut
 # theme = Night Lion V2
 # theme = Oxocarbon
@@ -30,7 +30,7 @@ window-decoration = none
 
 # TODO: find a nice light theme, and figure out how to toggle
 # View available themes via: `ghostty +list-themes`
-theme = dark:Abernathy,light:Catppuccin Latte
+# theme = dark:Abernathy,light:Catppuccin Latte
 
 # copy/paste clipboard settings
 copy-on-select = false
