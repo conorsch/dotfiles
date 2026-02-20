@@ -45,6 +45,7 @@
           gifski
           go
           go-grip
+          harmonia
           hyperfine
           kubectl
           oha
