@@ -2,5 +2,27 @@
   "model": "opus",
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(cargo check)",
+      "Bash(cargo clippy)",
+      "Bash(cargo fmt)",
+      "Bash(cargo run nextest *)",
+      "Bash(cargo test *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(just build)",
+      "Bash(just check)",
+      "Bash(just integration)",
+      "Bash(just test)",
+      "Bash(nix build *)",
+      "Bash(nix flake check)"
+    ],
+    "deny": [
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git tag *)"
+    ]
   }
 }
