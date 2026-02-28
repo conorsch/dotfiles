@@ -198,7 +198,15 @@ plugins {
 //   - detach (Default)
 //   - quit
 //
-// on_force_close "quit"
+// On graphical workstations, quit zellij when the terminal closes, to prevent
+// accumulation of dead sessions. On headless servers, detach so sessions persist.
+{{ if or (env "DISPLAY") (env "WAYLAND_DISPLAY") -}}
+on_force_close "quit"
+session_serialization false
+{{ else -}}
+on_force_close "detach"
+session_serialization true
+{{ end }}
 
 // Don't show tips on startup. Around 2025-04 Zellij started displaying "tips"
 // on startup and I find it breaks my flow.
