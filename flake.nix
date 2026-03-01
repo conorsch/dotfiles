@@ -39,6 +39,7 @@
 
           # devops
           ansible
+          aria2
           cargo-watch
           deno
           forgejo-cli
