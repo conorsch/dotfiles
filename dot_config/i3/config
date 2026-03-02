@@ -61,9 +61,9 @@ exec --no-startup-id nitrogen --restore
 
 # Start standard apps
 exec --no-startup-id i3-msg 'workspace 1:terminal; exec /usr/bin/i3-sensible-terminal'
-# Chill by default, commenting out autostart.
+# Chill by default, commenting out most autostart.
 # exec --no-startup-id i3-msg 'workspace 2:work; exec /usr/bin/firefox -p penumbra'
-# exec --no-startup-id i3-msg 'workspace 3:personal; exec /usr/bin/firefox -p personal'
+exec --no-startup-id i3-msg 'workspace 3:personal; exec /usr/bin/firefox -p personal'
 # exec --no-startup-id i3-msg 'workspace 9:comms; exec /usr/local/bin/signal-desktop'
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
