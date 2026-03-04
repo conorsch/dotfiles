@@ -6,9 +6,31 @@
 # The script installs nix, but doesn't upgrade it; to upgrade the version
 # of nix on a given machine, see docs at:
 #
-# https://nix.dev/manual/nix/2.25/installation/upgrading
+# https://nix.dev/manual/nix/2.34/installation/upgrading.html
 set -euo pipefail
 
+UPGRADE=false
+while getopts "u" opt; do
+  case "$opt" in
+    u) UPGRADE=true ;;
+    *) >&2 echo "Usage: $0 [-u]"; exit 1 ;;
+  esac
+done
+
+# Upgrade nix: https://nix.dev/manual/nix/2.34/installation/upgrading.html
+if $UPGRADE; then
+  if systemctl is-active --quiet nix-daemon 2>/dev/null; then
+    >&2 echo "Upgrading nix (multi-user)..."
+    sudo /nix/var/nix/profiles/default/bin/nix-env --install --file '<nixpkgs>' --attr nix cacert -I nixpkgs=channel:nixpkgs-unstable
+    sudo systemctl daemon-reload
+    sudo systemctl restart nix-daemon
+  else
+    >&2 echo "Upgrading nix (single-user)..."
+    nix-env --install --file '<nixpkgs>' --attr nix cacert -I nixpkgs=channel:nixpkgs-unstable
+  fi
+  >&2 echo "Nix upgraded successfully."
+  exit 0
+fi
 
 # Install nix: https://nixos.org/download/ ; skip if nix on PATH.
 if ! hash nix > /dev/null 2>&1 ; then
