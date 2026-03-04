@@ -3,6 +3,7 @@ Description=Redshift for warm colors at night (X11 only)
 After=default.target
 # Don't start under Wayland — wlsunset.service handles that
 ConditionEnvironment=!WAYLAND_DISPLAY
+ConditionEnvironment=DISPLAY
 
 [Service]
 # User=%i
@@ -14,7 +15,7 @@ Environment=DISPLAY=:0
 ExecStart=/usr/bin/redshift -t 6500:3700 -r -P
 TimeoutStopSec=60
 Restart=always
-RestartSec=5
+RestartSec=15
 
 [Install]
 WantedBy=default.target
