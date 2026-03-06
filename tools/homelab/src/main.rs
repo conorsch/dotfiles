@@ -9,6 +9,7 @@ use comfy_table::{modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL, Cell, Color
 use flate2::write::GzEncoder;
 use flate2::Compression;
 use tar::Builder;
+use tracing_subscriber::EnvFilter;
 use walkdir::WalkDir;
 use xshell::{cmd, Shell};
 
@@ -101,6 +102,13 @@ enum Commands {
 }
 
 fn main() -> Result<()> {
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")),
+        )
+        .with_writer(std::io::stderr)
+        .init();
+
     let cli = Cli::parse();
 
     match cli.command {
