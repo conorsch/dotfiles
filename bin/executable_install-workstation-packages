@@ -63,6 +63,9 @@ sudo chown "root:${admin_group}" /usr/local/bin
 sudo chmod 775 /usr/local/bin
 
 >&2 echo "Installing local nix flake for tooling..."
+# shellcheck source=dot_profile
+source "${HOME:?}/.profile"
+
 chezmoi_src_dir="${HOME:?}/.local/share/chezmoi"
 if nix profile list | grep -q "chezmoi" ; then
   >&2 echo "Flake already installed, upgrading..."
