@@ -25,6 +25,12 @@ elif [[ -f /usr/share/bash-completion/bash_completion ]] ; then
     source /usr/share/bash-completion/bash_completion
 fi
 
+# Exit if the current terminal is non-interactive;
+# all subsequent config is only relevant for interactive shells.
+if [[ $- != *i* ]]; then
+  return 0
+fi
+
 # rustlang dev config. Don't assume cargo config exists.
 _rust_env="$HOME/.cargo/env"
 if [[ -e "$_rust_env" ]] ; then
