@@ -62,8 +62,8 @@ function configure_qubes_vm_fedora() {
   fi
 
   fedora-install-rpm-fusion
-  install_zellij_via_copr
-  install_ghostty_via_copr
+  _install_zellij_via_copr
+  _install_ghostty_via_copr
 
   install-nix
   install-dev-tools
@@ -90,10 +90,11 @@ main() {
         configure_hardware_workstation_fedora
     # Desktops, but only if run within a graphical environment.
     # Skips hardware servers.
-    elif [[ "$chassis" = "desktop" && "$fedora_version" ]] && [[ -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ]]; then
+    # TODO: check for Fedora OS here, because we do assume it.
+    elif [[ "$chassis" = "desktop" ]] && [[ -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ]]; then
         configure_hardware_workstation_fedora
-    elif [[ -e "$QUBES_MARKER_VM_PATH" && -n "$fedora_version" ]] ; then
-    configure_qubes_vm_fedora
+    elif [[ -e "$QUBES_MARKER_VM_PATH" ]] ; then
+        configure_qubes_vm_fedora
     fi
 
     if [[ "$chassis" = "laptop" ]] ; then

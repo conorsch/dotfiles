@@ -46,6 +46,10 @@ if ! hash nix > /dev/null 2>&1 ; then
   sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --no-daemon
 fi
 
+# Re-source profile to ensure that "nix" is on PATH.
+# shellcheck source=dot_profile
+source "${HOME:?}/.profile"
+
 >&2 echo "Setting up default nix profile with custom packages..."
 # We must ensure home-manager is gone, otherwise its paths will
 # conflict with those created by the profile installation.
