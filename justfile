@@ -12,8 +12,8 @@ lint:
 # apply only workstation configs
 workstation:
   chezmoi apply --force
-  bash bin/executable_install-workstation
   just packages
+  bash bin/executable_install-workstation
 
 # install the apt/dnf packages
 packages:
