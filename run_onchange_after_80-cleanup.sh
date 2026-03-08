@@ -55,9 +55,6 @@ fi
 # Purge unused swayfx config (errors on sway)
 rm -vf ~/.config/sway/config.d/swayfx.conf
 
-# Purge old temporary bash history files
-fd -e tmp --hidden --max-depth 1 --min-depth 1 .bash_history ~/ -X rm -v
-
 # Uninstall deprecated/revoked flatpaks.
 set -a old_flatpaks
 old_flatpaks=(
@@ -74,4 +71,9 @@ fi
 # Purge home-manager config
 if hash home-manager > /dev/null 2>&1 && hash nix > /dev/null 2>&1 ; then
   nix run home-manager/release-25.05 -- uninstall
+fi
+
+if hash fd > /dev/null 2>&1 ; then
+  # Purge old temporary bash history files
+  fd -e tmp --hidden --max-depth 1 --min-depth 1 .bash_history ~/ -X rm -v
 fi
