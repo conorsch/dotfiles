@@ -30,7 +30,7 @@ export GO111MODULE=on
 export GTK_THEME="Adwaita:dark"
 
 # Set custom key remaps, like caps lock to Escape, but only for graphical environments.
-if [ -n "$DISPLAY" ] && [ "$DESKTOP_SESSION" != "sway" ] ; then
+if [ -n "${DISPLAY:-}" ] && [ "${DESKTOP_SESSION:-}" != "sway" ] ; then
     if hash setxkbmap > /dev/null 2>&1 ; then
         setxkbmap -option caps:escape
         setxkbmap -option ralt:compose
@@ -40,7 +40,7 @@ fi
 
 # Set alacritty as default terminal, so it's picked up by i3-sensible-terminal,
 # but only for graphical environments.
-if [ -n "$DISPLAY" ] ; then
+if [ -n "${DISPLAY:-}" ] ; then
     if hash ghostty > /dev/null 2>&1 ; then
         export TERMINAL="ghostty"
     elif hash alacritty > /dev/null 2>&1 ; then
