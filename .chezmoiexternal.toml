@@ -29,7 +29,7 @@
 # workstation/install-workstation
 [".config/alacritty/themes"]
     type = "git-repo"
-    url = "workstation/install-workstation"
+    url = "https://github.com/alacritty/alacritty-theme"
     clone.args = ["--depth=1"]
     exact = true
     # old commit from 2024, but was working
