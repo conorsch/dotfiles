@@ -67,9 +67,11 @@ sudo chmod 775 /usr/local/bin
 source "${HOME:?}/.profile"
 
 chezmoi_src_dir="${HOME:?}/.local/share/chezmoi"
-if nix profile list | grep -q "chezmoi" ; then
-  >&2 echo "Flake already installed, upgrading..."
-  nix profile upgrade chezmoi
-else
-  nix profile install "$chezmoi_src_dir"
+if hash nix > /dev/null 2>&1 ; then
+  if nix profile list | grep -q "chezmoi" ; then
+    >&2 echo "Flake already installed, upgrading..."
+    nix profile upgrade chezmoi
+  else
+    nix profile install "$chezmoi_src_dir"
+  fi
 fi
