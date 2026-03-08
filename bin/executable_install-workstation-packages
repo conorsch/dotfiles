@@ -1,0 +1,72 @@
+#!/bin/bash
+# Installs common packages. Supports recent
+# Debian & Fedora.
+# vi: ft=bash
+set -eo pipefail
+
+debian_version="$(grep -i '^NAME="Debian' /etc/os-release 2> /dev/null || echo '')"
+fedora_version="$(grep -i '^NAME="Fedora' /etc/os-release 2> /dev/null || echo '')"
+nixos_version="$(grep -i '^NAME="NixOS' /etc/os-release 2> /dev/null || echo '')"
+
+
+# Assume we're reading these configs from chezmoi
+chezmoi_src_dir="${HOME:?}/.local/share/chezmoi"
+
+pkg_manager="apt"
+admin_group="sudo"
+pkgs_txt=""
+if [[ -n "$debian_version" ]]; then
+    pkg_manager="apt"
+    admin_group="sudo"
+    pkgs_txt="${chezmoi_src_dir:?}/packages/debian.txt"
+    # Debian needs manual list update on first run
+    echo "Updating apt repo lists..."
+    sudo "$pkg_manager" update -y
+elif [[ -n "$fedora_version" ]]; then
+    pkg_manager="dnf"
+    admin_group="wheel"
+    pkgs_txt="${chezmoi_src_dir:?}/packages/fedora-minimal.txt"
+elif [[ -n "$nixos_version" ]]; then
+    echo "DEBUG: skipping package installation via custom shell script on NixOS"
+    exit 0
+else
+    echo "ERROR: Unknown platform"
+    exit 1
+fi
+
+# Ensure we didn't screw up
+if [[ ! -e "$pkgs_txt" ]]; then
+    echo "ERROR: cannot find '$pkgs_txt'"
+    echo "PWD is: $PWD"
+    exit 1
+fi
+
+# Check whether we're running under QubesOS. If so, handle `curl` -> `curl-minimal`
+# conflict via `--allowerasing` arg to dnf.
+set -a dnf_opts
+dnf_opts=()
+if [[ -n "$fedora_version" && -e /usr/share/qubes/marker-vm ]] ; then
+    # disabling the allow-erasing to check whether it's still necessary, 2026-03
+    # dnf_opts=(--allowerasing)
+    >&2 echo "WARN: detected Qubes; curl installation might fail"
+fi
+
+# Install the packages
+grep -vP '^#' < "$pkgs_txt" \
+    | xargs -d '\n' \
+    sudo "$pkg_manager" install -y "${dnf_opts[@]}"
+
+# sudo "$pkg_manager" autoremove -y
+
+echo "Permitting writes to /usr/local/bin/ ..."
+sudo chown "root:${admin_group}" /usr/local/bin
+sudo chmod 775 /usr/local/bin
+
+>&2 echo "Installing local nix flake for tooling..."
+chezmoi_src_dir="${HOME:?}/.local/share/chezmoi"
+if nix profile list | grep -q "chezmoi" ; then
+  >&2 echo "Flake already installed, upgrading..."
+  nix profile upgrade chezmoi
+else
+  nix profile install "$chezmoi_src_dir"
+fi

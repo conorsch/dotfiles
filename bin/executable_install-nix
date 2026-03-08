@@ -28,6 +28,9 @@ if $UPGRADE; then
     >&2 echo "Upgrading nix (single-user)..."
     nix-env --install --file '<nixpkgs>' --attr nix cacert -I nixpkgs=channel:nixpkgs-unstable
   fi
+  # Re-source profile, so nix command is available.
+  # shellcheck source=dot_profile
+  source "${HOME:?}/.profile"
   >&2 echo "Nix upgraded successfully."
   exit 0
 fi
@@ -58,18 +61,3 @@ fi
 # for ad-hoc fixes, if some machine has a dirty default nix profile.
 # nix profile list --json | jq '.elements| keys | .[]'  -r | grep -v '^nix$' \
 #   | xargs -r nix profile remove
-
-# The chezmoi dotfiles repo has a top-level `flake.nix` which tracks packages.
-chezmoi_src_dir="${HOME:?}/.local/share/chezmoi"
-if [[ ! -d "$chezmoi_src_dir" ]] ; then
-  >&2 echo "ERROR: chezmoi dir doesn't exist: $chezmoi_src_dir"
-  exit 1
-fi
-
->&2 echo "Installing local nix flake for tooling..."
-if nix profile list | grep -q "chezmoi" ; then
-  >&2 echo "Flake already installed, upgrading..."
-  nix profile upgrade chezmoi
-else
-  nix profile install "$chezmoi_src_dir"
-fi

@@ -1,0 +1,14 @@
+@development-tools
+brightnessctl
+dunst
+grimshot
+i3
+libsq3-devel
+nitrogen
+picom
+redshift
+rofi
+scrot
+syncthing
+xrandr
+xset
