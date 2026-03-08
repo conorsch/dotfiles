@@ -13,7 +13,7 @@
     executable = true
     url = "https://raw.githubusercontent.com/hastinbe/i3-volume/8f50a700762285a082e931d06e49219f95a38043/volume"
     # default `refreshPeriod` is `Never`
-    refreshPeriod = "168h"
+    # refreshPeriod = "168h"
 
 # nix-direnv, for faster loading of nix flakes via .envrc
 # https://github.com/nix-community/nix-direnv
@@ -24,3 +24,13 @@
     clone.args = ["--depth=1"]
     exact = true
     ref = "3.0.6"
+
+# alacritty themes directory, cloned from remote
+# workstation/install-workstation
+[".config/alacritty/themes"]
+    type = "git-repo"
+    url = "workstation/install-workstation"
+    clone.args = ["--depth=1"]
+    exact = true
+    # old commit from 2024, but was working
+    ref = "f03686afad05274f5fbd2507f85f95b1a6542df4"
