@@ -26,3 +26,4 @@ tree
 uuid
 vim
 xz
+zstd
