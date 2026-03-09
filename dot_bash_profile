@@ -4,6 +4,9 @@
 [[ -f ~/.profile ]] && source ~/.profile
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 
+# Bail out early if non-interactive
+[[ $- != *i* ]] && return
+
 # Autostart zellij.
 #
 # Behavior differs by environment:
