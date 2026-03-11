@@ -52,7 +52,7 @@ shell-integration = bash
 
 # enable terminal transparency. for i3, transparency is handled by picom compositor;
 # sway does not support compositors, though, so terminal app must do it.
-background-opacity = 0.85
+background-opacity = 0.90
 
 # start a login shell, to activate features like multiplexer resumption
 command = "bash -l"
