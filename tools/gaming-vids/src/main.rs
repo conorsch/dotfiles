@@ -74,7 +74,15 @@ enum Commands {
     #[clap(alias = "synchronize")]
     Sync,
     /// Review videos by playing them
-    Review,
+    Review {
+        /// Regex pattern to filter video filenames
+        #[arg(default_value = ".")]
+        pattern: String,
+
+        /// Match pattern case-sensitively
+        #[arg(long)]
+        case_sensitive: bool,
+    },
     /// List video files
     #[clap(alias = "recent", alias = "ls")]
     List {
@@ -104,6 +112,14 @@ enum Commands {
     /// Watch recent videos in VLC
     #[clap(alias = "play")]
     Watch {
+        /// Regex pattern to filter video filenames
+        #[arg(default_value = ".")]
+        pattern: String,
+
+        /// Match pattern case-sensitively
+        #[arg(long)]
+        case_sensitive: bool,
+
         /// Only include clips (files containing "clip" in their name)
         #[arg(short, long)]
         clips: bool,
@@ -139,7 +155,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             reorganize(args.media_server, args.time_range.clone()).await?;
             sync(args.time_range, args.checksum).await?;
         }
-        Commands::Review => review(args.time_range).await?,
+        Commands::Review {
+            pattern,
+            case_sensitive,
+        } => review(args.time_range, pattern, case_sensitive).await?,
         Commands::List { remote, clips } => list(args.time_range, remote, clips).await?,
         Commands::Archive => {
             let paths = args
@@ -150,7 +169,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::Publish { dry_run, substring } => {
             publish(args.time_range, substring, dry_run).await?
         }
-        Commands::Watch { clips } => watch(args.time_range, clips).await?,
+        Commands::Watch {
+            pattern,
+            case_sensitive,
+            clips,
+        } => watch(args.time_range, pattern, case_sensitive, clips).await?,
         Commands::Cd { review } => cd(review).await?,
     }
 
@@ -356,8 +379,20 @@ async fn sync(time_range: String, checksum: bool) -> Result<(), Box<dyn std::err
     Ok(())
 }
 
-async fn review(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
-    info!("playing recent clips (time_range: {})", time_range);
+async fn review(
+    time_range: String,
+    pattern: String,
+    case_sensitive: bool,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let case_flag = if case_sensitive {
+        "--case-sensitive"
+    } else {
+        "--ignore-case"
+    };
+    info!(
+        "playing recent clips (time_range: {}, pattern: {}, {})",
+        time_range, pattern, case_flag
+    );
 
     let sh = Shell::new()?;
 
@@ -366,7 +401,7 @@ async fn review(time_range: String) -> Result<(), Box<dyn std::error::Error>> {
     info!("Looking for videos in: {}", vids_path);
 
     let review_cmd = format!(
-        "fd -t f -e mp4 . {vids_path} --changed-within {time_range} | sort -n | xargs -r -d '\\n' vlc 2>/dev/null"
+        "fd -t f -e mp4 {case_flag} '{pattern}' {vids_path} --changed-within {time_range} | sort -n | xargs -r -d '\\n' vlc 2>/dev/null"
     );
     cmd!(sh, "bash -l -c {review_cmd}").run()?;
 
@@ -516,19 +551,28 @@ async fn publish(
 }
 
 /// Watch recent videos from CWD in VLC.
-async fn watch(time_range: String, clips: bool) -> Result<(), Box<dyn std::error::Error>> {
-    info!("watching recent videos (time_range: {})", time_range);
+async fn watch(
+    time_range: String,
+    pattern: String,
+    case_sensitive: bool,
+    clips: bool,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let case_flag = if case_sensitive {
+        "--case-sensitive"
+    } else {
+        "--ignore-case"
+    };
+    info!(
+        "watching recent videos (time_range: {}, pattern: {})",
+        time_range, pattern
+    );
 
     let sh = Shell::new()?;
 
-    let clip_filter = if clips {
-        CLIP_SUBSTRING.to_string()
-    } else {
-        String::new()
-    };
+    let clip_filter = if clips { CLIP_SUBSTRING } else { &pattern };
 
     let watch_cmd = format!(
-        "fd -t f -e mp4 '{clip_filter}' . --changed-within {time_range} | sort -n | xargs -r -d '\\n' vlc 2>/dev/null"
+        "fd -t f -e mp4 {case_flag} '{clip_filter}' . --changed-within {time_range} | sort -n | xargs -r -d '\\n' vlc 2>/dev/null"
     );
     cmd!(sh, "sh -c {watch_cmd}").run()?;
 
@@ -558,8 +602,14 @@ async fn cd(review: bool) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-async fn archive(time_range: String, windows_media_paths: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
-    info!("creating archive of Windows media files (time_range: {})", time_range);
+async fn archive(
+    time_range: String,
+    windows_media_paths: Vec<String>,
+) -> Result<(), Box<dyn std::error::Error>> {
+    info!(
+        "creating archive of Windows media files (time_range: {})",
+        time_range
+    );
 
     let sh = Shell::new()?;
 
