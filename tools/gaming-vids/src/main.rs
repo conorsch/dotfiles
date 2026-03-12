@@ -145,7 +145,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let paths = args
                 .windows_media_paths
                 .unwrap_or_else(get_default_windows_media_paths);
-            archive(paths).await?
+            archive(args.time_range, paths).await?
         }
         Commands::Publish { dry_run, substring } => {
             publish(args.time_range, substring, dry_run).await?
@@ -558,8 +558,8 @@ async fn cd(review: bool) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-async fn archive(windows_media_paths: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
-    info!("creating archive of all Windows media files");
+async fn archive(time_range: String, windows_media_paths: Vec<String>) -> Result<(), Box<dyn std::error::Error>> {
+    info!("creating archive of Windows media files (time_range: {})", time_range);
 
     let sh = Shell::new()?;
 
@@ -586,8 +586,13 @@ async fn archive(windows_media_paths: Vec<String>) -> Result<(), Box<dyn std::er
 
     info!("Creating archive: {}", archive_name);
 
-    // Create tar archive of all files in the directories
-    cmd!(sh, "tar -cf {archive_name} {existing_paths...}").run()?;
+    // Use fd to filter files by time range and pass to tar via -X
+    let archive_cmd = format!(
+        "fd -t f -e mp4 . {} --changed-within {} -X tar -cf {archive_name}",
+        existing_paths.join(" "),
+        time_range
+    );
+    cmd!(sh, "sh -c {archive_cmd}").run()?;
 
     // Get archive size and display it
     let size_output = cmd!(sh, "du -h {archive_name}").output()?;
