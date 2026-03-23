@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Convenience wrapper for "feh" to provide a quick slideshow of images.
+# Mostly it bundles common options which are impossible to remember.
+set -euo pipefail
+
+usage() {
+    cat <<EOF
+Usage: ${0##*/} [OPTIONS] FILE [FILE...]
+
+Run a feh slideshow over the given image files.
+
+Options:
+  -d, --delay SECS   Seconds per image (default: 2)
+  -h, --help         Show this help
+EOF
+    exit "${1:-0}"
+}
+
+delay=2
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -d|--delay)
+            delay="${2:?missing value for --delay}"
+            shift 2
+            ;;
+        -h|--help)
+            usage 0
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            echo "Unknown option: $1" >&2
+            usage 1
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [[ $# -eq 0 ]]; then
+    echo "Error: no image files provided." >&2
+    usage 1
+fi
+
+exec feh \
+    --slideshow-delay "$delay" \
+    --scale-down \
+    --auto-zoom \
+    --draw-filename \
+    --font "monospace/14" \
+    --image-bg black \
+    --borderless \
+    --auto-rotate \
+    "$@"
