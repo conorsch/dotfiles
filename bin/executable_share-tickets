@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Helper script to take a PDF, presumably of concert tickets,
+# and chop it up into separate PNG files, for sharing with friends.
+set -euo pipefail
+
+pdf="$1"
+basename="${pdf%.pdf}"
+
+pdftoppm -png "$pdf" "$basename"
