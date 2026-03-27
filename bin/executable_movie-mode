@@ -17,7 +17,7 @@ function enable_movie_mode() {
   systemctl --user stop redshift
 
   # configure external displays
-  monitor-setup
+  monitor-setup -m movie
 }
 
 function disable_movie_mode() {

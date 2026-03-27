@@ -43,23 +43,47 @@ function how_many_monitors() {
     xrandr | perl -lanE 'say $F[1]' | rg '^connected' -c
 }
 
+# Run an arandr-saved screenlayout script by name.
+# Usage: run_arandr_script <mode>
+#   Looks for ${mode}-${HOSTNAME}.sh in ~/.screenlayout
+function run_arandr_script() {
+    local mode="${1:?mode required}"
+    local arandr_dir="${HOME:?}/.screenlayout"
+    if [[ ! -d "$arandr_dir" ]] ; then
+        gum log --level error "arandr dir not found: $arandr_dir"
+        exit 1
+    fi
+    local host
+    host="$(echo "$HOSTNAME" | tr '[:upper:]' '[:lower:]')"
+    local script="${arandr_dir}/${mode}-${host}.sh"
+    if [[ ! -x "$script" ]] ; then
+        gum log --level error "arandr script not found or not executable: $script"
+        exit 1
+    fi
+    bash "$script"
+    nitrogen_restore
+}
+
 # Primary entrypoint.
 function main() {
+    local mode=""
+
+    while getopts "m:" opt ; do
+        case "$opt" in
+            m) mode="$OPTARG" ;;
+            *) >&2 echo "Usage: $0 [-m mode]"; exit 1 ;;
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    if [[ -n "$mode" ]] ; then
+        run_arandr_script "$mode"
+        exit 0
+    fi
+
     if [[ $# -lt 1 ]] ; then
-      arandr_dir="${HOME:?}/.screenlayout"
-      if [[ ! -d "$arandr_dir" ]] ; then
-        gum log --level error "no setting requested, and arandr dir not found"
-        exit 1
-      fi
-      # search for existing configs saved via arandr
-      arandr_script="$(fd -t x . "$arandr_dir" | fzf --height 5)"
-      if [[ -z "$arandr_script" ]] ; then
-        gum log --level error "no arandr setup selected"
-        exit 1
-      fi
-      bash "$arandr_script"
-      nitrogen_restore
-      exit 0
+        run_arandr_script "default"
+        exit 0
     fi
 
     if [[ "$(how_many_monitors)" = 1 ]] ; then
