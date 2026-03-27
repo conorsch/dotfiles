@@ -5,7 +5,8 @@
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "http://tartessos.ruindev.wg:6666/v1",
+        "baseURL": "https://llm.ruin.dev/v1",
+        "apiKey": "{env:OLLAMA_API_KEY}",
         "timeout": 60000000
       },
       "models": {
@@ -23,35 +24,7 @@
             "output": 32000
           }
         },
-        "qwen3:8b": {
-          "tools": true,
-          "limit": {
-            "context": 100000,
-            "output": 32000
-          }
-        },
-        "qwen-jawn:latest": {
-          "tools": true,
-          "limit": {
-            "context": 100000,
-            "output": 32000
-          }
-        },
-        "deepseek-r1:7b": {
-          "tools": true,
-          "limit": {
-            "context": 100000,
-            "output": 32000
-          }
-        },
-        "devstral:24b": {
-          "tools": true,
-          "limit": {
-            "context": 100000,
-            "output": 32000
-          }
-        },
-        "devstral-small-2:latest": {
+        "qwen3.5:9b": {
           "tools": true,
           "limit": {
             "context": 100000,
