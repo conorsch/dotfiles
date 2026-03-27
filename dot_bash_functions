@@ -106,8 +106,7 @@ workon() {
 
 # Remove an warm light / darkness customization
 bright() {
-    killall -9 redshift > /dev/null 2>&1 || true
-    redshift -x -r > /dev/null
+    systemctl --user restart redshfit
     brightnessctl --quiet set '100%'
 }
 
