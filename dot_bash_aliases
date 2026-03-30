@@ -42,6 +42,9 @@ alias jp="jetporch"
 alias nd="nix develop"
 alias tf="terraform"
 
+# homelab helpers
+alias media-mount="homelab media-mount"
+
 # ssh aliases
 alias wurk="ssh wurk"
 
