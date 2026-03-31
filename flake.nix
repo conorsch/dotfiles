@@ -60,9 +60,9 @@
         ];
 
         subFlakes = [
-          # etym.packages.${system}.default
-          # ruindev-tools.packages.${system}.default
-          # fnox.packages.${system}.default
+          etym.packages.${system}.default
+          ruindev-tools.packages.${system}.default
+          fnox.packages.${system}.default
         ];
 
         # Defining package list outside of devshell, so it can be used in devshell & container image.
