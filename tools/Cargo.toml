@@ -1,5 +1,6 @@
 [workspace]
 members = [
+    "extract-clip",
     "gaming-vids",
     "homelab",
     "ripping-tools",

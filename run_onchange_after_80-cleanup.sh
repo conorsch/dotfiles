@@ -40,6 +40,7 @@ rm -vf ~/bin/install-opencode
 test -L ~/result && rm -vf ~/result
 
 # Remove bash scripts that have been written as rust CLIs
+rm -vf ~/bin/extract-clip
 rm -vf ~/bin/gaming-vids
 rm -vf ~/bin/ntfy-send
 

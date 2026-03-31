@@ -113,6 +113,11 @@
           cargoArtifactsStatic = craneLib.buildDepsOnly sArgs;
 
           # Dynamic builds (unwrapped)
+          extract-clip-unwrapped = buildCrate {
+            inherit pkgs craneLib cargoArtifacts args;
+            pname = "extract-clip";
+          };
+
           gaming-vids-unwrapped = buildCrate {
             inherit pkgs craneLib cargoArtifacts args;
             pname = "gaming-vids";
@@ -137,6 +142,13 @@
           };
 
           # Wrapped binaries with runtime PATH deps
+          extract-clip-wrapped = wrapBin {
+            inherit pkgs;
+            drv = extract-clip-unwrapped;
+            name = "extract-clip";
+            runtimeDeps = with pkgs; [ ffmpeg gifski vlc ];
+          };
+
           gaming-vids-wrapped = wrapBin {
             inherit pkgs;
             drv = gaming-vids-unwrapped;
@@ -175,8 +187,10 @@
         {
           default = pkgs.symlinkJoin {
             name = "ruindev-tools";
-            paths = [ gaming-vids-wrapped ripping-tools-wrapped homelab-drv ];
+            paths = [ extract-clip-wrapped gaming-vids-wrapped ripping-tools-wrapped homelab-drv ];
           };
+
+          extract-clip = extract-clip-wrapped;
 
           gaming-vids = gaming-vids-wrapped;
           ripping-tools = ripping-tools-wrapped;
@@ -217,6 +231,7 @@
 
       overlays.default = final: prev: {
         ruindev-tools = self.packages.${final.system}.default;
+        extract-clip = self.packages.${final.system}.extract-clip;
         homelab = self.packages.${final.system}.homelab;
         gaming-vids = self.packages.${final.system}.gaming-vids;
         ripping-tools = self.packages.${final.system}.ripping-tools;
