@@ -30,12 +30,17 @@ struct Args {
     open: bool,
 
     /// Start of fast-forward section (5x speed)
-    #[arg(long)]
+    #[arg(long, alias = "ff-begin")]
     ff_start: Option<String>,
 
     /// End of fast-forward section (5x speed)
     #[arg(long, alias = "ff-end")]
     ff_stop: Option<String>,
+
+    /// Maximum vertical resolution (e.g. 1440 for 1440p). Videos taller than
+    /// this are downscaled, preserving aspect ratio. Set to 0 to disable.
+    #[arg(long, default_value_t = 1440, alias = "max-res")]
+    max_resolution: u32,
 
     /// Enable verbose (debug) logging
     #[arg(short, long)]
@@ -46,15 +51,13 @@ fn main() -> Result<()> {
     let args = Args::parse();
 
     tracing_subscriber::fmt()
-        .with_env_filter(
-            EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                if args.verbose {
-                    EnvFilter::new("debug")
-                } else {
-                    EnvFilter::new("info")
-                }
-            }),
-        )
+        .with_env_filter(EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+            if args.verbose {
+                EnvFilter::new("debug")
+            } else {
+                EnvFilter::new("info")
+            }
+        }))
         .with_writer(std::io::stderr)
         .init();
 
@@ -69,6 +72,11 @@ fn main() -> Result<()> {
         &args.duration,
         args.ff_start.as_deref(),
         args.ff_stop.as_deref(),
+        if args.max_resolution > 0 {
+            Some(args.max_resolution)
+        } else {
+            None
+        },
     )?;
 
     if args.gif {

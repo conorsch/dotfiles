@@ -48,6 +48,7 @@ pub fn extract_clip(
     duration: &str,
     ff_start: Option<&str>,
     ff_stop: Option<&str>,
+    max_res: Option<u32>,
 ) -> Result<()> {
     // Remove destination if it exists (ffmpeg won't overwrite).
     if dest.exists() {
@@ -60,6 +61,10 @@ pub fn extract_clip(
 
     info!("extracting video clip...");
 
+    // Scale filter: cap vertical resolution, preserve aspect ratio, only downscale.
+    // Uses -2 for width to ensure it's divisible by 2 (required by most codecs).
+    let scale_filter = max_res.map(|h| format!("scale=-2:'min({h},ih)'"));
+
     match (ff_start, ff_stop) {
         (Some(ffs), Some(ffe)) => {
             let start_sec = time_to_seconds(start_time)?;
@@ -70,6 +75,17 @@ pub fn extract_clip(
 
             // Build complex filter for 5x speedup in the fast-forward section.
             // atempo is limited to 2.0 per filter, so chain 2.0 * 2.5 = 5.0.
+            // If scale is requested, append it after the concat.
+            let scale_suffix = scale_filter
+                .as_deref()
+                .map(|s| format!("[outv_raw]{s}[outv]"))
+                .unwrap_or_default();
+            let concat_out = if scale_filter.is_some() {
+                "outv_raw"
+            } else {
+                "outv"
+            };
+
             let filter = format!(
                 "[0:v]trim=start={start_sec}:end={ff_start_sec},setpts=PTS-STARTPTS[v1];\
                  [0:a]atrim=start={start_sec}:end={ff_start_sec},asetpts=PTS-STARTPTS[a1];\
@@ -77,7 +93,8 @@ pub fn extract_clip(
                  [0:a]atrim=start={ff_start_sec}:end={ff_end_sec},asetpts=PTS-STARTPTS,atempo=2.0,atempo=2.5[a2];\
                  [0:v]trim=start={ff_end_sec}:end={end_sec},setpts=PTS-STARTPTS[v3];\
                  [0:a]atrim=start={ff_end_sec}:end={end_sec},asetpts=PTS-STARTPTS[a3];\
-                 [v1][a1][v2][a2][v3][a3]concat=n=3:v=1:a=1[outv][outa]"
+                 [v1][a1][v2][a2][v3][a3]concat=n=3:v=1:a=1[{concat_out}][outa];\
+                 {scale_suffix}"
             );
 
             cmd!(
@@ -88,12 +105,21 @@ pub fn extract_clip(
             .context("ffmpeg fast-forward extraction failed")?;
         }
         _ => {
-            cmd!(
-                sh,
-                "ffmpeg -i {source} -ss {start_time} -t {duration} -loglevel 0 {dest}"
-            )
-            .run()
-            .context("ffmpeg extraction failed")?;
+            if let Some(ref scale) = scale_filter {
+                cmd!(
+                    sh,
+                    "ffmpeg -i {source} -ss {start_time} -t {duration} -vf {scale} -loglevel 0 {dest}"
+                )
+                .run()
+                .context("ffmpeg extraction failed")?;
+            } else {
+                cmd!(
+                    sh,
+                    "ffmpeg -i {source} -ss {start_time} -t {duration} -loglevel 0 {dest}"
+                )
+                .run()
+                .context("ffmpeg extraction failed")?;
+            }
         }
     }
 
