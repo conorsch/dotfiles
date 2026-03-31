@@ -18,10 +18,6 @@ struct Args {
     #[command(subcommand)]
     command: Commands,
 
-    /// How recent the videos must be to be included
-    #[arg(long, default_value = "1d", alias = "changed-within")]
-    time_range: String,
-
     /// Media server hostname for remote operations
     #[arg(long, default_value = MEDIA_SERVER_ADDRESS)]
     media_server: String,
@@ -63,18 +59,34 @@ fn get_default_windows_media_paths() -> Vec<String> {
 enum Commands {
     /// Upload game clips from Windows WSL
     Upload {
+        /// How recent the videos must be to be included
+        #[arg(long, default_value = "1d")]
+        changed_within: String,
+
         /// Show which files would be uploaded without actually uploading
         #[arg(long)]
         dry_run: bool,
     },
     /// Organize videos on the remote server
     #[clap(alias = "org", alias = "reorg", alias = "reorganize")]
-    Organize,
+    Organize {
+        /// How recent the videos must be to be included
+        #[arg(long, default_value = "1d")]
+        changed_within: String,
+    },
     /// Sync videos to local directory
     #[clap(alias = "synchronize")]
-    Sync,
+    Sync {
+        /// How recent the videos must be to be included
+        #[arg(long, default_value = "1d")]
+        changed_within: String,
+    },
     /// Review videos by playing them
     Review {
+        /// How recent the videos must be to be included
+        #[arg(long, default_value = "1d")]
+        changed_within: String,
+
         /// Regex pattern to filter video filenames
         #[arg(default_value = ".")]
         pattern: String,
@@ -86,6 +98,10 @@ enum Commands {
     /// List video files
     #[clap(alias = "recent", alias = "ls")]
     List {
+        /// How recent the videos must be to be included
+        #[arg(long, default_value = "1d")]
+        changed_within: String,
+
         /// List files on the remote server instead of locally
         #[arg(short, long)]
         remote: bool,
@@ -95,9 +111,17 @@ enum Commands {
         clips: bool,
     },
     /// Archive all Windows media files to a tar file
-    Archive,
+    Archive {
+        /// How recent the videos must be to be included
+        #[arg(long, default_value = "1d")]
+        changed_within: String,
+    },
     /// Publish recent clips to public gaming directory
     Publish {
+        /// How recent the videos must be to be included
+        #[arg(long, default_value = "1d")]
+        changed_within: String,
+
         /// Show which files would be published without actually copying
         #[arg(long)]
         dry_run: bool,
@@ -112,6 +136,10 @@ enum Commands {
     /// Watch recent videos in VLC
     #[clap(alias = "play")]
     Watch {
+        /// How recent the videos must be to be included
+        #[arg(long, default_value = "1d")]
+        changed_within: String,
+
         /// Regex pattern to filter video filenames
         #[arg(default_value = ".")]
         pattern: String,
@@ -145,36 +173,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
 
     match args.command {
-        Commands::Upload { dry_run } => {
+        Commands::Upload {
+            changed_within,
+            dry_run,
+        } => {
             let paths = args
                 .windows_media_paths
                 .unwrap_or_else(get_default_windows_media_paths);
-            upload(args.time_range, paths, dry_run).await?
+            upload(changed_within, paths, dry_run).await?
         }
-        Commands::Organize => reorganize(args.media_server, args.time_range).await?,
-        Commands::Sync => {
-            reorganize(args.media_server, args.time_range.clone()).await?;
-            sync(args.time_range, args.checksum).await?;
+        Commands::Organize { changed_within } => {
+            reorganize(args.media_server, changed_within).await?
+        }
+        Commands::Sync { changed_within } => {
+            reorganize(args.media_server, changed_within.clone()).await?;
+            sync(changed_within, args.checksum).await?;
         }
         Commands::Review {
+            changed_within,
             pattern,
             case_sensitive,
-        } => review(args.time_range, pattern, case_sensitive).await?,
-        Commands::List { remote, clips } => list(args.time_range, remote, clips).await?,
-        Commands::Archive => {
+        } => review(changed_within, pattern, case_sensitive).await?,
+        Commands::List {
+            changed_within,
+            remote,
+            clips,
+        } => list(changed_within, remote, clips).await?,
+        Commands::Archive { changed_within } => {
             let paths = args
                 .windows_media_paths
                 .unwrap_or_else(get_default_windows_media_paths);
-            archive(args.time_range, paths).await?
+            archive(changed_within, paths).await?
         }
-        Commands::Publish { dry_run, substring } => {
-            publish(args.time_range, substring, dry_run).await?
-        }
+        Commands::Publish {
+            changed_within,
+            dry_run,
+            substring,
+        } => publish(changed_within, substring, dry_run).await?,
         Commands::Watch {
+            changed_within,
             pattern,
             case_sensitive,
             clips,
-        } => watch(args.time_range, pattern, case_sensitive, clips).await?,
+        } => watch(changed_within, pattern, case_sensitive, clips).await?,
         Commands::Cd { review } => cd(review).await?,
     }
 
