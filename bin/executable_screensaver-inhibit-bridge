@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+"""
+D-Bus bridge: implements org.freedesktop.ScreenSaver.Inhibit/UnInhibit
+and translates calls into systemd-logind idle inhibitor locks.
+
+This bridges the gap on i3/minimal WMs where no desktop session manager
+implements the ScreenSaver D-Bus interface that Firefox (and other apps)
+use to suppress the screensaver during video playback.
+"""
+
+import logging
+import os
+import sys
+
+import dbus
+import dbus.service
+import dbus.mainloop.glib
+from gi.repository import GLib
+
+LOG_FORMAT = "%(asctime)s %(levelname)s %(message)s"
+SCREENSAVER_IFACE = "org.freedesktop.ScreenSaver"
+SCREENSAVER_BUS_NAME = "org.freedesktop.ScreenSaver"
+LOGIND_IFACE = "org.freedesktop.login1.Manager"
+LOGIND_BUS_NAME = "org.freedesktop.login1"
+LOGIND_OBJ_PATH = "/org/freedesktop/login1"
+
+log = logging.getLogger("screensaver-inhibit-bridge")
+
+
+class ScreenSaverBridge(dbus.service.Object):
+    def __init__(self, session_bus, system_bus):
+        # Register on both common object paths that apps may use.
+        bus_name = dbus.service.BusName(SCREENSAVER_BUS_NAME, bus=session_bus)
+        super().__init__(bus_name, "/org/freedesktop/ScreenSaver")
+        # Some apps (notably older KDE apps) use /ScreenSaver.
+        dbus.service.Object.__init__(self, bus_name, "/ScreenSaver")
+
+        self._system_bus = system_bus
+        self._inhibitors = {}  # cookie -> (fd, app_name, reason, sender)
+        self._next_cookie = 1
+
+        # Watch for clients disconnecting so we can clean up their inhibitors.
+        session_bus.add_signal_receiver(
+            self._on_name_lost,
+            signal_name="NameOwnerChanged",
+            dbus_interface="org.freedesktop.DBus",
+        )
+
+    def _take_logind_lock(self, app_name, reason):
+        """Ask systemd-logind for an idle inhibitor fd."""
+        logind = self._system_bus.get_object(LOGIND_BUS_NAME, LOGIND_OBJ_PATH)
+        manager = dbus.Interface(logind, LOGIND_IFACE)
+        fd = manager.Inhibit("idle", str(app_name), str(reason), "block")
+        # fd is a dbus.UnixFd; take ownership of the actual file descriptor.
+        return fd.take()
+
+    def _release_lock(self, cookie):
+        """Release a logind inhibitor by closing its fd."""
+        if cookie not in self._inhibitors:
+            log.warning("UnInhibit called with unknown cookie %d", cookie)
+            return
+        fd, app_name, reason, _ = self._inhibitors.pop(cookie)
+        os.close(fd)
+        log.info(
+            "Released inhibitor %d (%s: %s), %d active",
+            cookie,
+            app_name,
+            reason,
+            len(self._inhibitors),
+        )
+
+    def _on_name_lost(self, name, old_owner, new_owner):
+        """Clean up inhibitors when a client disappears (e.g. crash)."""
+        if new_owner:
+            return
+        stale = [
+            c
+            for c, (_, _, _, sender) in self._inhibitors.items()
+            if sender == old_owner
+        ]
+        for cookie in stale:
+            log.info("Client %s disappeared, releasing inhibitor %d", name, cookie)
+            self._release_lock(cookie)
+
+    @dbus.service.method(
+        SCREENSAVER_IFACE,
+        in_signature="ss",
+        out_signature="u",
+        sender_keyword="sender",
+    )
+    def Inhibit(self, app_name, reason, sender=None):
+        cookie = self._next_cookie
+        self._next_cookie += 1
+        fd = self._take_logind_lock(app_name, reason)
+        self._inhibitors[cookie] = (fd, str(app_name), str(reason), sender)
+        log.info(
+            "Inhibit %d from %s (%s: %s), %d active",
+            cookie,
+            sender,
+            app_name,
+            reason,
+            len(self._inhibitors),
+        )
+        return dbus.UInt32(cookie)
+
+    @dbus.service.method(SCREENSAVER_IFACE, in_signature="u", out_signature="")
+    def UnInhibit(self, cookie):
+        self._release_lock(cookie)
+
+    @dbus.service.method(SCREENSAVER_IFACE, in_signature="", out_signature="b")
+    def GetActive(self):
+        return len(self._inhibitors) > 0
+
+
+def main():
+    verbose = "-v" in sys.argv or "--verbose" in sys.argv
+    logging.basicConfig(
+        format=LOG_FORMAT,
+        level=logging.DEBUG if verbose else logging.INFO,
+        stream=sys.stderr,
+    )
+
+    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+    session_bus = dbus.SessionBus()
+    system_bus = dbus.SystemBus()
+
+    bridge = ScreenSaverBridge(session_bus, system_bus)  # noqa: F841
+    log.info("Screensaver inhibit bridge started")
+
+    loop = GLib.MainLoop()
+    try:
+        loop.run()
+    except KeyboardInterrupt:
+        log.info("Shutting down")
+
+
+if __name__ == "__main__":
+    main()

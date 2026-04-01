@@ -1,0 +1,13 @@
+[Unit]
+Description=D-Bus bridge for org.freedesktop.ScreenSaver idle inhibition
+Documentation=https://specifications.freedesktop.org/idle-inhibit-spec/latest/
+After=xss-lock.service
+
+[Service]
+Type=simple
+ExecStart=%h/bin/screensaver-inhibit-bridge
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
