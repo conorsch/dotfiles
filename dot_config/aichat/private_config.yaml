@@ -5,8 +5,8 @@ clients:
 - type: openai-compatible
   name: ollama
   # api_base: http://localhost:11434/v1
-  # api_base: http://tartessos.ruindev.wg:6666/v1
-  api_base: https://llm.ruin.dev/v1
+  api_base: http://tartessos.ruindev.wg:6666/v1
+  # api_base: https://llm.ruin.dev/v1
   # don't set API key in YAML config; aichat will read `OLLAMA_API_KEY` env var.
   # api_key: xxx # optional
   models:
