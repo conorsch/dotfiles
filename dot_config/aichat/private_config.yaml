@@ -10,15 +10,8 @@ clients:
   # don't set API key in YAML config; aichat will read `OLLAMA_API_KEY` env var.
   # api_key: xxx # optional
   models:
-    - name: qwen3.5:9b
+    - name: gemma4:e4b
       max_input_tokens: 256000
-      enable_thinking: false
-      patch:
-        body:
-          chat_template_kwargs:
-            enable_thinking: false
 
-    - name: qwen3.5:35b
-      max_input_tokens: 256000
-    - name: qwen3-coder-next:latest
+    - name: qwen3.5:9b
       max_input_tokens: 256000
