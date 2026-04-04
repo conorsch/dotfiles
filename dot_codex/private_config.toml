@@ -1,0 +1,14 @@
+model = "gemma4:26b"
+model_provider = "ollama-ruindev"
+profile = "ollama-ruindev"
+
+[model_providers.ollama-ruindev]
+name = "OllamaRuinDev"
+# base_url = "http://localhost:11434/v1"
+base_url = "http://tartessos.ruindev.wg:6666/v1"
+
+[profiles.ollama-ruindev]
+# model = "gemma4:31b"
+model = "gemma4:26b"
+# model = "qwen3.5:35b"
+model_provider = "ollama-ruindev"
