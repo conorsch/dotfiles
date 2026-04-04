@@ -11,7 +11,7 @@ lint:
 
 # apply only workstation configs
 workstation:
-  chezmoi apply --force
+  chezmoi apply
   just packages
   bash bin/executable_install-workstation
 
