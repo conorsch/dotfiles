@@ -1,6 +1,5 @@
 [Unit]
 Description=Screen locker using xss-lock
-After=default.target
 
 [Service]
 Type=simple
