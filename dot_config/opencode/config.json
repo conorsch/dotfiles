@@ -5,29 +5,21 @@
     "ollama": {
       "npm": "@ai-sdk/openai-compatible",
       "options": {
-        "baseURL": "https://llm.ruin.dev/v1",
-        "apiKey": "{env:OLLAMA_API_KEY}",
-        "timeout": 60000000
+        "baseURL": "http://tartessos.ruindev.wg:6666/v1",
+        "timeout": 6000000
       },
       "models": {
-        "qwen3-coder-next:latest": {
+        "qwen3.6:35b-a3b": {
           "tools": true,
           "limit": {
             "context": 256000,
             "output": 32000
           }
         },
-        "qwen3-coder:30b": {
+        "gemma4:26b": {
           "tools": true,
           "limit": {
-            "context": 100000,
-            "output": 32000
-          }
-        },
-        "qwen3.5:9b": {
-          "tools": true,
-          "limit": {
-            "context": 100000,
+            "context": 256000,
             "output": 32000
           }
         }
