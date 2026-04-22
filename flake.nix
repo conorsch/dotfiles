@@ -10,7 +10,7 @@
     etym.inputs.nixpkgs.follows = "nixpkgs";
 
     # workspace flake for all personal CLI tools
-    ruindev-tools.url = "path:./tools";
+    ruindev-tools.url = "git+https://codeberg.org/conorsch/ruindev-tools";
     ruindev-tools.inputs.nixpkgs.follows = "nixpkgs";
 
     # install fnox https://fnox.jdx.dev/

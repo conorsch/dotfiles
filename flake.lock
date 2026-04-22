@@ -179,14 +179,18 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "path": "./tools",
-        "type": "path"
+        "lastModified": 1776899360,
+        "narHash": "sha256-rmPlWinMswTQ9lBwOW+HNjhi9ZeKrARowzoAEYEHuS8=",
+        "ref": "refs/heads/main",
+        "rev": "e824582f716b25f8aa2cf75190172a96441a9567",
+        "revCount": 33,
+        "type": "git",
+        "url": "https://codeberg.org/conorsch/ruindev-tools"
       },
       "original": {
-        "path": "./tools",
-        "type": "path"
-      },
-      "parent": []
+        "type": "git",
+        "url": "https://codeberg.org/conorsch/ruindev-tools"
+      }
     },
     "rust-overlay": {
       "inputs": {
