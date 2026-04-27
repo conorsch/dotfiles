@@ -6,24 +6,3 @@
 
 # Bail out early if non-interactive
 [[ $- != *i* ]] && return
-
-# Autostart zellij.
-#
-# Behavior differs by environment:
-#   - Graphical workstations ($TERMINAL is set): fresh session every time,
-#     with dead-session cleanup on launch.
-#   - Headless servers ($TERMINAL is unset): attach to most recent session
-#     or create a new one.
-if hash zellij > /dev/null 2>&1 && [[ -z "$ZELLIJ" ]]; then
-  if [[ -n "$TERMINAL" ]]; then
-    # Workstation: clean up dead sessions, then start fresh.
-    zellij delete-all-sessions -y 2>/dev/null || true
-    zellij
-  else
-    # Server: reattach or create.
-    zellij attach -c
-  fi
-  if [[ "$ZELLIJ_AUTO_EXIT" == "true" ]]; then
-    exit
-  fi
-fi
