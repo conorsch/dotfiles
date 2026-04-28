@@ -30,7 +30,7 @@ export GO111MODULE=on
 export GTK_THEME="Adwaita:dark"
 
 # Bail out early if non-interactive
-[[ $- != *i* ]] && return
+[ $- != *i* ] && return
 
 # Set custom key remaps, like caps lock to Escape, but only for graphical environments.
 if [ -n "${DISPLAY:-}" ] && [ "${DESKTOP_SESSION:-}" != "sway" ] ; then
