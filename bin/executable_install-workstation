@@ -80,6 +80,9 @@ function configure_laptop_services() {
 # Primary script entrypoint. Basically a big switch statement
 # to match on workstation type, and do the needful.
 main() {
+    # Ensure primary env is sourced, in case this is a fresh host.
+    # shellcheck source=/dev/null
+    source "${HOME:?}/.bashrc"
     hostnamectl_json="$(hostnamectl status --json pretty)"
     chassis="$(jq -r .Chassis <<< "$hostnamectl_json")"
     hostname="$(jq -r .Hostname <<< "$hostnamectl_json")"
