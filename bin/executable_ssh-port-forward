@@ -6,14 +6,15 @@
 # I cannot remember the `ssh -L` syntax for the life of me.
 set -euo pipefail
 
-if [[ $# -ne 2 ]]; then
-    echo "Usage: $0 <target_host> <target_port>"
+if [[ $# -lt 2 ]]; then
+    echo "Usage: $0 <target_host> <target_port> [local_port]"
     exit 1
 fi
 
 target_host="$1"
 target_port="$2"
 shift 2
+local_port="${1:-$local_port}"
 
->&2 echo "Opening SSH port forward '${target_host}:${target_port}'..."
-ssh -N -L "${target_port}:127.0.0.1:${target_port}" "$target_host"
+>&2 echo "Opening SSH port forward '${target_host}:${target_port} -> '${local_port}'..."
+ssh -N -L "${local_port}:127.0.0.1:${target_port}" "$target_host"
