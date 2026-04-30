@@ -10,6 +10,7 @@ bootstrap.sh
 dom0/
 justfile
 packages/
+prompt.md
 
 # nix config
 flake.nix
