@@ -19,8 +19,10 @@ font-size = 8
 # disable window borders, to gel with i3.
 window-decoration = none
 
-# color scheme and theme. "Abernathy" is a bit too gray for bg color;
-# other themes I've tried and didn't outright hate are commented out.
+
+# Set color scheme and theme.
+# View themes bundled with ghostty via: `ghostty +list-themes`
+# Some favorites are:
 theme = Abernathy
 # theme = Argonaut
 # theme = Night Lion V2
@@ -28,9 +30,8 @@ theme = Abernathy
 # theme = Dark+
 # theme = Vercel
 
-# TODO: find a nice light theme, and figure out how to toggle
-# View available themes via: `ghostty +list-themes`
-# theme = dark:Abernathy,light:Catppuccin Latte
+# However it's the out of band warm-burnout that seems comfy:
+theme = dark:warm-burnout-dark,light:warm-burnout-light
 
 # copy/paste clipboard settings
 copy-on-select = false

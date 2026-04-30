@@ -14,6 +14,9 @@ rm -vf ~/.bash_login
 rm -vf ~/.local/bin/starship
 rm -vf ~/starship
 
+_starship_errant_config="${HOME:?}/.config/starship"
+test -f "$_starship_errant_config" && rm -v "$_starship_errant_config"
+
 # Remove old version of k0sctl, previously managed via `.chezmoiexternal.toml`.
 rm -vf ~/.local/bin/k0sctl
 

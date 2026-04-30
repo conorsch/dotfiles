@@ -34,3 +34,13 @@
     exact = true
     # old commit from 2024, but was working
     ref = "f03686afad05274f5fbd2507f85f95b1a6542df4"
+
+# warm-burnout color theme suite
+# https://github.com/felipefdl/warm-burnout
+[".config/warm-burnout"]
+    type = "git-repo"
+    url = "https://github.com/felipefdl/warm-burnout"
+    clone.args = ["--depth=1"]
+    exact = true
+    # ref 4e077a95e85c67b068b8c069e0935b71fc1bf42c maps to 1.6.0
+    ref = "4e077a95e85c67b068b8c069e0935b71fc1bf42c"
