@@ -1,28 +1,71 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "model": "opus",
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true
   },
   "permissions": {
     "allow": [
+      "Read", "Glob", "Grep", "LS", "Edit", "MultiEdit",
       "Bash(cargo check)",
       "Bash(cargo clippy)",
       "Bash(cargo fmt)",
       "Bash(cargo run nextest *)",
       "Bash(cargo test *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git diff *)",
       "Bash(git log *)",
       "Bash(git show *)",
+      "Bash(git status)",
       "Bash(just build)",
       "Bash(just check)",
       "Bash(just integration)",
+      "Bash(just lint)",
       "Bash(just test)",
       "Bash(nix build *)",
-      "Bash(nix flake check)"
+      "Bash(nix flake check)",
+      "Bash(nix-prefetch-url *)",
+      "Bash(npm install *)",
+      "Bash(wc *)",
+      "Bash(find *)",
+      "Bash(echo *)",
+      "Write(docs/**)",
+      "Write(src/**)",
+      "Write(tests/**)"
     ],
+    "defaultMode": "acceptEdits",
     "deny": [
+      "Bash(chmod *)",
+      "Bash(chown *)",
+      "Bash(curl * | sh)",
+      "Bash(docker *)",
       "Bash(git commit *)",
+      "Bash(git merge *)",
       "Bash(git push *)",
-      "Bash(git tag *)"
+      "Bash(git rebase *)",
+      "Bash(git tag *)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(wget *)",
+      "Read(**/secrets/**)",
+      "Read(.env*)",
+      "Write(.env*)",
+      "Write(.envrc*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write(*.rs)",
+        "hooks": [{ "type": "command", "command": "cargo fmt" }]
+      }
     ]
   }
 }
