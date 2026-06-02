@@ -81,3 +81,12 @@ if hash fd > /dev/null 2>&1 ; then
   # Purge old temporary bash history files
   fd -e tmp --hidden --max-depth 1 --min-depth 1 .bash_history ~/ -X rm -v
 fi
+
+# remove system-wide ollama
+if [[ -x /usr/local/bin/ollama ]] ; then
+  if [[ -w /usr/local/bin/ollama ]] ; then
+    rm -v /usr/local/bin/ollama
+  else
+    sudo rm -v /usr/local/bin/ollama
+  fi
+fi

@@ -34,6 +34,7 @@
           # general dev cruft
           gh
           nodejs_22
+          ollama
           pnpm
           wasm-pack
 
