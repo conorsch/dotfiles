@@ -23,7 +23,7 @@ window-decoration = none
 # Set color scheme and theme.
 # View themes bundled with ghostty via: `ghostty +list-themes`
 # Some favorites are:
-theme = Abernathy
+# theme = Abernathy
 # theme = Argonaut
 # theme = Night Lion V2
 # theme = Oxocarbon
@@ -31,7 +31,8 @@ theme = Abernathy
 # theme = Vercel
 
 # However it's the out of band warm-burnout that seems comfy:
-theme = dark:warm-burnout-dark,light:warm-burnout-light
+# theme = dark:warm-burnout-dark,light:warm-burnout-light
+theme = warm-burnout-dark
 
 # copy/paste clipboard settings
 copy-on-select = false
