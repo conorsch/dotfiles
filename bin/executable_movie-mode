@@ -13,9 +13,15 @@ function enable_movie_mode() {
   # TODO: is this necessary? disabling dpms should be sufficient, no?
   systemctl --user stop xss-lock
 
-  # disable warm mode via redshift (mask to prevent Restart=always from bringing it back)
+  # disable warm mode via redshift for the duration of the movie
   systemctl --user stop redshift
-  systemd-run --user --on-active=5h --remain-after-exit true bash -c 'systemctl --user restart redshift'
+
+  # Safety net: fully reset movie-mode after 5h of awake time. The
+  # PrepareForSleep listener (movie-mode-suspend-watch.service) handles the
+  # normal close-the-laptop case; this covers a machine left awake where we
+  # never suspend or run "off" by hand. DISPLAY is set explicitly because a
+  # transient --user unit doesn't reliably inherit it (cf. redshift.service).
+  systemd-run --user --on-active=5h --remain-after-exit true --setenv=DISPLAY=:0 "$HOME/bin/movie-mode" off
 
   # configure external displays
   monitor-setup -m movie
