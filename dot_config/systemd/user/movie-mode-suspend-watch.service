@@ -1,0 +1,14 @@
+[Unit]
+Description=Reset movie-mode when the system suspends
+After=default.target
+ConditionEnvironment=DISPLAY
+
+[Service]
+Type=simple
+Environment=DISPLAY=:0
+ExecStart=%h/bin/movie-mode-suspend-watch
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

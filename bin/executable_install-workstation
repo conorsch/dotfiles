@@ -50,8 +50,10 @@ function configure_hardware_workstation_fedora() {
 
     # GUI apps
     # TODO port these source services from chezmoi?
+    systemctl --user daemon-reload
     systemctl --user enable --now redshift
     systemctl --user enable --now syncthing
+    systemctl --user enable --now movie-mode-suspend-watch
 }
 
 # Handle the Configuration inside a QubesVM
