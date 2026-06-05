@@ -86,7 +86,7 @@ group = pl
 checkout = git clone 'https://github.com/penumbra-zone/penumbers' 'penumbers'
 group = pl
 
-# FPF repos
+# FPF repos, securedrop
 [src/fpf/securedrop]
 checkout = git clone 'https://github.com/freedomofpress/securedrop' 'securedrop'
 group = fpf
@@ -103,6 +103,11 @@ group = fpf
 checkout = git clone 'https://github.com/freedomofpress/securedrop-workstation-keyring' 'securedrop-workstation-keyring'
 group = fpf
 
+[src/fpf/securedrop-protocol]
+checkout = git clone 'https://github.com/freedomofpress/securedrop-protocol' 'securedrop-protocol'
+group = fpf
+
+# FPF repos, webcat
 [src/fpf/webcat]
 checkout = git clone 'https://github.com/freedomofpress/webcat' 'webcat'
 group = fpf
@@ -111,10 +116,15 @@ group = fpf
 checkout = git clone 'https://github.com/freedomofpress/webcat-infra-chain' 'webcat-infra-chain'
 group = fpf
 
-[src/fpf/securedrop-protocol]
-checkout = git clone 'https://github.com/freedomofpress/securedrop-protocol' 'securedrop-protocol'
-group = fpf
-
 [src/fpf/webcat-cli]
 checkout = git clone 'https://github.com/freedomofpress/webcat-cli' 'webcat-cli'
+group = fpf
+
+# FPF repos, infra
+[src/fpf/infra]
+checkout = git clone 'git@github.com:freedomofpress/infrastructure' 'infra'
+group = fpf
+
+[src/fpf/k8s-configs]
+checkout = git clone 'git@github.com:freedomofpress/k8s-configs' 'k8s-configs'
 group = fpf
