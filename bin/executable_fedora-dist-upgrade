@@ -6,7 +6,7 @@ set -euo pipefail
 
 # Sanity check: are we running Fedora?
 if ! grep -q '^NAME="Fedora' /etc/os-release ; then
-    >&2 echo "ERROR: not a Fedora installation, exiting"
+    gum log --level error "not a Fedora installation, exiting"
     exit 1
 fi
 
@@ -18,13 +18,16 @@ current_fedora_version="$(hostnamectl --json pretty \
 next_fedora_version="$((current_fedora_version + 1))"
 
 if ! gum confirm --default="No" "Upgrade from F${current_fedora_version} -> F${next_fedora_version}?" ; then
-    >&2 echo "Exiting..."
+    gum log --level info "Exiting..."
     exit 0
 fi
 
+# cache sudo creds for ~5m, to minimizing re-prompting for password
+sudo -v
+
 sudo dnf upgrade -y --refresh
 # technically supposed to reboot here
->&2 echo "Finished running 'sudo dnf upgrade -y --refresh' (consider rebooting)..."
+gum log --level debug "Finished running 'sudo dnf upgrade -y --refresh' (consider rebooting)..."
 sudo dnf install -y dnf-plugin-system-upgrade
 sudo dnf system-upgrade download --releasever="$next_fedora_version"
 
