@@ -25,6 +25,26 @@
           inherit system;
         };
 
+        # No upstream nix flake for lathe, so build the Go binary from source.
+        # https://github.com/devenjarvis/lathe
+        lathe = pkgs.buildGoModule rec {
+          pname = "lathe";
+          version = "0.3.0";
+          src = pkgs.fetchFromGitHub {
+            owner = "devenjarvis";
+            repo = "lathe";
+            rev = "v${version}";
+            hash = "sha256-nmiFJNHgBwEuMLGIWqepAhDATuAGs4CpzCDYE4VLwjA=";
+          };
+          vendorHash = "sha256-6IQ0/QvnMG87COvJx+wUpViiwDY8zEsJ/HA9RWIF1XE=";
+          # Stamp the version the same way upstream's goreleaser does.
+          ldflags = [
+            "-s"
+            "-w"
+            "-X github.com/devenjarvis/lathe/internal/buildinfo.Version=${version}"
+          ];
+        };
+
         # Packages only appropriate if headful machine, with monitor and speakers.
         workstationPkgs = with pkgs; [
           wiremix
@@ -48,6 +68,7 @@
           go
           go-grip
           harmonia
+          lathe
           hyperfine
           kubectl
           oha
