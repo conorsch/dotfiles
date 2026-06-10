@@ -8,8 +8,10 @@ git
 htop
 just
 libssl-dev
+myrepos
 neovim
 pkg-config
+ripgrep
 tree
 vim
 zstd
