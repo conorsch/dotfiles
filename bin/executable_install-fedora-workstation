@@ -1,0 +1,78 @@
+#!/bin/bash
+# Fedora-specific workstation provisioning: everything that depends on
+# dnf, copr, or RPM Fusion lives here. Invoked by `install-workstation`,
+# which handles host classification and the cross-distro steps.
+#
+# Usage: install-fedora-workstation <hardware|qubes>
+#
+# References other scripts expected on PATH:
+#
+#  * install-flatpaks
+#  * fedora-install-rpm-fusion
+set -ueo pipefail
+
+
+# Filepath that will always exist inside a QubesOS VM.
+QUBES_MARKER_VM_PATH="/usr/share/qubes/marker-vm"
+
+
+# Install the zellij terminal multiplexer, via custom RPM repo.
+function _install_zellij_via_copr() {
+    sudo dnf copr enable -y varlad/zellij
+    sudo dnf install -y zellij
+}
+
+# Install the ghostty terminal application, via custom RPM repo.
+function _install_ghostty_via_copr() {
+    sudo dnf copr enable -y scottames/ghostty
+    sudo dnf install -y ghostty
+}
+
+# Packages and repos appropriate for a bare-metal Fedora Workstation,
+# where we can customize RPM repos and install GUI apps via flatpak.
+function configure_hardware_workstation() {
+    # Helper scripts also installed by chezmoi/dotfiles.
+    install-flatpaks
+    fedora-install-rpm-fusion
+    _install_zellij_via_copr
+    _install_ghostty_via_copr
+}
+
+# Provisioning inside a QubesOS AppVM: no flatpaks or full desktop, but we
+# still want media playback (rpm-fusion) and the preferred terminals.
+function configure_qubes_vm() {
+    if [[ ! -e "$QUBES_MARKER_VM_PATH" ]] ; then
+        >&2 echo "ERROR: QubesOS marker missing: $QUBES_MARKER_VM_PATH"
+        return 1
+    fi
+
+    fedora-install-rpm-fusion
+    _install_zellij_via_copr
+    _install_ghostty_via_copr
+}
+
+main() {
+    local ws_type="${1:-}"
+
+    # Sanity check: refuse to run dnf logic on a non-Fedora host.
+    if ! grep -q '^ID=fedora' /etc/os-release ; then
+        >&2 echo "ERROR: not a Fedora system, exiting..."
+        exit 1
+    fi
+
+    case "$ws_type" in
+        hardware)
+            configure_hardware_workstation
+            ;;
+        qubes)
+            configure_qubes_vm
+            ;;
+        *)
+            >&2 echo "Usage: $0 <hardware|qubes>"
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
+exit 0

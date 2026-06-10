@@ -1,7 +1,21 @@
 #!/bin/bash
 # Install common flatpaks for a workstation experience.
+# Distro-agnostic: works on Fedora (flatpak preinstalled) and
+# Debian (flatpak pulled in via apt below).
 set -euo pipefail
 
+
+# Ensure the flatpak binary is present. Fedora Workstation ships it by default;
+# Debian needs it installed explicitly before we can add remotes.
+if ! hash flatpak > /dev/null 2>&1 ; then
+    if hash apt-get > /dev/null 2>&1 ; then
+        >&2 echo "Installing flatpak via apt..."
+        sudo apt-get install -y flatpak
+    else
+        >&2 echo "ERROR: flatpak not found and no apt-get available to install it"
+        exit 1
+    fi
+fi
 
 # Add Flathub remote repository
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
