@@ -56,6 +56,10 @@ exec --no-startup-id picom --backend glx
 # Restore desktop picture
 exec --no-startup-id nitrogen --restore
 
+# Start gnome-keyring service, so apps that use it don't prompt
+exec --no-startup-id gnome-keyring-daemon --start --components secrets,ssh,pkcs11
+exec --no-startup-id dbus-update-activation-environment --systemd --all
+
 # Don't run redshift, defer to user systemd service
 # exec --no-startup-id redshift -t 6500:3700
 
@@ -65,6 +69,12 @@ exec --no-startup-id i3-msg 'workspace 1:terminal; exec /usr/bin/i3-sensible-ter
 # exec --no-startup-id i3-msg 'workspace 2:work; exec /usr/bin/firefox -p penumbra'
 exec --no-startup-id i3-msg 'workspace 3:personal; exec /usr/bin/firefox -p personal'
 # exec --no-startup-id i3-msg 'workspace 9:comms; exec /usr/local/bin/signal-desktop'
+#
+# NetworkManager is the most popular way to manage wireless networks on Linux,
+# and nm-applet is a desktop environment-independent system tray GUI for it.
+exec --no-startup-id nm-applet
+# Bluetooth device control
+exec --no-startup-id blueman-applet
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
@@ -75,13 +85,6 @@ exec --no-startup-id i3-msg 'workspace 3:personal; exec /usr/bin/firefox -p pers
 # Migrated to systemd user service (xss-lock.service)
 # exec --no-startup-id xss-lock --transfer-sleep-lock -- ~/bin/fuzzy-lock
 bindsym $mod+control+l exec --no-startup-id ~/bin/fuzzy-lock
-
-# NetworkManager is the most popular way to manage wireless networks on Linux,
-# and nm-applet is a desktop environment-independent system tray GUI for it.
-exec --no-startup-id nm-applet
-
-# Bluetooth device control
-exec --no-startup-id blueman-applet
 
 # Audio controls. Binds to the XF86 controls, so laptop fn keys will work,
 # as will fn-layer-bindings on external keyboards.
