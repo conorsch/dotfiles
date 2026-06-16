@@ -85,6 +85,9 @@ floating_modifier $mod
 # start a terminal in the domain of the currently active window
 bindsym $mod+Return exec qubes-i3-sensible-terminal
 
+# start a terminal in the chosen VM (filters by name)
+bindsym $mod+t exec --no-startup-id "qvm-ls --running --raw-data -O name | grep -v '^dom0$' | rofi -dmenu -i -p 'VM Terminal' | xargs -I {} qvm-run {} -- alacritty"
+
 # kill focused window
 bindsym $mod+Shift+q kill
 

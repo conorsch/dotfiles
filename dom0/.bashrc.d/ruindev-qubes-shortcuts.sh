@@ -13,12 +13,18 @@ function t() {
 	    return 2
     fi
 
+    if ! qvm-check --quiet --running "$vm" ; then
+	    qvm-start "$vm"
+    fi
 
+
+    >&2 echo "Updating monitor layout for target VM..."
+    qvm-start-daemon "$vm" --notify-monitor-layout
     >&2 echo "Running terminal inside '$vm'..."
     qvm-run -q "$vm" "alacritty || ghostty || qubes-run-terminal" &
     # qvm-run -q "$vm" "ghostty || alacritty || qubes-run-terminal" &
     disown
-    exit
+    return
     # qvm-run -q "$vm" "qubes-run-terminal"
     # qvm-run -q "$vm" "alacritty"
 
