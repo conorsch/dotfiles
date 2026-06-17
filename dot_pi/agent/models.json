@@ -1,0 +1,14 @@
+{
+  "providers": {
+    "ollama-ruindev": {
+      "baseUrl": "https://llm.ruin.dev/v1",
+      "api": "openai-completions",
+      "apiKey": "$OLLAMA_API_KEY",
+      "models": [
+        {
+          "id": "gemma4:31b"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "lastChangelogVersion": "0.79.6",
+  "theme": "dark",
+  "defaultProvider": "ollama-ruindev",
+  "defaultModel": "gemma4:31b"
+}

@@ -32,3 +32,6 @@ gum log --level info "Installing opencode..."
 if ! hash opencode > /dev/null 2>&1 ; then
   curl -fsSL https://opencode.ai/install | bash
 fi
+
+gum log --level info "Installing pi..."
+pnpm install -q -g --ignore-scripts @earendil-works/pi-coding-agent
