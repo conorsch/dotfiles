@@ -21,7 +21,7 @@ if ! hash claude > /dev/null 2>&1 ; then
 fi
 
 gum log --level debug "Installing codex..."
-pnpm install q -g @openai/codex
+pnpm install -q -g @openai/codex
 
 gum log --level info "Installing crush..."
 pnpm install -q -g @charmland/crush
