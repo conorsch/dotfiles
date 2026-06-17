@@ -9,10 +9,10 @@ lint:
     # nix flake check --all-systems
     nix flake check
 
-# apply only workstation configs
+# apply workstation configs; `chezmoi apply` runs run_onchange_after_45_workstation,
+# which provisions via install-workstation (a no-op on non-workstations).
 workstation:
   chezmoi apply
-  just packages
   bash bin/executable_install-workstation
 
 # install the apt/dnf packages

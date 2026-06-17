@@ -4,6 +4,11 @@
 # Debian (flatpak pulled in via apt below).
 set -euo pipefail
 
+if ! is-workstation ; then
+    >&2 echo "Skipping flatpak installation: not a workstation"
+    exit 0
+fi
+
 
 # Ensure the flatpak binary is present. Fedora Workstation ships it by default;
 # Debian needs it installed explicitly before we can add remotes.

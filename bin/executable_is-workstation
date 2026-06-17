@@ -1,0 +1,90 @@
+#!/bin/bash
+# Classify the current host as a graphical workstation (or not).
+#
+# Exits 0 if this host is a workstation we provision, non-zero otherwise,
+# so it can be used directly as a guard:
+#
+#     if ! is-workstation ; then exit 0 ; fi
+#
+# With --type, it additionally prints the workstation class to stdout:
+#
+#   * hardware  -- a physical laptop/desktop, or the primary workstation
+#   * qubes     -- a QubesOS AppVM
+#
+# Hosts we should not provision (e.g. hardware servers) yield no type and a
+# non-zero exit. This is the single source of truth for workstation
+# detection; other provisioning scripts call it rather than re-implementing
+# the rules.
+set -euo pipefail
+
+# Filepath that always exists inside a QubesOS VM.
+QUBES_MARKER_VM_PATH="/usr/share/qubes/marker-vm"
+
+print_type=false
+verbose=false
+
+usage() {
+    cat >&2 <<'EOF'
+Usage: is-workstation [--type] [-v]
+
+Exit 0 if this host is a workstation, non-zero otherwise.
+
+  --type    Print the workstation class ("hardware" or "qubes") to stdout.
+  -v        Verbose logging to stderr.
+  -h        Show this help and exit.
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --type) print_type=true ;;
+        -v|--verbose) verbose=true ;;
+        -h|--help) usage; exit 0 ;;
+        *) >&2 echo "ERROR: unknown argument: $1"; usage; exit 2 ;;
+    esac
+    shift
+done
+
+# Emit a message to stderr, but only when verbose logging is enabled.
+log() {
+    if [[ "$verbose" = true ]] ; then
+        >&2 echo "$@"
+    fi
+}
+
+# Classify the host into a workstation type. Echoes "hardware", "qubes",
+# or "" (empty) for hosts we should not provision (e.g. hardware servers).
+detect_ws_type() {
+    local hostnamectl_json chassis hostname
+    hostnamectl_json="$(hostnamectl status --json pretty)"
+    chassis="$(jq -r .Chassis <<< "$hostnamectl_json")"
+    hostname="$(jq -r .Hostname <<< "$hostnamectl_json")"
+    log "Detected hostname='$hostname' chassis='$chassis'"
+
+    # Hardcode primary workstation name, which often hosts ssh sessions.
+    # DISPLAY won't be set, but still consider it a workstation.
+    if [[ "$hostname" = "Antigonus" ]] ; then
+        echo "hardware"
+    # Desktops, but only if run within a graphical environment.
+    # Skips hardware servers.
+    elif [[ "$chassis" = "desktop" ]] && [[ -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ]]; then
+        echo "hardware"
+    elif [[ -e "$QUBES_MARKER_VM_PATH" ]] ; then
+        echo "qubes"
+    else
+        echo ""
+    fi
+}
+
+ws_type="$(detect_ws_type)"
+
+if [[ -n "$ws_type" ]] ; then
+    log "Host is a workstation (type: $ws_type)"
+    if [[ "$print_type" = true ]] ; then
+        echo "$ws_type"
+    fi
+    exit 0
+else
+    log "Host is not a workstation"
+    exit 1
+fi

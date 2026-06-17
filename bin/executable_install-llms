@@ -2,6 +2,11 @@
 # Install LLM-related CLI tooling
 set -euo pipefail
 
+if ! is-workstation ; then
+    >&2 echo "Skipping LLM tooling installation: not a workstation"
+    exit 0
+fi
+
 
 gum log --level info "Installing claude code..."
 
@@ -35,3 +40,13 @@ fi
 
 gum log --level info "Installing pi..."
 pnpm install -q -g --ignore-scripts @earendil-works/pi-coding-agent
+
+gum log --level info "Symlinking a single AGENTS.md across LLM clients..."
+mkdir -p \
+  "${HOME:?}/.pi/agents" \
+  "${HOME:?}/.config/opencode" \
+  "${HOME:?}/.claude"
+
+ln -s "${HOME:?}/.local/share/ruindev/AGENTS.md" -f "${HOME:?}/.claude/CLAUDE.md"
+ln -s "${HOME:?}/.local/share/ruindev/AGENTS.md" -f "${HOME:?}/.pi/agents/AGENTS.md"
+ln -s "${HOME:?}/.local/share/ruindev/AGENTS.md" -f "${HOME:?}/.config/opencode/AGENTS.md"

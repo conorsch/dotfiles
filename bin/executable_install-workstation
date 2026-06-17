@@ -19,12 +19,9 @@
 #  * install-fedora-workstation   (dnf/copr/rpm-fusion logic)
 #  * install-debian-workstation   (apt/flatpak logic)
 #  * install-nix
+#  * install-workstation-packages (base apt/dnf packages + nix flake tooling)
 #  * install-dev-tools
 set -ueo pipefail
-
-
-# Filepath that will always exist inside a QubesOS VM.
-QUBES_MARKER_VM_PATH="/usr/share/qubes/marker-vm"
 
 
 # Detect the OS family from /etc/os-release. Echoes "fedora" or "debian",
@@ -42,29 +39,6 @@ function detect_os_id() {
             exit 1
             ;;
     esac
-}
-
-# Classify the host into a workstation type. Echoes "hardware", "qubes",
-# or "" (empty) for hosts we should not provision (e.g. hardware servers).
-# Mirrors the historical hostname/chassis/qubes detection rules.
-function detect_ws_type() {
-    local hostname chassis
-    hostname="$1"
-    chassis="$2"
-
-    # Hardcode primary workstation name, which often hosts ssh sessions.
-    # DISPLAY won't be set, but still consider it a workstation.
-    if [[ "$hostname" = "Antigonus" ]] ; then
-        echo "hardware"
-    # Desktops, but only if run within a graphical environment.
-    # Skips hardware servers.
-    elif [[ "$chassis" = "desktop" ]] && [[ -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ]]; then
-        echo "hardware"
-    elif [[ -e "$QUBES_MARKER_VM_PATH" ]] ; then
-        echo "qubes"
-    else
-        echo ""
-    fi
 }
 
 # Enable the user-level GUI services on a hardware workstation. These are
@@ -92,12 +66,13 @@ main() {
     # shellcheck source=/dev/null
     source "${HOME:?}/.bashrc"
 
-    local os_id hostnamectl_json chassis hostname ws_type
+    local os_id chassis ws_type
     os_id="$(detect_os_id)"
-    hostnamectl_json="$(hostnamectl status --json pretty)"
-    chassis="$(jq -r .Chassis <<< "$hostnamectl_json")"
-    hostname="$(jq -r .Hostname <<< "$hostnamectl_json")"
-    ws_type="$(detect_ws_type "$hostname" "$chassis")"
+    chassis="$(hostnamectl status --json pretty | jq -r .Chassis)"
+    # Delegate workstation classification to the shared is-workstation tool,
+    # which is the single source of truth for these rules. Empty when this
+    # host is not a workstation we provision.
+    ws_type="$(is-workstation --type || true)"
 
     # Provision the workstation, if this host is one we recognize.
     if [[ -n "$ws_type" ]] ; then
@@ -106,6 +81,13 @@ main() {
 
         # Cross-distro steps, common to every workstation type.
         install-nix
+
+        # Base apt/dnf packages (packages/*.txt) plus the cross-distro nix
+        # flake tooling. Must run after install-nix, since its internal
+        # `nix profile install` step needs nix on PATH; the base-package
+        # phase has no such dependency.
+        install-workstation-packages
+
         install-dev-tools
 
         # GUI user services only make sense on a full hardware workstation,

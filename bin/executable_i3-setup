@@ -3,6 +3,11 @@
 # particularly the i3 config.
 set -euo pipefail
 
+if ! is-workstation ; then
+    >&2 echo "Skipping i3 setup: not a workstation"
+    exit 0
+fi
+
 
 # Install GUI/WM packages. The GDM login screen is rather ugly by default,
 # and hard to customize reliably, so we'll use lightdm for the greeter.

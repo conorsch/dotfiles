@@ -2,6 +2,11 @@
 # Script to configure trackpad on laptops
 set -euo pipefail
 
+if ! is-workstation ; then
+    >&2 echo "Skipping touchpad config: not a workstation"
+    exit 0
+fi
+
 
 # Install X11 deps
 if ! hash xinput > /dev/null 2>&1 ; then
