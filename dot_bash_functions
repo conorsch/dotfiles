@@ -106,20 +106,20 @@ workon() {
 
 # Remove an warm light / darkness customization
 bright() {
-    systemctl --user restart redshfit
+    systemctl --user restart redshift
     brightnessctl --quiet set '100%'
 }
 
 # Set evening time laptop lighting.
 warm() {
-    bright
-    redshift -orP -O 3700 -b "1" > /dev/null
+    systemctl --user stop redshift
+    redshift -orP -O 4200 -b "1" > /dev/null
 }
 
 # Set night time laptop lighting.
 dark() {
     bright
-    redshift -orP -O 3700 > /dev/null
+    redshift -orP -O 4200 > /dev/null
     brightnessctl --quiet set '60%'
 }
 
