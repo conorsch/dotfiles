@@ -30,6 +30,16 @@ build = echo "skipping import nix build"
 # "skip=lazy" means that the repo won't be checked out, only updated if it's already there.
 skip = lazy
 
+[src/personal/llmidden]
+checkout = git clone 'git@adolin.ruindev.wg:/mnt/Valhalla/git-repos/llmidden' 'llmidden'
+group = personal
+skip = lazy
+
+[src/personal/qubes-app-split-age]
+checkout = git clone 'git@adolin.ruindev.wg:/mnt/Valhalla/git-repos/qubes-app-split-age' 'qubes-app-split-age'
+group = personal
+skip = lazy
+
 # dotfiles
 [.local/share/chezmoi]
 checkout = git clone 'https://codeberg.org/conorsch/dotfiles' 'chezmoi'
