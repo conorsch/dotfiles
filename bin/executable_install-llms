@@ -8,19 +8,15 @@ if ! is-workstation ; then
 fi
 
 
-gum log --level info "Installing claude code..."
 
-# Legacy: remove pnpm-installed claude-code
 # Ensure we have pnpm, presumably via nix.
 # We use pnpm rather than npm because it works well for installing globally.
 if ! hash pnpm > /dev/null 2>&1 ; then
-  >&2 echo "WARN: pnpm is not installed; maybe dotfiles not set up?"
-else
-  if [[ -n "$(pnpm list -g @anthropic-ai/claude-code)" ]] ; then
-    gum log --level debug "Uninstalling pnpm-managed claude-code..."
-    pnpm remove -g @anthropic-ai/claude-code
-  fi
+  >&2 echo "ERROR: pnpm is not installed; maybe dotfiles not set up?"
+  exit 1
 fi
+
+gum log --level info "Installing claude code..."
 if ! hash claude > /dev/null 2>&1 ; then
   curl -fsSL https://claude.ai/install.sh | bash
 fi
