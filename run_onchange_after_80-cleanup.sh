@@ -90,10 +90,3 @@ if [[ -x /usr/local/bin/ollama ]] ; then
     sudo rm -v /usr/local/bin/ollama
   fi
 fi
-
-# remove accidentally installed "q" node dep, which was introduced
-# due to a typo in a "-q" flag
-if hash pnpm > /dev/null 2>&1 && [[ -n "$(pnpm list -g @anthropic-ai/claude-code)" ]] ; then
-    gum log --level debug "Uninstalling deprecated 'q' node dependency..."
-    pnpm remove --global q
-fi
