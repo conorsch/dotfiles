@@ -71,6 +71,10 @@ group = social
 checkout = git clone 'https://github.com/tonarino/innernet' 'innernet'
 group = social
 
+[src/qubes-nixos-template]
+checkout = git clone 'https://github.com/evq/qubes-nixos-template' 'qubes-nixos-template'
+group = social
+
 # PL repos
 [src/pl/penumbra]
 checkout = git clone 'https://github.com/penumbra-zone/penumbra' 'penumbra'
