@@ -29,14 +29,14 @@
         # https://github.com/devenjarvis/lathe
         lathe = pkgs.buildGoModule rec {
           pname = "lathe";
-          version = "0.3.0";
+          version = "0.4.0";
           src = pkgs.fetchFromGitHub {
             owner = "devenjarvis";
             repo = "lathe";
             rev = "v${version}";
-            hash = "sha256-nmiFJNHgBwEuMLGIWqepAhDATuAGs4CpzCDYE4VLwjA=";
+            hash = "sha256-X7EYZH5sotrCVHmJwd6KP6nlLsN/R4lqP28q+QqAqKE=";
           };
-          vendorHash = "sha256-6IQ0/QvnMG87COvJx+wUpViiwDY8zEsJ/HA9RWIF1XE=";
+          vendorHash = "sha256-3QV/ocKpCu2cmefLBCf4ZAAgFbN3500To5qpMinm+uM=";
           # Stamp the version the same way upstream's goreleaser does.
           ldflags = [
             "-s"
