@@ -69,6 +69,8 @@ detect_ws_type() {
     # Skips hardware servers.
     elif [[ "$chassis" = "desktop" ]] && [[ -n "${DISPLAY:-}" || -n "${WAYLAND_DISPLAY:-}" ]]; then
         echo "hardware"
+    elif [[ "$chassis" = "laptop" ]] ; then
+        echo "hardware"
     elif [[ -e "$QUBES_MARKER_VM_PATH" ]] ; then
         echo "qubes"
     else
