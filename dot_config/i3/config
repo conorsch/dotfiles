@@ -223,6 +223,10 @@ bar {
         i3bar_command i3bar --transparency
         status_command i3status
 
+        # Prefer internal laptop display on Framework 13,
+        # fallback to whatever is marked "primary".
+        tray_output eDP-1
+        tray_output primary
         position top
 
         colors {
