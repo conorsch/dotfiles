@@ -4,9 +4,5 @@
   email = conor@freedom.press
   signingKey = "E152C9D26C369846F157C5576D808AEC7BB95B50"
 
-[gpg]
-  ; program = qubes-gpg-client-wrapper
-  program = gpg2
-
 [commit]
   gpgSign = true

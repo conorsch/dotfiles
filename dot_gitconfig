@@ -1,6 +1,7 @@
 [user]
 	name = Conor Schaefer
 	email = conor@ruin.dev
+	signingKey = "E152C9D26C369846F157C5576D808AEC7BB95B50"
 [pull]
 	rebase = true
 [transfer]
@@ -22,6 +23,12 @@
 	skippedCherryPicks = false
 [checkout]
   defaultRemote = origin
+[commit]
+  # By default don't assume there's a yubikey plugged in
+  gpgSign = false
+[gpg]
+  ; program = qubes-gpg-client-wrapper
+  program = gpg2
 [credential "https://github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
